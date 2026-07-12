@@ -15,7 +15,7 @@ until PF-1A closes (see README.md).
 | irr-generate | Complete | Yes | ee418ff245515d370ffa0542ff26bd23e8763768 |
 | irr-unlock | Complete | Yes | 1e945470b54aa3b547b1af78ae6b26c8569f71d2 |
 | irr-checkout | Pending | — | — |
-| irr-stripe-webhook | Pending | — | — |
+| irr-stripe-webhook | Complete | Yes | f9519cecdbcc4df1b24a32dcb7b674c1a91253c4 |
 | irr-access-request | Pending | — | — |
 | validate-editorial-contract | Pending | — | — |
 | compile-editorial-contract | Pending | — | — |
@@ -118,4 +118,4 @@ until PF-1A closes (see README.md).
 ## Summary
 
 Total tracked: 91 (2 compiler assets + 89 edge functions)
-Complete: 3
+Complete: 4
