@@ -1,0 +1,175 @@
+fields:
+  investigatorQuestion:
+    type: string
+    format: prose
+    stage: 5
+    source: model
+    description: The specific question an inspector would ask about this decision.
+
+  authorizationSummary:
+    type: string
+    format: prose
+    stage: 5
+    source: model
+    description: Summary of who authorized the decision and on what basis.
+
+  authorizationRationale:
+    type: string
+    format: prose
+    stage: 5
+    source: model
+    description: The reasoning that justified the decision.
+
+  knownLimitations:
+    type: string
+    format: prose
+    stage: 5
+    source: model
+    description: Every distinct deficiency, explained in full exactly once.
+
+  defensibilityRating:
+    type: string
+    stage: 5
+    source: model
+    enum:
+      - Critical Exposure
+      - At Risk
+      - Defensible with Gaps
+      - Inspection-Ready
+    description: Overall defensibility rating for the decision.
+
+  evidenceReviewed_list:
+    type: array
+    stage: 4
+    source: model
+    items:
+      type: object
+    description: Evidence items reviewed in support of the decision.
+
+  riskEvaluation:
+    type: string
+    format: prose
+    stage: 4
+    source: model
+    description: How regulatory risk was evaluated for this decision.
+
+  alternativesConsidered:
+    type: string
+    format: prose
+    stage: 4
+    source: model
+    description: Alternative interpretations or courses of action considered.
+
+  regulatoryAlignment:
+    type: string
+    format: prose
+    stage: 4
+    source: model
+    description: How the decision aligns with applicable regulatory expectations.
+
+  residualExposureStatement:
+    type: string
+    format: prose
+    stage: 4
+    source: model
+    description: What inspection exposure remains after this decision.
+
+  gapFlags_list:
+    type: array
+    stage: 6
+    source: model
+    items:
+      type: object
+    description: Documentation gaps, each paired with an imperative next action.
+
+  criticalGapsRanked_list:
+    type: array
+    stage: 6
+    source: model
+    items:
+      type: string
+    description: >
+      The 2-3 most inspection-critical gaps, ranked by severity, named specifically.
+      INFERRED shape (string names) -- not previously validated at runtime; confirm
+      against actual stage-6 output before relying on the item-shape check in production.
+
+  claimStatus_list:
+    type: array
+    stage: 7
+    source: model
+    items:
+      type: object
+      properties:
+        claim:
+          type: string
+        status:
+          type: string
+          enum:
+            - Claimed in rationale
+            - Supported by attached evidence
+            - Not traceable in record
+    description: Classification of every factual claim in the rationale.
+
+  evidenceMatrix_list:
+    type: array
+    stage: 8
+    source: model
+    items:
+      type: object
+    description: Matrix mapping claims to the specific evidence that supports them.
+
+  evidenceTraceability_list:
+    type: array
+    stage: 8
+    source: model
+    items:
+      type: object
+      properties:
+        claimId:
+          type: string
+    description: One entry per claim, tracing it to evidence or marking it unsupported.
+
+  unsupportedClaims_list:
+    type: array
+    stage: 9
+    source: model
+    items:
+      type: object
+    description: What the record fails to establish, for each unsupported claim.
+
+  inspectorChallenge_list:
+    type: array
+    stage: 10
+    source: model
+    items:
+      type: object
+    description: Inspector-facing challenge/response pairs, one per gap.
+
+  remediationScaffold_list:
+    type: array
+    stage: 11
+    source: model
+    items:
+      type: object
+    description: Bracketed-blank documentation scaffolds, one per gap.
+
+  executiveBriefBreakdown_list:
+    type: array
+    stage: 12
+    source: derived
+    items:
+      type: object
+      properties:
+        gap: {}
+        defensibilityRating:
+          type: string
+    description: >
+      Deterministically assembled from criticalGapsRanked_list + defensibilityRating.
+      Not model-generated -- no prompt fragment is produced for this field.
+
+  executiveBrief:
+    type: string
+    format: prose
+    stage: 13
+    source: model
+    description: 2-3 sentence summary of the completed IRR analysis for a QA leader.
