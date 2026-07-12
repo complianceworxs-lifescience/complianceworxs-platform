@@ -11,9 +11,9 @@ until PF-1A closes (see README.md).
 | contract.yaml | Pending | — | — |
 | compile.js | Pending | — | — |
 | irr-stage-engine | Pending | — | — |
-| irr-job-worker | Pending | — | — |
-| irr-generate | Pending | — | — |
-| irr-unlock | Pending | — | — |
+| irr-job-worker | Complete | Yes | 78f0a59aa7f671d87eaf5fc4fbdb4e2d350a090f |
+| irr-generate | Complete | Yes | ee418ff245515d370ffa0542ff26bd23e8763768 |
+| irr-unlock | Complete | Yes | 1e945470b54aa3b547b1af78ae6b26c8569f71d2 |
 | irr-checkout | Pending | — | — |
 | irr-stripe-webhook | Pending | — | — |
 | irr-access-request | Pending | — | — |
@@ -118,4 +118,4 @@ until PF-1A closes (see README.md).
 ## Summary
 
 Total tracked: 91 (2 compiler assets + 89 edge functions)
-Complete: 0
+Complete: 3
