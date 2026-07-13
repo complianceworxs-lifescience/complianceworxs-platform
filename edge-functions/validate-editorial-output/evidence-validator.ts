@@ -1,0 +1,1 @@
+export const EVIDENCE_DIMENSION_PROMPT = `Evidence: Evaluate whether claims in the artifact are actually supported by evidence presented within it (not evidence assumed to exist elsewhere), whether traceability from claim to evidence is clear to a reader, and whether the evidence used is the right category of evidence for the claim being made.`;
