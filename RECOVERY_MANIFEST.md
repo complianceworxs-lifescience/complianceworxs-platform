@@ -47,7 +47,7 @@ until PF-1A closes (see README.md).
 | ddr-grant-access | Complete | Yes | 9380434598935d04ff79235d4ec9792f4124ca76 |
 | purchase-fulfillment-send | Complete | Yes | 7a3c2428dfd21f35eab42b8e45a5034f1bf12872 |
 | stripe-webhook | Complete | Yes | 68f18a2ede33d31c95a9fa1d9c8d82e07a3a0f71 |
-| stripe-setup | Pending | — | — |
+| stripe-setup | Complete | Yes | f249d0abff0c14d8813f330c1410887820311343 |
 | stripe-worker | Pending | — | — |
 | checkout-session-handler | Pending | — | — |
 | stripe-orders-reconcile | Pending | — | — |
@@ -118,4 +118,4 @@ until PF-1A closes (see README.md).
 ## Summary
 
 Total tracked: 91 (2 compiler assets + 89 edge functions)
-Complete: 31
+Complete: 32
