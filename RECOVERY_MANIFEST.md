@@ -37,7 +37,7 @@ until PF-1A closes (see README.md).
 
 | Component | Status | Verified Against Production | Commit |
 |---|---|---|---|
-| defense-pack-generate | Pending | — | — |
+| defense-pack-generate | Complete | Yes | 0bc915afdf5f0028126a92b07c93ccbaae0aeff3 |
 | defense-pack-stripe-webhook | Pending | — | — |
 | case-file-render | Pending | — | — |
 | case-file-checkout | Pending | — | — |
@@ -118,4 +118,4 @@ until PF-1A closes (see README.md).
 ## Summary
 
 Total tracked: 91 (2 compiler assets + 89 edge functions)
-Complete: 21
+Complete: 22
