@@ -28,7 +28,7 @@ until PF-1A closes (see README.md).
 | generate-executive-brief | Complete | Yes | ad8bc4de335ee11a62dab9f3779f460bebeffdec |
 | job-status | Complete | Yes | 62d87a85d06175d4198fc952f882ec17620fb9ba |
 | irr-stage7-diag | Complete | Yes | 10b22ba565cbce45d986388be48627cfc412393a |
-| irr-stage7-batch-diag | Pending | — | — |
+| irr-stage7-batch-diag | Complete | Yes | 98c71b3bf7dfd2ed22b5bec4ac03c59512f78aec |
 | irr-remediation-diag | Pending | — | — |
 | runtime | Pending | — | — |
 | runtime-worker | Pending | — | — |
@@ -118,4 +118,4 @@ until PF-1A closes (see README.md).
 ## Summary
 
 Total tracked: 91 (2 compiler assets + 89 edge functions)
-Complete: 17
+Complete: 18
