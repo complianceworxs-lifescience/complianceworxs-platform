@@ -1,0 +1,1 @@
+export const REASONING_DIMENSION_PROMPT = `Reasoning (Chapters 3-4): Evaluate whether the argument has a hidden premise, whether any inference is unsupported by the evidence actually presented, whether reasoning is circular, and whether the required reasoning sequence is genuinely present and complete -- not merely mentioned.`;
