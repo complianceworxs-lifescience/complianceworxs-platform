@@ -39,7 +39,7 @@ until PF-1A closes (see README.md).
 |---|---|---|---|
 | defense-pack-generate | Complete | Yes | 0bc915afdf5f0028126a92b07c93ccbaae0aeff3 |
 | defense-pack-stripe-webhook | Complete | Yes | b533853a5ed752ac527fc632dfc5aa21adcef829 |
-| case-file-render | Pending | — | — |
+| case-file-render | Complete | Yes | ab03520da20efbf0f51ec35aa3a74301d0de4b91 |
 | case-file-checkout | Complete | Yes | a4ba13cd4ce3945999f1f3e101b3c4a47535c197 |
 | case-file-pdf-upload | Complete | Yes | 575c8e4e0ded2c3f6f9142eea2bfec19ce79997d |
 | ddr-gate-capture | Complete | Yes | de894b057b16f2eafe403edd22bd105deb91097f |
@@ -118,4 +118,4 @@ until PF-1A closes (see README.md).
 ## Summary
 
 Total tracked: 91 (2 compiler assets + 89 edge functions)
-Complete: 29
+Complete: 30
