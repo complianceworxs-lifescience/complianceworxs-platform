@@ -9,11 +9,14 @@ set -euo pipefail
 #   git working tree on the branch to update
 #
 # Usage:
-#   scripts/recover-edge-function.sh <function-slug> [expected-ezbr-sha256]
+#   bash scripts/recover-edge-function.sh <function-slug> [expected-byte-checksum]
+#
+# The optional checksum is this executor's deterministic byte checksum, not the
+# externally supplied ezbr_sha256 unless that producer uses the same algorithm.
+# The executor always verifies downloaded bytes against repository bytes.
 #
 # Environment overrides:
 #   SUPABASE_PROJECT_REF   default: balkvbmtummehgbbeqap
-#   RECOVERY_BRANCH       default: current branch
 #   SKIP_MANIFEST_UPDATE  set to 1 to omit manifest update
 
 PROJECT_REF="${SUPABASE_PROJECT_REF:-balkvbmtummehgbbeqap}"
@@ -22,7 +25,7 @@ EXPECTED_CHECKSUM="${2:-}"
 SKIP_MANIFEST_UPDATE="${SKIP_MANIFEST_UPDATE:-0}"
 
 if [[ -z "$SLUG" ]]; then
-  echo "Usage: $0 <function-slug> [expected-ezbr-sha256]" >&2
+  echo "Usage: bash $0 <function-slug> [expected-byte-checksum]" >&2
   exit 2
 fi
 
@@ -70,18 +73,15 @@ rm -rf "$TARGET_DIR"
 mkdir -p "$TARGET_DIR"
 cp -a "$SOURCE_DIR"/. "$TARGET_DIR"/
 
-# Deterministic package checksum: relative path, NUL, byte length, NUL, bytes,
-# processed in lexical path order. This detects missing, extra, changed, and
-# genuinely empty files without normalizing line endings.
-ACTUAL_CHECKSUM="$(python3 - "$TARGET_DIR" <<'PY'
+checksum_dir() {
+  python3 - "$1" <<'PY'
 from pathlib import Path
 import hashlib
 import sys
 
 root = Path(sys.argv[1])
 h = hashlib.sha256()
-files = sorted(p for p in root.rglob('*') if p.is_file())
-for path in files:
+for path in sorted(p for p in root.rglob('*') if p.is_file()):
     rel = path.relative_to(root).as_posix().encode('utf-8')
     data = path.read_bytes()
     h.update(rel)
@@ -91,42 +91,35 @@ for path in files:
     h.update(data)
 print(h.hexdigest())
 PY
-)"
+}
 
-if [[ -n "$EXPECTED_CHECKSUM" && "$ACTUAL_CHECKSUM" != "$EXPECTED_CHECKSUM" ]]; then
-  echo "Checksum mismatch for $SLUG" >&2
+# Deterministic checksum detects missing, extra, changed, and empty files without
+# normalizing line endings.
+SOURCE_CHECKSUM="$(checksum_dir "$SOURCE_DIR")"
+TARGET_CHECKSUM="$(checksum_dir "$TARGET_DIR")"
+
+if [[ "$TARGET_CHECKSUM" != "$SOURCE_CHECKSUM" ]]; then
+  echo "Downloaded source and repository copy differ." >&2
+  echo "Source: $SOURCE_CHECKSUM" >&2
+  echo "Target: $TARGET_CHECKSUM" >&2
+  exit 1
+fi
+
+if [[ -n "$EXPECTED_CHECKSUM" && "$TARGET_CHECKSUM" != "$EXPECTED_CHECKSUM" ]]; then
+  echo "Expected byte checksum mismatch for $SLUG" >&2
   echo "Expected: $EXPECTED_CHECKSUM" >&2
-  echo "Actual:   $ACTUAL_CHECKSUM" >&2
+  echo "Actual:   $TARGET_CHECKSUM" >&2
   exit 1
 fi
 
 FILE_COUNT="$(find "$TARGET_DIR" -type f | wc -l | tr -d ' ')"
 EMPTY_COUNT="$(find "$TARGET_DIR" -type f -size 0 | wc -l | tr -d ' ')"
 
-# Confirm the copied repository bytes still produce the same checksum.
-VERIFY_CHECKSUM="$(python3 - "$TARGET_DIR" <<'PY'
-from pathlib import Path
-import hashlib
-import sys
-root = Path(sys.argv[1])
-h = hashlib.sha256()
-for path in sorted(p for p in root.rglob('*') if p.is_file()):
-    rel = path.relative_to(root).as_posix().encode('utf-8')
-    data = path.read_bytes()
-    h.update(rel); h.update(b'\0'); h.update(str(len(data)).encode('ascii')); h.update(b'\0'); h.update(data)
-print(h.hexdigest())
-PY
-)"
-[[ "$VERIFY_CHECKSUM" == "$ACTUAL_CHECKSUM" ]] || {
-  echo "Post-copy verification failed." >&2
-  exit 1
-}
-
 git add -- "edge-functions/$SLUG"
 git commit -m "Recover $SLUG from production" \
   -m "Source downloaded directly from Supabase project $PROJECT_REF." \
   -m "$FILE_COUNT files ($EMPTY_COUNT empty). PF-1A recovery -- no modifications, no refactoring." \
-  -m "Recovery checksum: $ACTUAL_CHECKSUM"
+  -m "Byte checksum: $TARGET_CHECKSUM"
 RECOVERY_COMMIT="$(git rev-parse HEAD)"
 
 if [[ "$SKIP_MANIFEST_UPDATE" != "1" ]]; then
@@ -156,11 +149,22 @@ PY
   git commit -m "Mark $SLUG recovered and verified"
 fi
 
-# Final verification against committed content, not the working tree alone.
+# Verify the committed tree contains exactly the bytes that were downloaded.
+COMMITTED_TMP="$TMP_ROOT/committed"
+mkdir -p "$COMMITTED_TMP"
+git archive HEAD "edge-functions/$SLUG" | tar -x -C "$COMMITTED_TMP"
+COMMITTED_CHECKSUM="$(checksum_dir "$COMMITTED_TMP/edge-functions/$SLUG")"
+if [[ "$COMMITTED_CHECKSUM" != "$SOURCE_CHECKSUM" ]]; then
+  echo "Committed source verification failed." >&2
+  echo "Downloaded: $SOURCE_CHECKSUM" >&2
+  echo "Committed:  $COMMITTED_CHECKSUM" >&2
+  exit 1
+fi
+
 git diff --exit-code HEAD -- "edge-functions/$SLUG" RECOVERY_MANIFEST.md
 
 echo "Recovered: $SLUG"
 echo "Files: $FILE_COUNT ($EMPTY_COUNT empty)"
-echo "Checksum: $ACTUAL_CHECKSUM"
+echo "Byte checksum: $TARGET_CHECKSUM"
 echo "Recovery commit: $RECOVERY_COMMIT"
 echo "Final commit: $(git rev-parse HEAD)"
