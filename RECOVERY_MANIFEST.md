@@ -38,14 +38,14 @@ until PF-1A closes (see README.md).
 | Component | Status | Verified Against Production | Commit |
 |---|---|---|---|
 | defense-pack-generate | Complete | Yes | 0bc915afdf5f0028126a92b07c93ccbaae0aeff3 |
-| defense-pack-stripe-webhook | Pending | — | — |
+| defense-pack-stripe-webhook | Complete | Yes | b533853a5ed752ac527fc632dfc5aa21adcef829 |
 | case-file-render | Pending | — | — |
-| case-file-checkout | Pending | — | — |
-| case-file-pdf-upload | Pending | — | — |
-| ddr-gate-capture | Pending | — | — |
-| ddr-verify-token | Pending | — | — |
-| ddr-grant-access | Pending | — | — |
-| purchase-fulfillment-send | Pending | — | — |
+| case-file-checkout | Complete | Yes | a4ba13cd4ce3945999f1f3e101b3c4a47535c197 |
+| case-file-pdf-upload | Complete | Yes | 575c8e4e0ded2c3f6f9142eea2bfec19ce79997d |
+| ddr-gate-capture | Complete | Yes | de894b057b16f2eafe403edd22bd105deb91097f |
+| ddr-verify-token | Complete | Yes | fb35ccb22c95b9743b59ad0f1f1e85b4a462b90c |
+| ddr-grant-access | Complete | Yes | 9380434598935d04ff79235d4ec9792f4124ca76 |
+| purchase-fulfillment-send | Complete | Yes | 7a3c2428dfd21f35eab42b8e45a5034f1bf12872 |
 | stripe-webhook | Pending | — | — |
 | stripe-setup | Pending | — | — |
 | stripe-worker | Pending | — | — |
@@ -118,4 +118,4 @@ until PF-1A closes (see README.md).
 ## Summary
 
 Total tracked: 91 (2 compiler assets + 89 edge functions)
-Complete: 22
+Complete: 29
