@@ -23,7 +23,7 @@ until PF-1A closes (see README.md).
 | validate-editorial-output | Complete | Yes | bfdb3aad992f638ab35209a554d1da9faf29dc44 |
 | irr-regression-test | Complete | Yes | 11a41b11bcb2adcfb482bf97ee928b47157ae586 |
 | generate-irr | Complete | Yes | 5dbf29ca80f7eb4d889e2512b52be5b0f8c134ed |
-| generate | Pending | — | — |
+| generate | Complete | Yes | 1dca387a715a9fd72c22d76b4faff24afd3593c9 |
 | generate-batch-review | Pending | — | — |
 | generate-executive-brief | Pending | — | — |
 | job-status | Pending | — | — |
@@ -118,4 +118,4 @@ until PF-1A closes (see README.md).
 ## Summary
 
 Total tracked: 91 (2 compiler assets + 89 edge functions)
-Complete: 12
+Complete: 13
