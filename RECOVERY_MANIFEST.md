@@ -143,7 +143,9 @@ Range `20260330090420` .. `20260712122453`. Each file is the migration body exac
 ### Verification status
 - Migrations recovered & **byte-verified** against the deployed `schema_migrations` history. ✅
 - Live schema snapshot captured as the production reference. ✅
-- **Migration→live replay-diff NOT YET RUN** — proving the 330 migrations replay to exactly the live schema (i.e., no manual/out-of-band drift) requires a scratch DB (Supabase branch) replay + schema diff. This is the remaining PF-1B verification step before PF-1B can be marked closed.
+- **Metadata drift check: DONE (see `supabase/schema-snapshot/DRIFT-REPORT.md`).** Result: the 330 migrations do **NOT** fully reproduce production — **29 app-level objects** (3 tables, 12 functions, 2 triggers, 1 view, 1 policy, 10 cron jobs) exist live but are created by no migration (applied out-of-band), plus 6 dashboard-enabled extensions. Their live definitions are captured in `schema-snapshot/`.
+- **Full replay-diff still NOT run** (no branch provisioned). Metadata check cannot detect *attribute drift* on migration-tracked tables (manual ALTER of a column/default/constraint) or *body drift* on migration-tracked functions/views/triggers (manual CREATE OR REPLACE). Those two classes require a scratch-DB replay+diff or a definition-level diff — deferred as an explicit decision.
+- **PF-1B status: recovered & captured, drift identified — NOT closed.** Closing requires (a) capturing the 29 out-of-band objects as catch-up migrations, and (b) the replay/definition diff to clear attribute/body drift.
 
 ## Summary
 
