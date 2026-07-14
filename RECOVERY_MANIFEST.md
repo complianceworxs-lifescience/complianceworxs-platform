@@ -115,7 +115,37 @@ until PF-1A closes (see README.md).
 | inspection-exposure-submit | Complete | Yes | fcf6cde7d73fefa1ba23d2203f7e636e29200615 |
 | gemini-key-probe | Complete | Yes | fcf6cde7d73fefa1ba23d2203f7e636e29200615 |
 
+## PF-1B — Database Schema, Migrations, RLS
+
+Source of truth: Supabase project `balkvbmtummehgbbeqap` live database.
+Recovery target: `supabase/migrations/` (declared history) + `supabase/schema-snapshot/` (live reference).
+
+### Migrations
+| Item | Status | Verified Against Production | Commit |
+|---|---|---|---|
+| 330 migrations (`supabase/migrations/<version>_<name>.sql`) | Complete | Yes — each file md5 == DB `md5(statements[1])`, 330/330, 0 mismatch | 7cedd7f |
+
+Range `20260330090420` .. `20260712122453`. Each file is the migration body exactly as stored in `supabase_migrations.schema_migrations` (one statement per row; comments/whitespace preserved).
+
+### Live schema snapshot (`supabase/schema-snapshot/`) — verification reference
+| Section | Count |
+|---|---|
+| Installed extensions | 11 |
+| public tables | 67 (all RLS-enabled) |
+| Columns (public) | 970 |
+| Views (public) | 9 |
+| Functions / procedures (public) | 189 |
+| Triggers (public) | 11 |
+| RLS policies | 19 (across 18 tables) |
+| RLS-enabled tables with NO policy (deny-all) | 52 |
+| pg_cron jobs | 15 |
+
+### Verification status
+- Migrations recovered & **byte-verified** against the deployed `schema_migrations` history. ✅
+- Live schema snapshot captured as the production reference. ✅
+- **Migration→live replay-diff NOT YET RUN** — proving the 330 migrations replay to exactly the live schema (i.e., no manual/out-of-band drift) requires a scratch DB (Supabase branch) replay + schema diff. This is the remaining PF-1B verification step before PF-1B can be marked closed.
+
 ## Summary
 
 Total tracked: 96 (2 compiler assets + 94 edge functions)
-Complete: 96 (all 94 edge functions + 2 compiler assets). PF-1A recovery scope complete; PF-1B (schema/migrations/RLS) not started.
+Complete: 96 (all 94 edge functions + 2 compiler assets). PF-1A recovery scope complete; PF-1B (schema/migrations/RLS): 330 migrations recovered & byte-verified + live snapshot captured; migration→live replay-diff still pending (see PF-1B section).

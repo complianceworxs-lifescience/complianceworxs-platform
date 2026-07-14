@@ -1,0 +1,231 @@
+[
+ {
+  "schema": "cron",
+  "table": "job",
+  "policy": "cron_job_policy",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "public"
+  ],
+  "cmd": "ALL",
+  "using": "(username = CURRENT_USER)",
+  "with_check": null
+ },
+ {
+  "schema": "cron",
+  "table": "job_run_details",
+  "policy": "cron_job_run_details_policy",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "public"
+  ],
+  "cmd": "ALL",
+  "using": "(username = CURRENT_USER)",
+  "with_check": null
+ },
+ {
+  "schema": "public",
+  "table": "batch_review_feedback",
+  "policy": "anon insert only",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "anon"
+  ],
+  "cmd": "INSERT",
+  "using": null,
+  "with_check": "true"
+ },
+ {
+  "schema": "public",
+  "table": "dm_templates",
+  "policy": "service_role_all",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "service_role"
+  ],
+  "cmd": "ALL",
+  "using": "true",
+  "with_check": "true"
+ },
+ {
+  "schema": "public",
+  "table": "irr_access_requests",
+  "policy": "service role full access",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "service_role"
+  ],
+  "cmd": "ALL",
+  "using": "true",
+  "with_check": "true"
+ },
+ {
+  "schema": "public",
+  "table": "irr_sessions",
+  "policy": "service_role_full_access",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "service_role"
+  ],
+  "cmd": "ALL",
+  "using": "true",
+  "with_check": "true"
+ },
+ {
+  "schema": "public",
+  "table": "job_postings",
+  "policy": "Public can read active job postings",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "anon",
+   "authenticated"
+  ],
+  "cmd": "SELECT",
+  "using": "(is_active = true)",
+  "with_check": null
+ },
+ {
+  "schema": "public",
+  "table": "optimizer_config",
+  "policy": "service_role_all_optimizer_config",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "service_role"
+  ],
+  "cmd": "ALL",
+  "using": "true",
+  "with_check": "true"
+ },
+ {
+  "schema": "public",
+  "table": "optimizer_decisions",
+  "policy": "service_role_all_optimizer_decisions",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "service_role"
+  ],
+  "cmd": "ALL",
+  "using": "true",
+  "with_check": "true"
+ },
+ {
+  "schema": "public",
+  "table": "optimizer_funnel_snapshots",
+  "policy": "service_role_all_optimizer_funnel_snapshots",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "service_role"
+  ],
+  "cmd": "ALL",
+  "using": "true",
+  "with_check": "true"
+ },
+ {
+  "schema": "public",
+  "table": "outbound_ab_results",
+  "policy": "service_role_all",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "service_role"
+  ],
+  "cmd": "ALL",
+  "using": "true",
+  "with_check": "true"
+ },
+ {
+  "schema": "public",
+  "table": "outbound_ab_variants",
+  "policy": "service_role_all",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "service_role"
+  ],
+  "cmd": "ALL",
+  "using": "true",
+  "with_check": "true"
+ },
+ {
+  "schema": "public",
+  "table": "outbound_events",
+  "policy": "service_role_all",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "service_role"
+  ],
+  "cmd": "ALL",
+  "using": "true",
+  "with_check": "true"
+ },
+ {
+  "schema": "public",
+  "table": "outbound_rl_state",
+  "policy": "service_role_all",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "service_role"
+  ],
+  "cmd": "ALL",
+  "using": "true",
+  "with_check": "true"
+ },
+ {
+  "schema": "public",
+  "table": "outbound_segment_stats",
+  "policy": "service_role_all",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "service_role"
+  ],
+  "cmd": "ALL",
+  "using": "true",
+  "with_check": "true"
+ },
+ {
+  "schema": "public",
+  "table": "partner_referrals",
+  "policy": "anon_select_partner_referrals",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "anon"
+  ],
+  "cmd": "SELECT",
+  "using": "true",
+  "with_check": null
+ },
+ {
+  "schema": "public",
+  "table": "pipeline_health_log",
+  "policy": "pipeline_health_log_service_role",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "public"
+  ],
+  "cmd": "ALL",
+  "using": "(auth.role() = 'service_role'::text)",
+  "with_check": "(auth.role() = 'service_role'::text)"
+ },
+ {
+  "schema": "storage",
+  "table": "objects",
+  "policy": "Anon can upload to irr-uploads",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "anon"
+  ],
+  "cmd": "INSERT",
+  "using": null,
+  "with_check": "(bucket_id = 'irr-uploads'::text)"
+ },
+ {
+  "schema": "storage",
+  "table": "objects",
+  "policy": "Service role full access on irr-uploads",
+  "permissive": "PERMISSIVE",
+  "roles": [
+   "service_role"
+  ],
+  "cmd": "ALL",
+  "using": "(bucket_id = 'irr-uploads'::text)",
+  "with_check": "(bucket_id = 'irr-uploads'::text)"
+ }
+]

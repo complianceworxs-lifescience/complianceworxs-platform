@@ -1,0 +1,57 @@
+[
+ {
+  "table": "assets",
+  "trigger": "trg_set_banned_language_flag",
+  "definition": "CREATE TRIGGER trg_set_banned_language_flag BEFORE INSERT OR UPDATE OF content ON public.assets FOR EACH ROW EXECUTE FUNCTION set_banned_language_flag()"
+ },
+ {
+  "table": "gmail_send_log",
+  "trigger": "trg_mark_staging_emailed",
+  "definition": "CREATE TRIGGER trg_mark_staging_emailed AFTER INSERT ON public.gmail_send_log FOR EACH ROW EXECUTE FUNCTION mark_staging_emailed_on_send()"
+ },
+ {
+  "table": "gmail_send_log",
+  "trigger": "trg_sync_gmail_send_to_outbound_log",
+  "definition": "CREATE TRIGGER trg_sync_gmail_send_to_outbound_log AFTER INSERT ON public.gmail_send_log FOR EACH ROW EXECUTE FUNCTION sync_gmail_send_to_outbound_log()"
+ },
+ {
+  "table": "inbound_log",
+  "trigger": "trg_queue_attio_after_reply",
+  "definition": "CREATE TRIGGER trg_queue_attio_after_reply AFTER INSERT ON public.inbound_log FOR EACH ROW EXECUTE FUNCTION queue_attio_after_reply()"
+ },
+ {
+  "table": "irr_challenge_layer",
+  "trigger": "trg_irr_challenge_layer_updated_at",
+  "definition": "CREATE TRIGGER trg_irr_challenge_layer_updated_at BEFORE UPDATE ON public.irr_challenge_layer FOR EACH ROW EXECUTE FUNCTION update_irr_challenge_layer_updated_at()"
+ },
+ {
+  "table": "lead_outreach_log",
+  "trigger": "lead_outreach_log_to_events",
+  "definition": "CREATE TRIGGER lead_outreach_log_to_events AFTER INSERT ON public.lead_outreach_log FOR EACH ROW EXECUTE FUNCTION bridge_outreach_log_to_events()"
+ },
+ {
+  "table": "orders",
+  "trigger": "trg_posthog_purchase_on_insert",
+  "definition": "CREATE TRIGGER trg_posthog_purchase_on_insert AFTER INSERT ON public.orders FOR EACH ROW EXECUTE FUNCTION fire_posthog_purchase_event()"
+ },
+ {
+  "table": "orders",
+  "trigger": "trg_posthog_purchase_on_status_change",
+  "definition": "CREATE TRIGGER trg_posthog_purchase_on_status_change AFTER UPDATE ON public.orders FOR EACH ROW WHEN (((old.order_status IS DISTINCT FROM new.order_status) AND (new.order_status = 'completed'::text))) EXECUTE FUNCTION fire_posthog_purchase_event()"
+ },
+ {
+  "table": "outbound_log",
+  "trigger": "trg_queue_attio_after_send",
+  "definition": "CREATE TRIGGER trg_queue_attio_after_send AFTER INSERT ON public.outbound_log FOR EACH ROW EXECUTE FUNCTION queue_attio_after_send()"
+ },
+ {
+  "table": "purchases",
+  "trigger": "purchases_post_buy",
+  "definition": "CREATE TRIGGER purchases_post_buy AFTER INSERT ON public.purchases FOR EACH ROW EXECUTE FUNCTION trigger_post_purchase()"
+ },
+ {
+  "table": "target_accounts",
+  "trigger": "trg_target_accounts_updated_at",
+  "definition": "CREATE TRIGGER trg_target_accounts_updated_at BEFORE UPDATE ON public.target_accounts FOR EACH ROW EXECUTE FUNCTION update_target_accounts_updated_at()"
+ }
+]

@@ -1,0 +1,337 @@
+[
+ {
+  "table": "activation_events",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "ai_service_log",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "assets",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "attio_sync_queue",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "authorization_corpus",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "authorization_framework_elements",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "authorization_sessions",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "batch_review_feedback",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "beliefs",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "campaign_review_findings",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "campaigns",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "commercial_outcomes",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "cw_drafter_persona_registry",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "departed_employee_redirects",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "dm_templates",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "exposure_submissions",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "form_submissions",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "free_reviews",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "gmail_auth_state",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "gmail_send_log",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "inbound_log",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "interactions",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "irr_access_requests",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "irr_challenge_layer",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "irr_format_spec",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "irr_jobs",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "irr_regression_runs",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "irr_sessions",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "irr_siblings",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "irr_stage_runs",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "job_postings",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "lead_outreach_log",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "linkedin_acceptance_log",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "market_signals",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "milestone6_reviewers",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "objections",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "optimizer_config",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "optimizer_decisions",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "orders",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "outbound_ab_results",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "outbound_ab_variants",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "outbound_events",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "outbound_followup_cadence",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "outbound_log",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "outbound_rl_state",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "outbound_segment_stats",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "partner_applications",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "partner_commissions",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "partner_referrals",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "partners",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "pb_container_history",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "phantombuster_webhook_log",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "pipeline_health_log",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "pipeline_readiness_log",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "purchases",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "reconstruction_conversion_daily",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "resend_webhook_events",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "runtime_generations",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "stage7_diag_results",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "system_alerts",
+  "rls_enabled": true,
+  "rls_forced": false
+ },
+ {
+  "table": "target_accounts",
+  "rls_enabled": true,
+  "rls_forced": false
+ }
+]

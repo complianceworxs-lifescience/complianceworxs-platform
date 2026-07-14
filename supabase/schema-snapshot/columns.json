@@ -1,0 +1,8732 @@
+[
+ {
+  "table": "activation_events",
+  "column": "activation_event_id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "activation_events",
+  "column": "signal_id",
+  "ordinal": 2,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "activation_events",
+  "column": "attio_company_id",
+  "ordinal": 3,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "activation_events",
+  "column": "event_type",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "activation_events",
+  "column": "urgency_level",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "activation_events",
+  "column": "decision_type",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "activation_events",
+  "column": "executive_concern",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "activation_events",
+  "column": "created_at",
+  "ordinal": 8,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "ai_service_log",
+  "column": "log_id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "ai_service_log",
+  "column": "service_name",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "ai_service_log",
+  "column": "input",
+  "ordinal": 3,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "ai_service_log",
+  "column": "output",
+  "ordinal": 4,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "ai_service_log",
+  "column": "model",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'claude'::text"
+ },
+ {
+  "table": "ai_service_log",
+  "column": "prompt_version",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "ai_service_log",
+  "column": "approval_status",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "ai_service_log",
+  "column": "error_state",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "ai_service_log",
+  "column": "redacted_at",
+  "ordinal": 9,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "ai_service_log",
+  "column": "created_at",
+  "ordinal": 10,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "assets",
+  "column": "asset_id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "assets",
+  "column": "campaign_id",
+  "ordinal": 2,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "assets",
+  "column": "asset_type",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "assets",
+  "column": "objection_removed",
+  "ordinal": 4,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "assets",
+  "column": "belief_reinforced",
+  "ordinal": 5,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "assets",
+  "column": "content",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "assets",
+  "column": "requires_framework_review",
+  "ordinal": 7,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "NO",
+  "default": "false"
+ },
+ {
+  "table": "assets",
+  "column": "framework_approved_by",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "assets",
+  "column": "framework_approved_at",
+  "ordinal": 9,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "assets",
+  "column": "published_approved_by",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "''::text"
+ },
+ {
+  "table": "assets",
+  "column": "published_approved_at",
+  "ordinal": 11,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "assets",
+  "column": "banned_language_found",
+  "ordinal": 12,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "NO",
+  "default": "false"
+ },
+ {
+  "table": "assets",
+  "column": "approval_status",
+  "ordinal": 13,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'pending'::text"
+ },
+ {
+  "table": "assets",
+  "column": "created_at",
+  "ordinal": 14,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "attio_sync_health",
+  "column": "sync_status",
+  "ordinal": 1,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "attio_sync_health",
+  "column": "triggered_by",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "attio_sync_health",
+  "column": "rows",
+  "ordinal": 3,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "attio_sync_health",
+  "column": "oldest_pending",
+  "ordinal": 4,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "attio_sync_health",
+  "column": "newest",
+  "ordinal": 5,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "attio_sync_queue",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "attio_sync_queue",
+  "column": "attio_record_id",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "attio_sync_queue",
+  "column": "object_type",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "attio_sync_queue",
+  "column": "update_payload",
+  "ordinal": 4,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "attio_sync_queue",
+  "column": "triggered_by",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "attio_sync_queue",
+  "column": "triggered_at",
+  "ordinal": 6,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "attio_sync_queue",
+  "column": "synced_at",
+  "ordinal": 7,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "attio_sync_queue",
+  "column": "sync_status",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'pending'::text"
+ },
+ {
+  "table": "attio_sync_queue",
+  "column": "error_msg",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "attio_sync_queue",
+  "column": "retry_count",
+  "ordinal": 10,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": "0"
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "authorization_session_id",
+  "ordinal": 2,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "irr_id",
+  "ordinal": 3,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "staging_id",
+  "ordinal": 4,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "attio_record_id",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "authorization_domain",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "investigator_pressure_type",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "inspection_stage",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "authorization_event",
+  "ordinal": 9,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "investigator_question",
+  "ordinal": 10,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "authorization_rationale",
+  "ordinal": 11,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "evidence_reviewed",
+  "ordinal": 12,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "evidence_excluded",
+  "ordinal": 13,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "alternative_hypotheses",
+  "ordinal": 14,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "residual_uncertainty",
+  "ordinal": 15,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "boundary_conditions",
+  "ordinal": 16,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "retrieval_lineage",
+  "ordinal": 17,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "approval_chain",
+  "ordinal": 18,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "rationale_embedding",
+  "ordinal": 19,
+  "type": "USER-DEFINED",
+  "udt": "vector",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "pattern_tags",
+  "ordinal": 20,
+  "type": "ARRAY",
+  "udt": "_text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "reasoning_classification",
+  "ordinal": 21,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "domain_schema_version",
+  "ordinal": 22,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": "'v1.0'::text"
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "framework_version",
+  "ordinal": 23,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": "'v1.0'::text"
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "created_at",
+  "ordinal": 24,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "authorization_corpus",
+  "column": "updated_at",
+  "ordinal": 25,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "authorization_framework_elements",
+  "column": "element_number",
+  "ordinal": 1,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "authorization_framework_elements",
+  "column": "element_name",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "authorization_framework_elements",
+  "column": "element_description",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "authorization_framework_elements",
+  "column": "is_required",
+  "ordinal": 4,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "YES",
+  "default": "true"
+ },
+ {
+  "table": "authorization_framework_elements",
+  "column": "framework_version",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": "'v1.0'::text"
+ },
+ {
+  "table": "authorization_framework_elements",
+  "column": "created_at",
+  "ordinal": 6,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "authorization_sessions",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "authorization_sessions",
+  "column": "session_type",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_sessions",
+  "column": "session_context",
+  "ordinal": 3,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_sessions",
+  "column": "staging_id",
+  "ordinal": 4,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_sessions",
+  "column": "attio_record_id",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "authorization_sessions",
+  "column": "created_at",
+  "ordinal": 6,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "created_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "ref_code",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "name",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "company",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "role",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "contact",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "package_type",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "known_gap",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "caught_gap",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "right_findings",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "wrong_findings",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "missed_findings",
+  "ordinal": 13,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "traceability_score",
+  "ordinal": 14,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "investigator_ready_score",
+  "ordinal": 15,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "run_before_inspection",
+  "ordinal": 16,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "every_batch_condition",
+  "ordinal": 17,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "batch_review_feedback",
+  "column": "comments",
+  "ordinal": 18,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "beliefs",
+  "column": "belief_id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "beliefs",
+  "column": "belief_statement",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "beliefs",
+  "column": "status",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'active'::text"
+ },
+ {
+  "table": "beliefs",
+  "column": "created_at",
+  "ordinal": 4,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "bq_subscribers",
+  "column": "id",
+  "ordinal": 1,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "bq_subscribers",
+  "column": "email",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "bq_subscribers",
+  "column": "name",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "bq_subscribers",
+  "column": "signed_up_at",
+  "ordinal": 4,
+  "type": "timestamp without time zone",
+  "udt": "timestamp",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "bq_subscribers",
+  "column": "email_2_sent_at",
+  "ordinal": 5,
+  "type": "timestamp without time zone",
+  "udt": "timestamp",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "bq_subscribers",
+  "column": "email_3_sent_at",
+  "ordinal": 6,
+  "type": "timestamp without time zone",
+  "udt": "timestamp",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "bq_subscribers",
+  "column": "email_4_sent_at",
+  "ordinal": 7,
+  "type": "timestamp without time zone",
+  "udt": "timestamp",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "bq_subscribers",
+  "column": "email_5_sent_at",
+  "ordinal": 8,
+  "type": "timestamp without time zone",
+  "udt": "timestamp",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "bq_subscribers",
+  "column": "purchased_at",
+  "ordinal": 9,
+  "type": "timestamp without time zone",
+  "udt": "timestamp",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "bq_subscribers",
+  "column": "unsubscribed_at",
+  "ordinal": 10,
+  "type": "timestamp without time zone",
+  "udt": "timestamp",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "campaign_review_findings",
+  "column": "review_id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "campaign_review_findings",
+  "column": "asset_id",
+  "ordinal": 2,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "campaign_review_findings",
+  "column": "strengths",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "campaign_review_findings",
+  "column": "weaknesses",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "campaign_review_findings",
+  "column": "constitution_observations",
+  "ordinal": 5,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "campaign_review_findings",
+  "column": "cos_observations",
+  "ordinal": 6,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "campaign_review_findings",
+  "column": "category_observations",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "campaign_review_findings",
+  "column": "suggested_revisions",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "campaign_review_findings",
+  "column": "overall_confidence",
+  "ordinal": 9,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "campaign_review_findings",
+  "column": "created_at",
+  "ordinal": 10,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "campaigns",
+  "column": "campaign_id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "campaigns",
+  "column": "belief_id",
+  "ordinal": 2,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "campaigns",
+  "column": "objection_id",
+  "ordinal": 3,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "campaigns",
+  "column": "activation_event_id",
+  "ordinal": 4,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "campaigns",
+  "column": "decision_type",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "campaigns",
+  "column": "campaign_thesis",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "campaigns",
+  "column": "behavioral_commitment",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "campaigns",
+  "column": "status",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'draft'::text"
+ },
+ {
+  "table": "campaigns",
+  "column": "success_metric",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "campaigns",
+  "column": "created_at",
+  "ordinal": 10,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "commercial_dashboard",
+  "column": "market_most_common_unresolved_belief",
+  "ordinal": 1,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "commercial_dashboard",
+  "column": "market_most_common_objection",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "commercial_dashboard",
+  "column": "market_most_common_activation_event",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "commercial_dashboard",
+  "column": "pipeline_executive_meetings",
+  "ordinal": 4,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "commercial_dashboard",
+  "column": "pipeline_irrs_started",
+  "ordinal": 5,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "commercial_dashboard",
+  "column": "pipeline_membership_discussions",
+  "ordinal": 6,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "commercial_dashboard",
+  "column": "pipeline_memberships_closed",
+  "ordinal": 7,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "commercial_dashboard",
+  "column": "campaign_current_belief",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "commercial_dashboard",
+  "column": "campaign_current_objection",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "commercial_dashboard",
+  "column": "campaign_current_activation_event",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "commercial_dashboard",
+  "column": "campaign_current_decision_type",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "commercial_outcomes",
+  "column": "outcome_id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "commercial_outcomes",
+  "column": "attio_company_id",
+  "ordinal": 2,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "commercial_outcomes",
+  "column": "campaign_id",
+  "ordinal": 3,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "commercial_outcomes",
+  "column": "outcome_type",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "commercial_outcomes",
+  "column": "value",
+  "ordinal": 5,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "commercial_outcomes",
+  "column": "occurred_at",
+  "ordinal": 6,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('conversion_playbook_decisions_id_seq'::regclass)"
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "column": "generated_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "column": "snapshot_id",
+  "ordinal": 3,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "column": "primary_action",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "column": "primary_target",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "column": "current_metric",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "column": "recommendation",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "column": "recommended_copy_variant",
+  "ordinal": 8,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "column": "expected_lift",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "column": "status",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'pending'::text"
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "column": "approved_at",
+  "ordinal": 11,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "column": "shipped_at",
+  "ordinal": 12,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "column": "thresholds_applied",
+  "ordinal": 13,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "conversion_playbook_decisions",
+  "column": "raw_metrics",
+  "ordinal": 14,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "cron_health",
+  "column": "jobid",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "cron_health",
+  "column": "jobname",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "cron_health",
+  "column": "schedule",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "cron_health",
+  "column": "last_status",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "cron_health",
+  "column": "last_run",
+  "ordinal": 5,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "cron_health",
+  "column": "failures_24h",
+  "ordinal": 6,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "cron_health",
+  "column": "runs_24h",
+  "ordinal": 7,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "cron_health",
+  "column": "health",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "cw_drafter_persona_registry",
+  "column": "id",
+  "ordinal": 1,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "nextval('cw_drafter_persona_registry_id_seq'::regclass)"
+ },
+ {
+  "table": "cw_drafter_persona_registry",
+  "column": "version",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "cw_drafter_persona_registry",
+  "column": "scope",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "cw_drafter_persona_registry",
+  "column": "name",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "cw_drafter_persona_registry",
+  "column": "content",
+  "ordinal": 5,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "cw_drafter_persona_registry",
+  "column": "active",
+  "ordinal": 6,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "YES",
+  "default": "true"
+ },
+ {
+  "table": "cw_drafter_persona_registry",
+  "column": "created_at",
+  "ordinal": 7,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "cw_drafter_persona_registry",
+  "column": "notes",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "departed_employee_redirects",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "departed_employee_redirects",
+  "column": "original_staging_id",
+  "ordinal": 2,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "departed_employee_redirects",
+  "column": "original_full_name",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "departed_employee_redirects",
+  "column": "original_company",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "departed_employee_redirects",
+  "column": "redirect_name",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "departed_employee_redirects",
+  "column": "redirect_email",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "departed_employee_redirects",
+  "column": "detected_at",
+  "ordinal": 7,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "departed_employee_redirects",
+  "column": "actioned_at",
+  "ordinal": 8,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "departed_employee_redirects",
+  "column": "new_staging_id",
+  "ordinal": 9,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "departed_employee_redirects",
+  "column": "note",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "dm_templates",
+  "column": "id",
+  "ordinal": 1,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "nextval('dm_templates_id_seq'::regclass)"
+ },
+ {
+  "table": "dm_templates",
+  "column": "template_key",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "dm_templates",
+  "column": "authorization_domain",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "dm_templates",
+  "column": "role_target",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "dm_templates",
+  "column": "variant_key",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "dm_templates",
+  "column": "connection_note",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "dm_templates",
+  "column": "dm_body",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "dm_templates",
+  "column": "performance_score",
+  "ordinal": 8,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": "0"
+ },
+ {
+  "table": "dm_templates",
+  "column": "is_active",
+  "ordinal": 9,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "NO",
+  "default": "true"
+ },
+ {
+  "table": "dm_templates",
+  "column": "created_at",
+  "ordinal": 10,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "email",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "full_name",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "company",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "role",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "decision_type",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "regulatory_framework",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "decision_authorized",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "evidence_supporting",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "investigator_view",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "supporting_document_url",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "partner_code",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "source_page",
+  "ordinal": 13,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "status",
+  "ordinal": 14,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": "'received'::text"
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "submitted_at",
+  "ordinal": 15,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "reviewed_at",
+  "ordinal": 16,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "snapshot_delivered_at",
+  "ordinal": 17,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "reviewed_by",
+  "ordinal": 18,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "internal_notes",
+  "ordinal": 19,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "exposure_flags",
+  "ordinal": 20,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "reconstructability_gaps",
+  "ordinal": 21,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "missing_authorization_logic",
+  "ordinal": 22,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "example_investigator_challenge",
+  "ordinal": 23,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "irr_recommendation",
+  "ordinal": 24,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "created_at",
+  "ordinal": 25,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "exposure_submissions",
+  "column": "updated_at",
+  "ordinal": 26,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "form_submissions",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "form_submissions",
+  "column": "email",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "normalized_email",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "first_name",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "last_name",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "full_name",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "company",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "job_title",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "source",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "page",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "case_file_interest",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "user_id",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "utm_source",
+  "ordinal": 13,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "utm_medium",
+  "ordinal": 14,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "utm_campaign",
+  "ordinal": 15,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "attio_record_id",
+  "ordinal": 16,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "outreach_email_sent_at",
+  "ordinal": 17,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "outreach_template_key",
+  "ordinal": 18,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "spam_score",
+  "ordinal": 19,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": "0"
+ },
+ {
+  "table": "form_submissions",
+  "column": "spam_reasons",
+  "ordinal": 20,
+  "type": "ARRAY",
+  "udt": "_text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "form_submissions",
+  "column": "is_blocked",
+  "ordinal": 21,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "YES",
+  "default": "false"
+ },
+ {
+  "table": "form_submissions",
+  "column": "created_at",
+  "ordinal": 22,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "free_reviews",
+  "column": "email",
+  "ordinal": 1,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "free_reviews",
+  "column": "count",
+  "ordinal": 2,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "free_reviews",
+  "column": "first_used",
+  "ordinal": 3,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "free_reviews",
+  "column": "last_used",
+  "ordinal": 4,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "gmail_auth_state",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('gmail_auth_state_id_seq'::regclass)"
+ },
+ {
+  "table": "gmail_auth_state",
+  "column": "checked_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "gmail_auth_state",
+  "column": "client_id_prefix",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "gmail_auth_state",
+  "column": "refresh_token_prefix",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "gmail_auth_state",
+  "column": "refresh_status",
+  "ordinal": 5,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "gmail_auth_state",
+  "column": "refresh_succeeded",
+  "ordinal": 6,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "NO",
+  "default": "false"
+ },
+ {
+  "table": "gmail_auth_state",
+  "column": "error_message",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "gmail_auth_state",
+  "column": "audience_from_token",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "gmail_auth_state",
+  "column": "audience_matches_env",
+  "ordinal": 9,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "gmail_auth_state",
+  "column": "scope_returned",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "gmail_auth_state",
+  "column": "source",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": "'outbound-sender-gmail'::text"
+ },
+ {
+  "table": "gmail_send_log",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('gmail_send_log_id_seq'::regclass)"
+ },
+ {
+  "table": "gmail_send_log",
+  "column": "send_date",
+  "ordinal": 2,
+  "type": "date",
+  "udt": "date",
+  "nullable": "NO",
+  "default": "CURRENT_DATE"
+ },
+ {
+  "table": "gmail_send_log",
+  "column": "staging_id",
+  "ordinal": 3,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "gmail_send_log",
+  "column": "recipient_email",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "gmail_send_log",
+  "column": "gmail_message_id",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "gmail_send_log",
+  "column": "gmail_thread_id",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "gmail_send_log",
+  "column": "http_status",
+  "ordinal": 7,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "gmail_send_log",
+  "column": "created_at",
+  "ordinal": 8,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "gmail_send_log",
+  "column": "send_kind",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": "'first_touch'::text"
+ },
+ {
+  "table": "gmail_send_log",
+  "column": "nurture_enrollment_id",
+  "ordinal": 10,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "gmail_send_log",
+  "column": "nurture_touch_number",
+  "ordinal": 11,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "gmail_send_log",
+  "column": "nurture_cohort",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "inbound_log",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "inbound_log",
+  "column": "staging_id",
+  "ordinal": 2,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "inbound_log",
+  "column": "attio_record_id",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "inbound_log",
+  "column": "channel",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "inbound_log",
+  "column": "received_at",
+  "ordinal": 5,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "inbound_log",
+  "column": "reply_text",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "inbound_log",
+  "column": "detected_by",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'manual_paste'::text"
+ },
+ {
+  "table": "inbound_log",
+  "column": "sentiment",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "inbound_log",
+  "column": "next_step_protocol",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "inbound_log",
+  "column": "handled_at",
+  "ordinal": 10,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "inbound_log",
+  "column": "note",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "interactions",
+  "column": "interaction_id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "interactions",
+  "column": "attio_person_id",
+  "ordinal": 2,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "interactions",
+  "column": "campaign_id",
+  "ordinal": 3,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "interactions",
+  "column": "interaction_type",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "interactions",
+  "column": "dominant_unresolved_belief",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "interactions",
+  "column": "primary_objection",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "interactions",
+  "column": "activation_event",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "interactions",
+  "column": "behavioral_commitment",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "interactions",
+  "column": "behavioral_commitment_strength",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "interactions",
+  "column": "notes",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "interactions",
+  "column": "occurred_at",
+  "ordinal": 11,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "irr_access_requests",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "irr_access_requests",
+  "column": "email",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_access_requests",
+  "column": "decision_type",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_access_requests",
+  "column": "industry",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_access_requests",
+  "column": "context",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_access_requests",
+  "column": "referrer",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_access_requests",
+  "column": "session_source",
+  "ordinal": 7,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_access_requests",
+  "column": "user_agent",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_access_requests",
+  "column": "created_at",
+  "ordinal": 9,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "irr_session_id",
+  "ordinal": 2,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "authorization_session_id",
+  "ordinal": 3,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "challenge_layer_version",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'v2.0'::text"
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "framework_version",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'v1.0'::text"
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "primary_pressure_type",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "secondary_pressure_types",
+  "ordinal": 7,
+  "type": "ARRAY",
+  "udt": "_text",
+  "nullable": "YES",
+  "default": "'{}'::text[]"
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "inspection_stage",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "challenge_authorization_event",
+  "ordinal": 9,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "challenge_investigator_question",
+  "ordinal": 10,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "challenge_authorization_rationale",
+  "ordinal": 11,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "challenge_evidence_reviewed",
+  "ordinal": 12,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "challenge_evidence_excluded",
+  "ordinal": 13,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "challenge_alternative_hypotheses",
+  "ordinal": 14,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "challenge_residual_uncertainty",
+  "ordinal": 15,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "challenge_boundary_conditions",
+  "ordinal": 16,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "challenge_retrieval_lineage",
+  "ordinal": 17,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "challenge_approval_chain",
+  "ordinal": 18,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "top_challenges",
+  "ordinal": 19,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "strongest_defensive_position",
+  "ordinal": 20,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "weakest_defensive_position",
+  "ordinal": 21,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "pre_emptive_escalation_path",
+  "ordinal": 22,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "pattern_tags",
+  "ordinal": 23,
+  "type": "ARRAY",
+  "udt": "_text",
+  "nullable": "YES",
+  "default": "'{}'::text[]"
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "challenge_signature_embedding",
+  "ordinal": 24,
+  "type": "USER-DEFINED",
+  "udt": "vector",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "created_at",
+  "ordinal": 25,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "updated_at",
+  "ordinal": 26,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "created_by",
+  "ordinal": 27,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": "'system'::text"
+ },
+ {
+  "table": "irr_challenge_layer",
+  "column": "notes",
+  "ordinal": 28,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_format_spec",
+  "column": "id",
+  "ordinal": 1,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_format_spec",
+  "column": "version",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_format_spec",
+  "column": "locked_at",
+  "ordinal": 3,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "irr_format_spec",
+  "column": "locked_from",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_format_spec",
+  "column": "required_sections",
+  "ordinal": 5,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_format_spec",
+  "column": "signature_patterns",
+  "ordinal": 6,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_format_spec",
+  "column": "notes",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_jobs",
+  "column": "job_id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "irr_jobs",
+  "column": "product_type",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'inspection_response_record'::text"
+ },
+ {
+  "table": "irr_jobs",
+  "column": "status",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'queued'::text"
+ },
+ {
+  "table": "irr_jobs",
+  "column": "terminal_state",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_jobs",
+  "column": "input_payload",
+  "ordinal": 5,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_jobs",
+  "column": "result_json",
+  "ordinal": 6,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_jobs",
+  "column": "error_json",
+  "ordinal": 7,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_jobs",
+  "column": "created_at",
+  "ordinal": 8,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "irr_jobs",
+  "column": "updated_at",
+  "ordinal": 9,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "irr_jobs",
+  "column": "pending_generation_id",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_jobs",
+  "column": "pending_contract",
+  "ordinal": 11,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_jobs",
+  "column": "pending_execution_specification",
+  "ordinal": 12,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_jobs",
+  "column": "pending_prompt_package",
+  "ordinal": 13,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_jobs",
+  "column": "pending_since",
+  "ordinal": 14,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_jobs",
+  "column": "deadline_at",
+  "ordinal": 15,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_jobs",
+  "column": "attempt_count",
+  "ordinal": 16,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "irr_jobs",
+  "column": "max_attempts",
+  "ordinal": 17,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "2"
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "run_id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "test_name",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "input_payload",
+  "ordinal": 3,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "status",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'running'::text"
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "generation_id",
+  "ordinal": 5,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "runtime_seconds",
+  "ordinal": 6,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "terminal_state",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "retry_count",
+  "ordinal": 8,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "schema_validation",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "contract_validation",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "json_validation",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "overall_result",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "detail",
+  "ordinal": 13,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "started_at",
+  "ordinal": 14,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "irr_regression_runs",
+  "column": "finished_at",
+  "ordinal": 15,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "irr_sessions",
+  "column": "created_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "irr_sessions",
+  "column": "question",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "context",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "decision_type",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "decision_statement",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "reference_id",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "source_record",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "evidence_items",
+  "ordinal": 9,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "authorizer_review",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "authorizer_conclusion",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "authority_name",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "authority_title",
+  "ordinal": 13,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "decision_date",
+  "ordinal": 14,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "evidence_available",
+  "ordinal": 15,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "justification",
+  "ordinal": 16,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "email",
+  "ordinal": 17,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "industry",
+  "ordinal": 18,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": "'pharma'::text"
+ },
+ {
+  "table": "irr_sessions",
+  "column": "record_json",
+  "ordinal": 19,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "gap_count",
+  "ordinal": 20,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": "0"
+ },
+ {
+  "table": "irr_sessions",
+  "column": "flags",
+  "ordinal": 21,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": "'[]'::jsonb"
+ },
+ {
+  "table": "irr_sessions",
+  "column": "stripe_payment_intent",
+  "ordinal": 24,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "paid",
+  "ordinal": 25,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "NO",
+  "default": "false"
+ },
+ {
+  "table": "irr_sessions",
+  "column": "stripe_session_id",
+  "ordinal": 26,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "membership_credit_expires_at",
+  "ordinal": 27,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "facility_name",
+  "ordinal": 28,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "fei_number",
+  "ordinal": 29,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "facility_role",
+  "ordinal": 30,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "sterile_operation_type",
+  "ordinal": 31,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "lot_number",
+  "ordinal": 32,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "product_name",
+  "ordinal": 33,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "deviation_id",
+  "ordinal": 34,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "investigation_id",
+  "ordinal": 35,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "event_datetime",
+  "ordinal": 36,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "release_date",
+  "ordinal": 37,
+  "type": "date",
+  "udt": "date",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "approving_role",
+  "ordinal": 38,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "review_participants",
+  "ordinal": 39,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "escalation_chain",
+  "ordinal": 40,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "regulatory_anchors",
+  "ordinal": 41,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": "'[]'::jsonb"
+ },
+ {
+  "table": "irr_sessions",
+  "column": "attached_documents",
+  "ordinal": 42,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": "'[]'::jsonb"
+ },
+ {
+  "table": "irr_sessions",
+  "column": "contamination_risk_assessment",
+  "ordinal": 43,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "alternatives_considered",
+  "ordinal": 44,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "residual_risk_accepted",
+  "ordinal": 45,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_sessions",
+  "column": "price_cents",
+  "ordinal": 46,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": "29700"
+ },
+ {
+  "table": "irr_sessions",
+  "column": "delivery_email_sent_at",
+  "ordinal": 47,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_siblings",
+  "column": "session_id",
+  "ordinal": 1,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_siblings",
+  "column": "prompt_version",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'irr-siblings-v1'::text"
+ },
+ {
+  "table": "irr_siblings",
+  "column": "documents",
+  "ordinal": 3,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_siblings",
+  "column": "model",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_siblings",
+  "column": "generated_at",
+  "ordinal": 5,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "job_id",
+  "ordinal": 2,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "stage",
+  "ordinal": 3,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "stage_name",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "status",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'queued'::text"
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "started_at",
+  "ordinal": 6,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "completed_at",
+  "ordinal": 7,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "duration_ms",
+  "ordinal": 8,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "attempt",
+  "ordinal": 9,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "max_attempts",
+  "ordinal": 10,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "2"
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "output_json",
+  "ordinal": 11,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "classified_failure",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "error_detail",
+  "ordinal": 13,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "created_at",
+  "ordinal": 14,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "updated_at",
+  "ordinal": 15,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "prompt_tokens",
+  "ordinal": 16,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "completion_tokens",
+  "ordinal": 17,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "within_budget",
+  "ordinal": 18,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "checkpoint",
+  "ordinal": 19,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "stop_reason",
+  "ordinal": 20,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "batch_number",
+  "ordinal": 21,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "configured_max_output_tokens",
+  "ordinal": 22,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "irr_stage_runs",
+  "column": "output_char_count",
+  "ordinal": 23,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "job_postings",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('job_postings_id_seq'::regclass)"
+ },
+ {
+  "table": "job_postings",
+  "column": "external_id",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "job_postings",
+  "column": "source",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "job_postings",
+  "column": "source_company_slug",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "job_postings",
+  "column": "title",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "job_postings",
+  "column": "company_name",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "job_postings",
+  "column": "location",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "job_postings",
+  "column": "work_style",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "job_postings",
+  "column": "employment_type",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": "'Full-Time'::text"
+ },
+ {
+  "table": "job_postings",
+  "column": "category",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "job_postings",
+  "column": "apply_url",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "job_postings",
+  "column": "tier",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'community'::text"
+ },
+ {
+  "table": "job_postings",
+  "column": "is_paid",
+  "ordinal": 13,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "NO",
+  "default": "false"
+ },
+ {
+  "table": "job_postings",
+  "column": "published_at",
+  "ordinal": 14,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "job_postings",
+  "column": "expires_at",
+  "ordinal": 15,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "job_postings",
+  "column": "last_seen_at",
+  "ordinal": 16,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "job_postings",
+  "column": "is_active",
+  "ordinal": 17,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "NO",
+  "default": "true"
+ },
+ {
+  "table": "job_postings",
+  "column": "matched_keyword",
+  "ordinal": 18,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "job_postings",
+  "column": "raw_payload",
+  "ordinal": 19,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "job_postings",
+  "column": "created_at",
+  "ordinal": 20,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "job_postings",
+  "column": "updated_at",
+  "ordinal": 21,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "lead_outreach_log",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('lead_outreach_log_id_seq'::regclass)"
+ },
+ {
+  "table": "lead_outreach_log",
+  "column": "lead_email",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "lead_outreach_log",
+  "column": "template_key",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "lead_outreach_log",
+  "column": "subject",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "lead_outreach_log",
+  "column": "status",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "lead_outreach_log",
+  "column": "error_message",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "lead_outreach_log",
+  "column": "mailersend_id",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "lead_outreach_log",
+  "column": "staging_id",
+  "ordinal": 8,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "lead_outreach_log",
+  "column": "attio_record_id",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "lead_outreach_log",
+  "column": "source",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "lead_outreach_log",
+  "column": "created_at",
+  "ordinal": 11,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "linkedin_acceptance_log",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('linkedin_acceptance_log_id_seq'::regclass)"
+ },
+ {
+  "table": "linkedin_acceptance_log",
+  "column": "thread_id",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "linkedin_acceptance_log",
+  "column": "subject",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "linkedin_acceptance_log",
+  "column": "from_addr",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "linkedin_acceptance_log",
+  "column": "handler_response",
+  "ordinal": 5,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "linkedin_acceptance_log",
+  "column": "labeled_processed",
+  "ordinal": 6,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "YES",
+  "default": "false"
+ },
+ {
+  "table": "linkedin_acceptance_log",
+  "column": "created_at",
+  "ordinal": 7,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "market_signals",
+  "column": "signal_id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "market_signals",
+  "column": "attio_company_id",
+  "ordinal": 2,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "market_signals",
+  "column": "signal_type",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "market_signals",
+  "column": "source_url",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "market_signals",
+  "column": "signal_date",
+  "ordinal": 5,
+  "type": "date",
+  "udt": "date",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "market_signals",
+  "column": "summary",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "market_signals",
+  "column": "relevance_score",
+  "ordinal": 7,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "market_signals",
+  "column": "created_at",
+  "ordinal": 8,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "milestone6_reviewers",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "milestone6_reviewers",
+  "column": "name",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "milestone6_reviewers",
+  "column": "email",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "milestone6_reviewers",
+  "column": "credentials",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "milestone6_reviewers",
+  "column": "source",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "milestone6_reviewers",
+  "column": "independence_confirmed",
+  "ordinal": 6,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "YES",
+  "default": "false"
+ },
+ {
+  "table": "milestone6_reviewers",
+  "column": "status",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'candidate'::text"
+ },
+ {
+  "table": "milestone6_reviewers",
+  "column": "scores",
+  "ordinal": 8,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "milestone6_reviewers",
+  "column": "created_at",
+  "ordinal": 9,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "milestone6_reviewers",
+  "column": "updated_at",
+  "ordinal": 10,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "test_case_id",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "gate",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "edge_case_type",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "run_number",
+  "ordinal": 5,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "1"
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "input_payload",
+  "ordinal": 6,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "job_id",
+  "ordinal": 7,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "terminal_state",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "defensibility_rating",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "claim_status",
+  "ordinal": 10,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "known_limitations",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "editorial_findings",
+  "ordinal": 12,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "fabrication_flag",
+  "ordinal": 13,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "notes",
+  "ordinal": 14,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "created_at",
+  "ordinal": 15,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "milestone6_validation_runs",
+  "column": "updated_at",
+  "ordinal": 16,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "objections",
+  "column": "objection_id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "objections",
+  "column": "objection_statement",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "objections",
+  "column": "belief_id",
+  "ordinal": 3,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "objections",
+  "column": "frequency",
+  "ordinal": 4,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "objections",
+  "column": "created_at",
+  "ordinal": 5,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "optimizer_config",
+  "column": "key",
+  "ordinal": 1,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "optimizer_config",
+  "column": "value",
+  "ordinal": 2,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "optimizer_config",
+  "column": "updated_at",
+  "ordinal": 3,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "optimizer_config",
+  "column": "updated_by",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'manual'::text"
+ },
+ {
+  "table": "optimizer_config",
+  "column": "reasoning",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('optimizer_decisions_id_seq'::regclass)"
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "decided_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "mode",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "stage",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "metric_name",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "metric_value",
+  "ordinal": 6,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "sample_size",
+  "ordinal": 7,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "parameter_changed",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "old_value",
+  "ordinal": 9,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "new_value",
+  "ordinal": 10,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "reasoning",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "reversal_trigger",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "executed",
+  "ordinal": 13,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "NO",
+  "default": "false"
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "reverted_at",
+  "ordinal": 14,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_decisions",
+  "column": "reverted_reason",
+  "ordinal": 15,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('optimizer_funnel_snapshots_id_seq'::regclass)"
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "captured_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "window_days",
+  "ordinal": 3,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "7"
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "leads_ingested",
+  "ordinal": 4,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "leads_enriched",
+  "ordinal": 5,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "leads_fit_scored",
+  "ordinal": 6,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "leads_high_fit",
+  "ordinal": 7,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "leads_ready",
+  "ordinal": 8,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "leads_dm_drafted",
+  "ordinal": 9,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "dms_sent",
+  "ordinal": 10,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "connections_accepted",
+  "ordinal": 11,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "replies_received",
+  "ordinal": 12,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "conversions",
+  "ordinal": 13,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "accept_rate",
+  "ordinal": 14,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "reply_rate",
+  "ordinal": 15,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "per_cohort_stats",
+  "ordinal": 16,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_funnel_snapshots",
+  "column": "per_opener_stats",
+  "ordinal": 17,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('optimizer_metrics_snapshot_id_seq'::regclass)"
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "snapshot_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "window_days",
+  "ordinal": 3,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "7"
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "leads_ingested",
+  "ordinal": 4,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "leads_enriched",
+  "ordinal": 5,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "leads_scored",
+  "ordinal": 6,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "leads_high_fit",
+  "ordinal": 7,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "leads_drafted",
+  "ordinal": 8,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "leads_sent",
+  "ordinal": 9,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "leads_accepted",
+  "ordinal": 10,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "leads_replied",
+  "ordinal": 11,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "leads_paid",
+  "ordinal": 12,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "enrich_rate",
+  "ordinal": 13,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "score_rate",
+  "ordinal": 14,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "high_fit_to_draft_rate",
+  "ordinal": 15,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "draft_to_send_rate",
+  "ordinal": 16,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "send_to_accept_rate",
+  "ordinal": 17,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "accept_to_reply_rate",
+  "ordinal": 18,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "reply_to_paid_rate",
+  "ordinal": 19,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "cohort_metrics",
+  "ordinal": 20,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "opener_metrics",
+  "ordinal": 21,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "worst_stage",
+  "ordinal": 22,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "optimizer_metrics_snapshot",
+  "column": "worst_stage_rate",
+  "ordinal": 23,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "orders",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "orders",
+  "column": "contact_id",
+  "ordinal": 2,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "orders",
+  "column": "stripe_checkout_session_id",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "orders",
+  "column": "stripe_payment_intent_id",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "orders",
+  "column": "stripe_customer_id",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "orders",
+  "column": "order_status",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "orders",
+  "column": "product_type",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "orders",
+  "column": "product_sku",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "orders",
+  "column": "product_slug",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "orders",
+  "column": "amount_cents",
+  "ordinal": 10,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "orders",
+  "column": "currency",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'usd'::text"
+ },
+ {
+  "table": "orders",
+  "column": "purchased_at",
+  "ordinal": 12,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "orders",
+  "column": "refunded_at",
+  "ordinal": 13,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "orders",
+  "column": "metadata",
+  "ordinal": 14,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "NO",
+  "default": "'{}'::jsonb"
+ },
+ {
+  "table": "orders",
+  "column": "created_at",
+  "ordinal": 15,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "orders",
+  "column": "updated_at",
+  "ordinal": 16,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "orders",
+  "column": "partner_code",
+  "ordinal": 17,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "orders",
+  "column": "partner_id",
+  "ordinal": 18,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('outbound_ab_results_id_seq'::regclass)"
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "computed_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "variant_id",
+  "ordinal": 3,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "window_days",
+  "ordinal": 4,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "14"
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "sends",
+  "ordinal": 5,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "accepts",
+  "ordinal": 6,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "replies",
+  "ordinal": 7,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "positive_replies",
+  "ordinal": 8,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "accept_rate",
+  "ordinal": 9,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "reply_rate",
+  "ordinal": 10,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "positive_reply_rate",
+  "ordinal": 11,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "z_score",
+  "ordinal": 12,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "p_value",
+  "ordinal": 13,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "is_significant",
+  "ordinal": 14,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "NO",
+  "default": "false"
+ },
+ {
+  "table": "outbound_ab_results",
+  "column": "recommendation",
+  "ordinal": 15,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_ab_variants",
+  "column": "id",
+  "ordinal": 1,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "nextval('outbound_ab_variants_id_seq'::regclass)"
+ },
+ {
+  "table": "outbound_ab_variants",
+  "column": "variant_key",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "outbound_ab_variants",
+  "column": "variant_type",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "outbound_ab_variants",
+  "column": "description",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "outbound_ab_variants",
+  "column": "template",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "outbound_ab_variants",
+  "column": "is_active",
+  "ordinal": 6,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "NO",
+  "default": "true"
+ },
+ {
+  "table": "outbound_ab_variants",
+  "column": "is_control",
+  "ordinal": 7,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "NO",
+  "default": "false"
+ },
+ {
+  "table": "outbound_ab_variants",
+  "column": "traffic_weight",
+  "ordinal": 8,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "NO",
+  "default": "1.0"
+ },
+ {
+  "table": "outbound_ab_variants",
+  "column": "created_at",
+  "ordinal": 9,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "outbound_ab_variants",
+  "column": "retired_at",
+  "ordinal": 10,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_ab_variants",
+  "column": "retire_reason",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_events",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('outbound_events_id_seq'::regclass)"
+ },
+ {
+  "table": "outbound_events",
+  "column": "occurred_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "outbound_events",
+  "column": "lead_id",
+  "ordinal": 3,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_events",
+  "column": "event_type",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "outbound_events",
+  "column": "properties",
+  "ordinal": 5,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "NO",
+  "default": "'{}'::jsonb"
+ },
+ {
+  "table": "outbound_events",
+  "column": "session_id",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_followup_cadence",
+  "column": "touch_number",
+  "ordinal": 1,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "outbound_followup_cadence",
+  "column": "days_after_previous",
+  "ordinal": 2,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "outbound_followup_cadence",
+  "column": "angle",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "outbound_followup_cadence",
+  "column": "guidance",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_followup_cadence",
+  "column": "active",
+  "ordinal": 5,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "YES",
+  "default": "true"
+ },
+ {
+  "table": "outbound_followup_cadence",
+  "column": "created_at",
+  "ordinal": 6,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "outbound_log",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "outbound_log",
+  "column": "staging_id",
+  "ordinal": 2,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_log",
+  "column": "attio_record_id",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_log",
+  "column": "channel",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_log",
+  "column": "touch_number",
+  "ordinal": 5,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "outbound_log",
+  "column": "sent_at",
+  "ordinal": 6,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "outbound_log",
+  "column": "sent_by",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'manual'::text"
+ },
+ {
+  "table": "outbound_log",
+  "column": "note",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('outbound_rl_state_id_seq'::regclass)"
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "recorded_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "objective_primary",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'maximize_positive_reply_rate'::text"
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "objective_constraint",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'unsubscribe_rate < 0.02'::text"
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "fit_score_threshold",
+  "ordinal": 5,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "daily_dm_budget",
+  "ordinal": 6,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "active_variant_key",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "active_cohorts",
+  "ordinal": 8,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "NO",
+  "default": "'[]'::jsonb"
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "reward_signal",
+  "ordinal": 9,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "reward_components",
+  "ordinal": 10,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "action_taken",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "action_parameters",
+  "ordinal": 12,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "outcome_measured_at",
+  "ordinal": 13,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "outcome_accept_rate",
+  "ordinal": 14,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "outcome_reply_rate",
+  "ordinal": 15,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_rl_state",
+  "column": "outcome_positive_reply_rate",
+  "ordinal": 16,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('outbound_segment_stats_id_seq'::regclass)"
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "computed_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "segment_type",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "segment_value",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "window_days",
+  "ordinal": 5,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "14"
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "total_leads",
+  "ordinal": 6,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "sent",
+  "ordinal": 7,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "accepted",
+  "ordinal": 8,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "replied",
+  "ordinal": 9,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "positive_replied",
+  "ordinal": 10,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "accept_rate",
+  "ordinal": 11,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "reply_rate",
+  "ordinal": 12,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "avg_fit_score",
+  "ordinal": 13,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "is_underperforming",
+  "ordinal": 14,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "NO",
+  "default": "false"
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "is_overperforming",
+  "ordinal": 15,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "NO",
+  "default": "false"
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "anomaly_note",
+  "ordinal": 16,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "outbound_segment_stats",
+  "column": "regression_coeff",
+  "ordinal": 17,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('page_stripe_link_registry_id_seq'::regclass)"
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "column": "page_url",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "column": "page_label",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "column": "stripe_payment_link_id",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "column": "stripe_link_url_fragment",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "column": "expected_display_price",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "column": "expected_amount_cents",
+  "ordinal": 7,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "column": "product_name",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "column": "notes",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "column": "is_active",
+  "ordinal": 10,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "YES",
+  "default": "true"
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "column": "created_at",
+  "ordinal": 11,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "column": "updated_at",
+  "ordinal": 12,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "column": "last_verified_at",
+  "ordinal": 13,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "page_stripe_link_registry",
+  "column": "last_verification_result",
+  "ordinal": 14,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_applications",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "partner_applications",
+  "column": "full_name",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "partner_applications",
+  "column": "email",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "partner_applications",
+  "column": "company",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_applications",
+  "column": "company_url",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_applications",
+  "column": "role_type",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_applications",
+  "column": "linkedin_url",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_applications",
+  "column": "client_base",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_applications",
+  "column": "primary_market",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_applications",
+  "column": "status",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": "'pending'::text"
+ },
+ {
+  "table": "partner_applications",
+  "column": "created_at",
+  "ordinal": 11,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "partner_applications",
+  "column": "referral_code",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_applications",
+  "column": "stripe_connect_account_id",
+  "ordinal": 13,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_applications",
+  "column": "stripe_connect_onboarded_at",
+  "ordinal": 14,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_applications",
+  "column": "approved_at",
+  "ordinal": 15,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_commissions",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "partner_commissions",
+  "column": "partner_id",
+  "ordinal": 2,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_commissions",
+  "column": "partner_code",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "partner_commissions",
+  "column": "order_id",
+  "ordinal": 4,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_commissions",
+  "column": "contact_id",
+  "ordinal": 5,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_commissions",
+  "column": "stripe_payment_intent_id",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_commissions",
+  "column": "amount_cents",
+  "ordinal": 7,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "partner_commissions",
+  "column": "commission_cents",
+  "ordinal": 8,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "partner_commissions",
+  "column": "commission_rate",
+  "ordinal": 9,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": "0.25"
+ },
+ {
+  "table": "partner_commissions",
+  "column": "payout_status",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": "'pending'::text"
+ },
+ {
+  "table": "partner_commissions",
+  "column": "paid_at",
+  "ordinal": 11,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_commissions",
+  "column": "notes",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_commissions",
+  "column": "created_at",
+  "ordinal": 13,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "partner_referrals",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "partner_referrals",
+  "column": "partner_code",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "partner_referrals",
+  "column": "partner_name",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_referrals",
+  "column": "partner_email",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_referrals",
+  "column": "client_name",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "partner_referrals",
+  "column": "client_company",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_referrals",
+  "column": "client_email",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "partner_referrals",
+  "column": "client_title",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_referrals",
+  "column": "introduction_date",
+  "ordinal": 9,
+  "type": "date",
+  "udt": "date",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_referrals",
+  "column": "introduction_method",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_referrals",
+  "column": "notes",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_referrals",
+  "column": "status",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": "'pending'::text"
+ },
+ {
+  "table": "partner_referrals",
+  "column": "verified",
+  "ordinal": 13,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "YES",
+  "default": "false"
+ },
+ {
+  "table": "partner_referrals",
+  "column": "verified_at",
+  "ordinal": 14,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partner_referrals",
+  "column": "total_earnings_usd",
+  "ordinal": 15,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": "0"
+ },
+ {
+  "table": "partner_referrals",
+  "column": "created_at",
+  "ordinal": 16,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "partner_referrals",
+  "column": "updated_at",
+  "ordinal": 17,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "partners",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "partners",
+  "column": "partner_code",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "partners",
+  "column": "full_name",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "partners",
+  "column": "email",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "partners",
+  "column": "company",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partners",
+  "column": "company_url",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partners",
+  "column": "linkedin_url",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partners",
+  "column": "primary_market",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partners",
+  "column": "status",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": "'active'::text"
+ },
+ {
+  "table": "partners",
+  "column": "attio_record_id",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partners",
+  "column": "attio_company_record_id",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partners",
+  "column": "stripe_connect_account_id",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partners",
+  "column": "notes",
+  "ordinal": 13,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "partners",
+  "column": "approved_at",
+  "ordinal": 14,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "partners",
+  "column": "created_at",
+  "ordinal": 15,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "partners",
+  "column": "commission_rate",
+  "ordinal": 16,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": "0.25"
+ },
+ {
+  "table": "pb_container_history",
+  "column": "container_id",
+  "ordinal": 1,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "pb_container_history",
+  "column": "agent_id",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pb_container_history",
+  "column": "agent_name",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pb_container_history",
+  "column": "launched_at",
+  "ordinal": 4,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pb_container_history",
+  "column": "ended_at",
+  "ordinal": 5,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pb_container_history",
+  "column": "exit_code",
+  "ordinal": 6,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pb_container_history",
+  "column": "exit_message",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pb_container_history",
+  "column": "runtime_ms",
+  "ordinal": 8,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pb_container_history",
+  "column": "snapshot_at",
+  "ordinal": 9,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "pending_redirects",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pending_redirects",
+  "column": "original_full_name",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pending_redirects",
+  "column": "original_company",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pending_redirects",
+  "column": "redirect_name",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pending_redirects",
+  "column": "redirect_email",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pending_redirects",
+  "column": "detected_at",
+  "ordinal": 6,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pending_redirects",
+  "column": "note",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pending_redirects",
+  "column": "days_pending",
+  "ordinal": 8,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "phantombuster_webhook_log",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('phantombuster_webhook_log_id_seq'::regclass)"
+ },
+ {
+  "table": "phantombuster_webhook_log",
+  "column": "agent_id",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "phantombuster_webhook_log",
+  "column": "agent_name",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "phantombuster_webhook_log",
+  "column": "container_id",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "phantombuster_webhook_log",
+  "column": "script",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "phantombuster_webhook_log",
+  "column": "exit_message",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "phantombuster_webhook_log",
+  "column": "exit_code",
+  "ordinal": 7,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "phantombuster_webhook_log",
+  "column": "result_object",
+  "ordinal": 8,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "phantombuster_webhook_log",
+  "column": "raw_payload",
+  "ordinal": 9,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "phantombuster_webhook_log",
+  "column": "routed_to",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "phantombuster_webhook_log",
+  "column": "rows_processed",
+  "ordinal": 11,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": "0"
+ },
+ {
+  "table": "phantombuster_webhook_log",
+  "column": "error",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "phantombuster_webhook_log",
+  "column": "created_at",
+  "ordinal": 13,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "pipeline_health_current",
+  "column": "check_name",
+  "ordinal": 1,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_health_current",
+  "column": "severity",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_health_current",
+  "column": "affected_count",
+  "ordinal": 3,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_health_current",
+  "column": "status",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_health_current",
+  "column": "detail",
+  "ordinal": 5,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_health_current",
+  "column": "checked_at",
+  "ordinal": 6,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_health_current",
+  "column": "remediated_at",
+  "ordinal": 7,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_health_current",
+  "column": "remediated_count",
+  "ordinal": 8,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_health_log",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('pipeline_health_log_id_seq'::regclass)"
+ },
+ {
+  "table": "pipeline_health_log",
+  "column": "checked_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "pipeline_health_log",
+  "column": "check_name",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "pipeline_health_log",
+  "column": "severity",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "pipeline_health_log",
+  "column": "affected_count",
+  "ordinal": 5,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "pipeline_health_log",
+  "column": "status",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "pipeline_health_log",
+  "column": "detail",
+  "ordinal": 7,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_health_log",
+  "column": "remediation_sql",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_health_log",
+  "column": "remediated_at",
+  "ordinal": 9,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_health_log",
+  "column": "remediated_count",
+  "ordinal": 10,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_readiness_log",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('pipeline_readiness_log_id_seq'::regclass)"
+ },
+ {
+  "table": "pipeline_readiness_log",
+  "column": "staging_row_id",
+  "ordinal": 2,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "pipeline_readiness_log",
+  "column": "prior_status",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_readiness_log",
+  "column": "new_status",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "pipeline_readiness_log",
+  "column": "block_reasons",
+  "ordinal": 5,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_readiness_log",
+  "column": "attempts",
+  "ordinal": 6,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "pipeline_readiness_log",
+  "column": "evaluated_at",
+  "ordinal": 7,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('posthog_conversion_daily_id_seq'::regclass)"
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "captured_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "window_days",
+  "ordinal": 3,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "7"
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "case_file_views_total",
+  "ordinal": 4,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "case_file_views_unique",
+  "ordinal": 5,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "lock_views_total",
+  "ordinal": 6,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "lock_views_unique",
+  "ordinal": 7,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "email_gate_shown_unique",
+  "ordinal": 8,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "email_gate_submitted",
+  "ordinal": 9,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "inline_gate_conversion_pct",
+  "ordinal": 10,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "universal_gate_shown",
+  "ordinal": 11,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "universal_gate_submitted",
+  "ordinal": 12,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "universal_gate_dismissed",
+  "ordinal": 13,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "universal_gate_conversion_pct",
+  "ordinal": 14,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "main_gate_shown",
+  "ordinal": 15,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "main_gate_submitted",
+  "ordinal": 16,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "main_gate_dismissed",
+  "ordinal": 17,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "main_gate_conversion_pct",
+  "ordinal": 18,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "cta_clicks_total",
+  "ordinal": 19,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "email_captures_total",
+  "ordinal": 20,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "purchases_total",
+  "ordinal": 21,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "top_uncaptured_pages",
+  "ordinal": 22,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "lead_enrichment_failed",
+  "ordinal": 23,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "raw_event_counts",
+  "ordinal": 24,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "delta_vs_prior",
+  "ordinal": 25,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "reconstruction_pageviews_unique",
+  "ordinal": 26,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "reconstruction_terms_accepted",
+  "ordinal": 27,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "reconstruction_decision_selected",
+  "ordinal": 28,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "reconstruction_coming_soon_shown",
+  "ordinal": 29,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "reconstruction_capa_started",
+  "ordinal": 30,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "reconstruction_completed",
+  "ordinal": 31,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "reconstruction_routed",
+  "ordinal": 32,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "reconstruction_completion_pct",
+  "ordinal": 33,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "reconstruction_route_pct",
+  "ordinal": 34,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "reconstruction_dead_dropdown_pct",
+  "ordinal": 35,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "posthog_conversion_daily",
+  "column": "reconstruction_observation_breakdown",
+  "ordinal": 36,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "purchases",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "purchases",
+  "column": "email",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "purchases",
+  "column": "case_file",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "purchases",
+  "column": "case_file_id",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "purchases",
+  "column": "stripe_session_id",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "purchases",
+  "column": "purchased_at",
+  "ordinal": 6,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "reconstruction_conversion_daily",
+  "column": "id",
+  "ordinal": 1,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "nextval('reconstruction_conversion_daily_id_seq'::regclass)"
+ },
+ {
+  "table": "reconstruction_conversion_daily",
+  "column": "captured_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "reconstruction_conversion_daily",
+  "column": "window_days",
+  "ordinal": 3,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "7"
+ },
+ {
+  "table": "reconstruction_conversion_daily",
+  "column": "completed",
+  "ordinal": 4,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "reconstruction_conversion_daily",
+  "column": "routed",
+  "ordinal": 5,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "reconstruction_conversion_daily",
+  "column": "reached_complete_file",
+  "ordinal": 6,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "reconstruction_conversion_daily",
+  "column": "clicked_cta",
+  "ordinal": 7,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "reconstruction_conversion_daily",
+  "column": "purchased",
+  "ordinal": 8,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "reconstruction_conversion_daily",
+  "column": "route_to_buy_pct",
+  "ordinal": 9,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "reconstruction_conversion_daily",
+  "column": "buy_to_cta_pct",
+  "ordinal": 10,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "reconstruction_conversion_daily",
+  "column": "buy_to_purchase_pct",
+  "ordinal": 11,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "reconstruction_conversion_daily",
+  "column": "end_to_end_pct",
+  "ordinal": 12,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "resend_webhook_events",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('resend_webhook_events_id_seq'::regclass)"
+ },
+ {
+  "table": "resend_webhook_events",
+  "column": "resend_event_id",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "resend_webhook_events",
+  "column": "resend_message_id",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "resend_webhook_events",
+  "column": "event_type",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "resend_webhook_events",
+  "column": "staging_id",
+  "ordinal": 5,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "resend_webhook_events",
+  "column": "recipient_email",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "resend_webhook_events",
+  "column": "recipient_domain",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "resend_webhook_events",
+  "column": "bounce_type",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "resend_webhook_events",
+  "column": "bounce_subtype",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "resend_webhook_events",
+  "column": "diagnostic_code",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "resend_webhook_events",
+  "column": "raw_payload",
+  "ordinal": 11,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "resend_webhook_events",
+  "column": "created_at",
+  "ordinal": 12,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "runtime_generations",
+  "column": "generation_id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "runtime_generations",
+  "column": "status",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'pending'::text"
+ },
+ {
+  "table": "runtime_generations",
+  "column": "package_checksum",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "runtime_generations",
+  "column": "artifact",
+  "ordinal": 4,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "runtime_generations",
+  "column": "runtime_manifest",
+  "ordinal": 5,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "runtime_generations",
+  "column": "issues",
+  "ordinal": 6,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "runtime_generations",
+  "column": "created_at",
+  "ordinal": 7,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "runtime_generations",
+  "column": "updated_at",
+  "ordinal": 8,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "runtime_generations",
+  "column": "expires_at",
+  "ordinal": 9,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "runtime_generations",
+  "column": "prompt_package",
+  "ordinal": 10,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "runtime_generations",
+  "column": "filled_user_prompt",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "runtime_generations",
+  "column": "max_tokens",
+  "ordinal": 12,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "runtime_generations",
+  "column": "claimed_at",
+  "ordinal": 13,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "runtime_generations",
+  "column": "attempt_count",
+  "ordinal": 14,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "0"
+ },
+ {
+  "table": "runtime_generations",
+  "column": "max_attempts",
+  "ordinal": 15,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "NO",
+  "default": "2"
+ },
+ {
+  "table": "stage7_diag_results",
+  "column": "id",
+  "ordinal": 1,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "NO",
+  "default": "gen_random_uuid()"
+ },
+ {
+  "table": "stage7_diag_results",
+  "column": "job_id",
+  "ordinal": 2,
+  "type": "uuid",
+  "udt": "uuid",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "stage7_diag_results",
+  "column": "status",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": "'running'::text"
+ },
+ {
+  "table": "stage7_diag_results",
+  "column": "result",
+  "ordinal": 4,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "stage7_diag_results",
+  "column": "created_at",
+  "ordinal": 5,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "system_alerts",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('system_alerts_id_seq'::regclass)"
+ },
+ {
+  "table": "system_alerts",
+  "column": "created_at",
+  "ordinal": 2,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "NO",
+  "default": "now()"
+ },
+ {
+  "table": "system_alerts",
+  "column": "alert_type",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "system_alerts",
+  "column": "severity",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "system_alerts",
+  "column": "source",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "system_alerts",
+  "column": "message",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "system_alerts",
+  "column": "context",
+  "ordinal": 7,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "system_alerts",
+  "column": "acknowledged_at",
+  "ordinal": 8,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "system_alerts",
+  "column": "acknowledged_by",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "system_alerts",
+  "column": "resolved_at",
+  "ordinal": 10,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "id",
+  "ordinal": 1,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "NO",
+  "default": "nextval('target_accounts_id_seq'::regclass)"
+ },
+ {
+  "table": "target_accounts",
+  "column": "company_name",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "NO",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "company_name_normalized",
+  "ordinal": 3,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "website",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "subsegment",
+  "ordinal": 5,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "headcount_band",
+  "ordinal": 6,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "us_presence",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "primary_site_state",
+  "ordinal": 8,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "secondary_site_state",
+  "ordinal": 9,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "public_status",
+  "ordinal": 10,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "ownership_type",
+  "ordinal": 11,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "business_model",
+  "ordinal": 12,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "manufacturing_type",
+  "ordinal": 13,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "product_type",
+  "ordinal": 14,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "regulated_activity",
+  "ordinal": 15,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "quality_function_presence",
+  "ordinal": 16,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "best_fit_decision_record",
+  "ordinal": 17,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "secondary_decision_record",
+  "ordinal": 18,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "likely_quality_pressure",
+  "ordinal": 19,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "inspection_signal",
+  "ordinal": 20,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "story_angle",
+  "ordinal": 21,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "priority_score",
+  "ordinal": 22,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "source_notes",
+  "ordinal": 23,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "last_verified_date",
+  "ordinal": 24,
+  "type": "date",
+  "udt": "date",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "created_at",
+  "ordinal": 25,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "target_accounts",
+  "column": "updated_at",
+  "ordinal": 26,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": "now()"
+ },
+ {
+  "table": "target_accounts",
+  "column": "added_to_attio_at",
+  "ordinal": 27,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "attio_company_record_id",
+  "ordinal": 28,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "target_accounts",
+  "column": "active",
+  "ordinal": 29,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "YES",
+  "default": "true"
+ },
+ {
+  "table": "v_cron_health",
+  "column": "jobname",
+  "ordinal": 1,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_cron_health",
+  "column": "schedule",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_cron_health",
+  "column": "active",
+  "ordinal": 3,
+  "type": "boolean",
+  "udt": "bool",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_cron_health",
+  "column": "last_ran",
+  "ordinal": 4,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_cron_health",
+  "column": "failures_7d",
+  "ordinal": 5,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_cron_health",
+  "column": "successes_7d",
+  "ordinal": 6,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_cron_health",
+  "column": "health_status",
+  "ordinal": 7,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_may2026_revenue",
+  "column": "may_revenue_usd",
+  "ordinal": 1,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_may2026_revenue",
+  "column": "may_target_usd",
+  "ordinal": 2,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_may2026_revenue",
+  "column": "pct_to_target",
+  "ordinal": 3,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_may2026_revenue",
+  "column": "lifetime_revenue_usd",
+  "ordinal": 4,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_may2026_revenue",
+  "column": "may_orders",
+  "ordinal": 5,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_may2026_revenue",
+  "column": "lifetime_orders",
+  "ordinal": 6,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_may2026_revenue",
+  "column": "last_7d_revenue_usd",
+  "ordinal": 7,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_may2026_revenue",
+  "column": "last_30d_revenue_usd",
+  "ordinal": 8,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_may2026_revenue",
+  "column": "last_7d_orders",
+  "ordinal": 9,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_may2026_revenue",
+  "column": "days_remaining_to_may31",
+  "ordinal": 10,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_may2026_revenue",
+  "column": "required_daily_run_rate_usd",
+  "ordinal": 11,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_pipeline_health_summary",
+  "column": "check_name",
+  "ordinal": 1,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_pipeline_health_summary",
+  "column": "severity",
+  "ordinal": 2,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_pipeline_health_summary",
+  "column": "affected_count",
+  "ordinal": 3,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_pipeline_health_summary",
+  "column": "status",
+  "ordinal": 4,
+  "type": "text",
+  "udt": "text",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_pipeline_health_summary",
+  "column": "detail",
+  "ordinal": 5,
+  "type": "jsonb",
+  "udt": "jsonb",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_pipeline_health_summary",
+  "column": "checked_at",
+  "ordinal": 6,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_pipeline_health_summary",
+  "column": "remediated_at",
+  "ordinal": 7,
+  "type": "timestamp with time zone",
+  "udt": "timestamptz",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_pipeline_health_summary",
+  "column": "remediated_count",
+  "ordinal": 8,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_pipeline_health_summary",
+  "column": "sort_order",
+  "ordinal": 9,
+  "type": "integer",
+  "udt": "int4",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_revenue_daily",
+  "column": "day",
+  "ordinal": 1,
+  "type": "date",
+  "udt": "date",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_revenue_daily",
+  "column": "orders",
+  "ordinal": 2,
+  "type": "bigint",
+  "udt": "int8",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_revenue_daily",
+  "column": "revenue_usd",
+  "ordinal": 3,
+  "type": "numeric",
+  "udt": "numeric",
+  "nullable": "YES",
+  "default": null
+ },
+ {
+  "table": "v_revenue_daily",
+  "column": "products",
+  "ordinal": 4,
+  "type": "ARRAY",
+  "udt": "_text",
+  "nullable": "YES",
+  "default": null
+ }
+]

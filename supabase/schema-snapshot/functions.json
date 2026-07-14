@@ -1,0 +1,1325 @@
+[
+ {
+  "name": "array_to_halfvec",
+  "args": "integer[], integer, boolean",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.array_to_halfvec(integer[], integer, boolean)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$array_to_halfvec$function$\n"
+ },
+ {
+  "name": "array_to_halfvec",
+  "args": "real[], integer, boolean",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.array_to_halfvec(real[], integer, boolean)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$array_to_halfvec$function$\n"
+ },
+ {
+  "name": "array_to_halfvec",
+  "args": "double precision[], integer, boolean",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.array_to_halfvec(double precision[], integer, boolean)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$array_to_halfvec$function$\n"
+ },
+ {
+  "name": "array_to_halfvec",
+  "args": "numeric[], integer, boolean",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.array_to_halfvec(numeric[], integer, boolean)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$array_to_halfvec$function$\n"
+ },
+ {
+  "name": "array_to_sparsevec",
+  "args": "integer[], integer, boolean",
+  "returns": "sparsevec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.array_to_sparsevec(integer[], integer, boolean)\n RETURNS sparsevec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$array_to_sparsevec$function$\n"
+ },
+ {
+  "name": "array_to_sparsevec",
+  "args": "real[], integer, boolean",
+  "returns": "sparsevec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.array_to_sparsevec(real[], integer, boolean)\n RETURNS sparsevec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$array_to_sparsevec$function$\n"
+ },
+ {
+  "name": "array_to_sparsevec",
+  "args": "double precision[], integer, boolean",
+  "returns": "sparsevec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.array_to_sparsevec(double precision[], integer, boolean)\n RETURNS sparsevec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$array_to_sparsevec$function$\n"
+ },
+ {
+  "name": "array_to_sparsevec",
+  "args": "numeric[], integer, boolean",
+  "returns": "sparsevec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.array_to_sparsevec(numeric[], integer, boolean)\n RETURNS sparsevec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$array_to_sparsevec$function$\n"
+ },
+ {
+  "name": "array_to_vector",
+  "args": "integer[], integer, boolean",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.array_to_vector(integer[], integer, boolean)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$array_to_vector$function$\n"
+ },
+ {
+  "name": "array_to_vector",
+  "args": "real[], integer, boolean",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.array_to_vector(real[], integer, boolean)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$array_to_vector$function$\n"
+ },
+ {
+  "name": "array_to_vector",
+  "args": "double precision[], integer, boolean",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.array_to_vector(double precision[], integer, boolean)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$array_to_vector$function$\n"
+ },
+ {
+  "name": "array_to_vector",
+  "args": "numeric[], integer, boolean",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.array_to_vector(numeric[], integer, boolean)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$array_to_vector$function$\n"
+ },
+ {
+  "name": "audit_recent_cron_failures",
+  "args": "p_hours integer",
+  "returns": "TABLE(jobid bigint, jobname text, start_time timestamp with time zone, status text, return_message text)",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.audit_recent_cron_failures(p_hours integer)\n RETURNS TABLE(jobid bigint, jobname text, start_time timestamp with time zone, status text, return_message text)\n LANGUAGE sql\n SECURITY DEFINER\n SET search_path TO 'cron', 'public'\nAS $function$\n  SELECT \n    j.jobid,\n    j.jobname,\n    d.start_time,\n    d.status,\n    LEFT(COALESCE(d.return_message, ''), 300)\n  FROM cron.job j\n  JOIN cron.job_run_details d ON d.jobid = j.jobid\n  WHERE d.start_time > now() - (p_hours || ' hours')::interval\n    AND d.status != 'succeeded'\n  ORDER BY d.start_time DESC\n  LIMIT 50;\n$function$\n"
+ },
+ {
+  "name": "audit_recent_function_failures",
+  "args": "p_hours integer",
+  "returns": "TABLE(response_id bigint, created_at timestamp with time zone, status_code integer, error_msg text, body_preview text)",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.audit_recent_function_failures(p_hours integer)\n RETURNS TABLE(response_id bigint, created_at timestamp with time zone, status_code integer, error_msg text, body_preview text)\n LANGUAGE sql\n SECURITY DEFINER\n SET search_path TO 'net', 'public'\nAS $function$\n  SELECT \n    id AS response_id,\n    created AS created_at,\n    status_code,\n    error_msg,\n    LEFT(content::text, 300) AS body_preview\n  FROM net._http_response\n  WHERE created > now() - (p_hours || ' hours')::interval\n    AND (status_code IS NULL OR status_code NOT BETWEEN 200 AND 299)\n  ORDER BY created DESC\n  LIMIT 50;\n$function$\n"
+ },
+ {
+  "name": "auto_pause_on_reply",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.auto_pause_on_reply()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  IF (NEW.replied_at IS NOT NULL AND (OLD.replied_at IS NULL OR OLD.replied_at IS DISTINCT FROM NEW.replied_at))\n     OR (NEW.dm_replied_at IS NOT NULL AND (OLD.dm_replied_at IS NULL OR OLD.dm_replied_at IS DISTINCT FROM NEW.dm_replied_at))\n  THEN\n    NEW.automation_paused := true;\n    IF NEW.automation_paused_reason IS NULL THEN\n      NEW.automation_paused_reason := 'replied_awaiting_human_response';\n    END IF;\n  END IF;\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "auto_tag_target_account",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.auto_tag_target_account()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_normalized TEXT;\n  v_matched_id BIGINT;\n  v_matched_name TEXT;\n  v_best_fit TEXT;\n  v_cohort_slug TEXT;\nBEGIN\n  -- Skip if no company, or already tagged\n  IF NEW.company IS NULL OR NEW.company = '' OR NEW.target_account_priority IS NOT NULL THEN\n    RETURN NEW;\n  END IF;\n\n  -- Normalize incoming company name (lowercase, alphanumeric only)\n  v_normalized := LOWER(REGEXP_REPLACE(NEW.company, '[^a-zA-Z0-9]', '', 'g'));\n\n  -- Skip if normalized name is too short to be meaningful\n  IF LENGTH(v_normalized) < 3 THEN\n    RETURN NEW;\n  END IF;\n\n  -- Match against target_accounts via prefix match (highest priority_score wins)\n  SELECT id, company_name, best_fit_decision_record\n    INTO v_matched_id, v_matched_name, v_best_fit\n  FROM target_accounts\n  WHERE active = TRUE\n    AND (\n      v_normalized = company_name_normalized\n      OR v_normalized LIKE company_name_normalized || '%'\n      OR company_name_normalized LIKE v_normalized || '%'\n    )\n  ORDER BY priority_score DESC NULLS LAST\n  LIMIT 1;\n\n  IF v_matched_id IS NOT NULL THEN\n    -- Map the human-readable best_fit_decision_record to the cohort slug used by the drafter\n    v_cohort_slug := CASE v_best_fit\n      WHEN 'Batch Release Authorization'        THEN 'batch_release_cohort'\n      WHEN 'Change Control Filing Determination' THEN 'change_control_cohort'\n      WHEN 'Supplier Qualification Exception'    THEN 'supplier_qualification_cohort'\n      WHEN 'Complaint Investigation Disposition' THEN 'complaint_investigation_cohort'\n      WHEN 'Data Integrity Investigation Closure' THEN 'data_integrity_cohort'\n      WHEN 'Deviation Risk Assessment'           THEN 'deviation_risk_cohort'\n      WHEN 'CAPA Effectiveness'                  THEN 'capa_effectiveness_cohort'\n      WHEN 'CAPA Effectiveness Determination'    THEN 'capa_effectiveness_cohort'\n      ELSE 'batch_release_cohort'  -- fallback only if best_fit is unset/unknown\n    END;\n\n    NEW.target_account_priority := v_cohort_slug;\n    NEW.target_account_tagged_at := NOW();\n  END IF;\n\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "binary_quantize",
+  "args": "vector",
+  "returns": "bit",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.binary_quantize(vector)\n RETURNS bit\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$binary_quantize$function$\n"
+ },
+ {
+  "name": "binary_quantize",
+  "args": "halfvec",
+  "returns": "bit",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.binary_quantize(halfvec)\n RETURNS bit\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_binary_quantize$function$\n"
+ },
+ {
+  "name": "bridge_outreach_log_to_events",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.bridge_outreach_log_to_events()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_event_name TEXT;\nBEGIN\n  v_event_name := CASE \n    WHEN NEW.status = 'sent' THEN 'outreach_email_sent'\n    WHEN NEW.status = 'bounced' THEN 'outreach_email_bounced'\n    WHEN NEW.status = 'failed' THEN 'outreach_email_failed'\n    WHEN NEW.status = 'replied' THEN 'outreach_reply_logged'  -- distinct from outbound_reply_received\n    ELSE 'outreach_email_unknown'\n  END;\n  \n  INSERT INTO outbound_events (staging_id, attio_record_id, email, event_name, provider, properties)\n  VALUES (\n    NEW.staging_id, NEW.attio_record_id, NEW.lead_email, v_event_name,\n    COALESCE(NEW.source, 'unknown'),\n    jsonb_build_object(\n      'template_key', NEW.template_key,\n      'subject', NEW.subject,\n      'status', NEW.status,\n      'message_id', NEW.mailersend_id,\n      'error', NEW.error_message\n    )\n  );\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "calculate_next_followup",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.calculate_next_followup()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  IF NEW.last_sequence_email_at IS DISTINCT FROM OLD.last_sequence_email_at\n     AND NEW.last_sequence_email_at IS NOT NULL\n     AND NEW.replied_at IS NULL\n     AND NEW.archived_at IS NULL\n  THEN\n    -- After touch N is sent (sequence_email_count = N), touch N+1 is what's due.\n    -- Touch 1 sent → followup_2_due in 3 days\n    -- Touch 2 sent → followup_3_due (breakup) in 4 days\n    -- Touch 3 sent → sequence complete\n    IF NEW.sequence_email_count = 1 THEN\n      NEW.next_followup_due_at = NEW.last_sequence_email_at + INTERVAL '3 days';\n      NEW.followup_stage = 'followup_2_due';\n    ELSIF NEW.sequence_email_count = 2 THEN\n      NEW.next_followup_due_at = NEW.last_sequence_email_at + INTERVAL '4 days';\n      NEW.followup_stage = 'followup_3_due';\n    ELSIF NEW.sequence_email_count = 3 THEN\n      NEW.next_followup_due_at = NEW.last_sequence_email_at + INTERVAL '7 days';\n      NEW.followup_stage = 'breakup_due';\n    ELSE\n      NEW.next_followup_due_at = NULL;\n      NEW.followup_stage = 'sequence_complete';\n    END IF;\n  END IF;\n\n  IF NEW.replied_at IS NOT NULL AND OLD.replied_at IS NULL THEN\n    NEW.next_followup_due_at = NULL;\n    NEW.followup_stage = 'replied';\n  END IF;\n\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "cancel_nurture",
+  "args": "p_staging_id bigint, p_reason text",
+  "returns": "jsonb",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.cancel_nurture(p_staging_id bigint, p_reason text)\n RETURNS jsonb\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_count integer;\nBEGIN\n  UPDATE nurture_enrollments\n  SET status = CASE\n    WHEN p_reason ILIKE '%purchas%' OR p_reason = 'cancelled_purchased' THEN 'cancelled_purchased'\n    WHEN p_reason ILIKE '%repl%' OR p_reason = 'cancelled_replied' THEN 'cancelled_replied'\n    ELSE 'cancelled'\n  END,\n      cancelled_reason = p_reason,\n      cancelled_at = now()\n  WHERE staging_id = p_staging_id AND status = 'active';\n\n  GET DIAGNOSTICS v_count = ROW_COUNT;\n\n  IF v_count > 0 THEN\n    UPDATE warm_outbound_staging\n    SET nurture_status = 'cancelled', nurture_next_due_at = NULL\n    WHERE id = p_staging_id;\n  END IF;\n\n  RETURN jsonb_build_object('ok', true, 'cancelled_count', v_count, 'reason', p_reason);\nEND;\n$function$\n"
+ },
+ {
+  "name": "capture_funnel_snapshot",
+  "args": "p_window_days integer",
+  "returns": "bigint",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.capture_funnel_snapshot(p_window_days integer DEFAULT 7)\n RETURNS bigint\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_snapshot_id BIGINT;\n  v_cutoff TIMESTAMPTZ := NOW() - (p_window_days || ' days')::INTERVAL;\nBEGIN\n  INSERT INTO optimizer_funnel_snapshots (\n    window_days,\n    leads_ingested,\n    leads_enriched,\n    leads_fit_scored,\n    leads_high_fit,\n    leads_ready,\n    leads_dm_drafted,\n    dms_sent,\n    connections_accepted,\n    replies_received,\n    conversions,\n    accept_rate,\n    reply_rate,\n    per_cohort_stats,\n    per_opener_stats\n  )\n  SELECT\n    p_window_days,\n    COUNT(*),\n    COUNT(*) FILTER (WHERE enriched_at IS NOT NULL),\n    COUNT(*) FILTER (WHERE fit_scored_at IS NOT NULL),\n    COUNT(*) FILTER (WHERE fit_score >= (get_optimizer_config('fit_score_threshold', '70'::jsonb))::text::numeric),\n    COUNT(*) FILTER (WHERE readiness_status = 'ready'),\n    COUNT(*) FILTER (WHERE dm_drafted_at IS NOT NULL),\n    COUNT(*) FILTER (WHERE dm_first_message_sent_at IS NOT NULL),\n    COUNT(*) FILTER (WHERE dm_connection_accepted_at IS NOT NULL),\n    COUNT(*) FILTER (WHERE dm_replied_at IS NOT NULL),\n    COUNT(*) FILTER (WHERE is_paying_customer = true),\n    CASE WHEN COUNT(*) FILTER (WHERE dm_connection_request_sent_at IS NOT NULL) > 0\n         THEN (COUNT(*) FILTER (WHERE dm_connection_accepted_at IS NOT NULL))::NUMERIC\n              / NULLIF(COUNT(*) FILTER (WHERE dm_connection_request_sent_at IS NOT NULL), 0)\n         ELSE NULL END,\n    CASE WHEN COUNT(*) FILTER (WHERE dm_first_message_sent_at IS NOT NULL) > 0\n         THEN (COUNT(*) FILTER (WHERE dm_replied_at IS NOT NULL))::NUMERIC\n              / NULLIF(COUNT(*) FILTER (WHERE dm_first_message_sent_at IS NOT NULL), 0)\n         ELSE NULL END,\n    (\n      SELECT jsonb_object_agg(\n        COALESCE(cohort_label, 'unknown'),\n        jsonb_build_object(\n          'leads', cnt,\n          'sent', sent,\n          'accepted', accepted,\n          'replied', replied,\n          'accept_rate', CASE WHEN sent > 0 THEN ROUND(accepted::NUMERIC / sent, 3) ELSE NULL END\n        )\n      )\n      FROM (\n        SELECT\n          cohort_label,\n          COUNT(*) AS cnt,\n          COUNT(*) FILTER (WHERE dm_connection_request_sent_at IS NOT NULL) AS sent,\n          COUNT(*) FILTER (WHERE dm_connection_accepted_at IS NOT NULL) AS accepted,\n          COUNT(*) FILTER (WHERE dm_replied_at IS NOT NULL) AS replied\n        FROM warm_outbound_staging\n        WHERE created_at >= v_cutoff\n        GROUP BY cohort_label\n      ) c\n    ),\n    '{}'::jsonb\n  FROM warm_outbound_staging\n  WHERE created_at >= v_cutoff\n  RETURNING id INTO v_snapshot_id;\n\n  RETURN v_snapshot_id;\nEND;\n$function$\n"
+ },
+ {
+  "name": "check_auth_status",
+  "args": "",
+  "returns": "text",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.check_auth_status()\n RETURNS text\n LANGUAGE plpgsql\nAS $function$ \r\nBEGIN \r\n  RETURN 'Database is Writeable'; \r\nEND; \r\n$function$\n"
+ },
+ {
+  "name": "check_banned_language",
+  "args": "body text",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.check_banned_language(body text)\n RETURNS boolean\n LANGUAGE sql\n IMMUTABLE\nAS $function$\n  select body ~* '\\y(DDR|Decision Defense Record|decision defensibility|authorization framework|leverage|automation)\\y'\n      or body ~* '\\bplatform\\b'\n      or body ~* '\\bAI\\b';\n$function$\n"
+ },
+ {
+  "name": "claim_next_active_irr_job",
+  "args": "",
+  "returns": "SETOF irr_jobs",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.claim_next_active_irr_job()\n RETURNS SETOF irr_jobs\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  claimed_id uuid;\nBEGIN\n  -- Second fairness fix: ORDER BY created_at ASC still let the same small\n  -- subset of jobs win every tie-break, because 15 jobs inserted in one\n  -- batch share near-identical created_at, and Postgres' tie order for\n  -- equal timestamps is stable -- so whichever jobs won the physical tie\n  -- kept winning every time they cycled back to eligible, and the rest\n  -- never got a turn until stallReclaim killed them at 10 minutes. This is\n  -- the actual definition of round-robin: order by LEAST RECENTLY TOUCHED,\n  -- not by creation time. A job that was just worked moves to the back of\n  -- the line; a job that's been waiting longest goes next.\n  SELECT j.job_id INTO claimed_id\n  FROM irr_jobs j\n  WHERE j.status IN ('queued', 'running')\n    AND NOT EXISTS (\n      SELECT 1 FROM irr_stage_runs sr\n      WHERE sr.job_id = j.job_id\n        AND sr.status = 'running'\n        AND sr.started_at > now() - interval '380 seconds'\n    )\n  ORDER BY j.updated_at ASC\n  LIMIT 1\n  FOR UPDATE SKIP LOCKED;\n\n  IF claimed_id IS NULL THEN\n    RETURN;\n  END IF;\n\n  UPDATE irr_jobs SET status = 'running', updated_at = now() WHERE job_id = claimed_id;\n\n  RETURN QUERY SELECT * FROM irr_jobs WHERE job_id = claimed_id;\nEND;\n$function$\n"
+ },
+ {
+  "name": "claim_next_irr_job",
+  "args": "",
+  "returns": "SETOF irr_jobs",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.claim_next_irr_job()\n RETURNS SETOF irr_jobs\n LANGUAGE plpgsql\nAS $function$\ndeclare\n  claimed_id uuid;\nbegin\n  select job_id into claimed_id\n  from irr_jobs\n  where status = 'queued'\n  order by created_at asc\n  limit 1\n  for update skip locked;\n\n  if claimed_id is null then\n    return;\n  end if;\n\n  update irr_jobs\n  set status = 'running', updated_at = now()\n  where job_id = claimed_id;\n\n  return query select * from irr_jobs where job_id = claimed_id;\nend;\n$function$\n"
+ },
+ {
+  "name": "claim_next_runtime_generation",
+  "args": "",
+  "returns": "SETOF runtime_generations",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.claim_next_runtime_generation()\n RETURNS SETOF runtime_generations\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  claimed_id uuid;\nBEGIN\n  SELECT generation_id INTO claimed_id\n  FROM runtime_generations\n  WHERE status = 'pending' AND claimed_at IS NULL\n  ORDER BY created_at ASC\n  LIMIT 1\n  FOR UPDATE SKIP LOCKED;\n\n  IF claimed_id IS NULL THEN\n    RETURN;\n  END IF;\n\n  UPDATE runtime_generations\n  SET claimed_at = now(), updated_at = now()\n  WHERE generation_id = claimed_id;\n\n  RETURN QUERY SELECT * FROM runtime_generations WHERE generation_id = claimed_id;\nEND;\n$function$\n"
+ },
+ {
+  "name": "compute_lead_readiness_blocks",
+  "args": "row_id bigint",
+  "returns": "jsonb",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.compute_lead_readiness_blocks(row_id bigint)\n RETURNS jsonb\n LANGUAGE plpgsql\n STABLE\nAS $function$\nDECLARE\n  r RECORD;\n  blocks TEXT[] := ARRAY[]::TEXT[];\nBEGIN\n  SELECT\n    linkedin_url, linkedin_headline, linkedin_description,\n    job_title, full_name, company, first_name\n  INTO r\n  FROM warm_outbound_staging\n  WHERE id = row_id;\n\n  IF NOT FOUND THEN\n    RETURN jsonb_build_array('row_not_found');\n  END IF;\n\n  IF r.linkedin_url IS NULL OR length(trim(r.linkedin_url)) = 0 THEN\n    blocks := array_append(blocks, 'missing_linkedin_url');\n  END IF;\n\n  IF r.linkedin_headline IS NULL OR length(trim(r.linkedin_headline)) = 0 THEN\n    blocks := array_append(blocks, 'missing_linkedin_headline');\n  END IF;\n\n  IF r.linkedin_description IS NULL OR length(trim(r.linkedin_description)) < 50 THEN\n    blocks := array_append(blocks, 'linkedin_description_too_short');\n  END IF;\n\n  IF r.job_title IS NULL OR length(trim(r.job_title)) = 0 THEN\n    blocks := array_append(blocks, 'missing_job_title');\n  END IF;\n\n  IF r.first_name IS NULL OR length(trim(r.first_name)) = 0 THEN\n    blocks := array_append(blocks, 'missing_first_name');\n  END IF;\n\n  IF r.company IS NULL OR length(trim(r.company)) = 0 THEN\n    blocks := array_append(blocks, 'missing_company');\n  END IF;\n\n  RETURN to_jsonb(blocks);\nEND;\n$function$\n"
+ },
+ {
+  "name": "cosine_distance",
+  "args": "vector, vector",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.cosine_distance(vector, vector)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$cosine_distance$function$\n"
+ },
+ {
+  "name": "cosine_distance",
+  "args": "halfvec, halfvec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.cosine_distance(halfvec, halfvec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_cosine_distance$function$\n"
+ },
+ {
+  "name": "cosine_distance",
+  "args": "sparsevec, sparsevec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.cosine_distance(sparsevec, sparsevec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_cosine_distance$function$\n"
+ },
+ {
+  "name": "count_stage_touch_mismatch",
+  "args": "",
+  "returns": "bigint",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.count_stage_touch_mismatch()\n RETURNS bigint\n LANGUAGE sql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\n  SELECT COUNT(*)::bigint\n  FROM warm_outbound_staging w\n  WHERE w.followup_stage LIKE 'followup_%_due'\n    AND w.replied_at IS NULL\n    AND w.archived_at IS NULL\n    AND w.followup_drafts IS NOT NULL\n    AND EXISTS (\n      SELECT 1 FROM jsonb_array_elements(w.followup_drafts) d\n      WHERE (d->>'touch_number')::int = \n        CASE w.followup_stage\n          WHEN 'followup_1_due' THEN 1\n          WHEN 'followup_2_due' THEN 2\n          WHEN 'followup_3_due' THEN 3\n          WHEN 'followup_4_due' THEN 4\n          WHEN 'followup_5_due' THEN 5\n          WHEN 'followup_6_due' THEN 6\n          WHEN 'followup_7_due' THEN 7\n        END\n      AND d->>'status' = 'sent'\n    );\n$function$\n"
+ },
+ {
+  "name": "detect_strategy_signals",
+  "args": "",
+  "returns": "integer",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.detect_strategy_signals()\n RETURNS integer\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nDECLARE\n  signal_count int := 0;\n  v_visitors_7d int; v_visitors_prev_7d int; v_visitors_change_pct numeric;\n  v_captures_7d int; v_captures_prev_7d int; v_captures_change_pct numeric;\n  v_touches_7d int; v_revenue_pace numeric; v_days_remaining int;\n  v_paid_clicks_7d numeric; v_paid_clicks_prev_7d numeric;\n  v_daily_intake int; v_dms_today int; v_hour_et int;\n  rec RECORD;\nBEGIN\n  PERFORM refresh_key_results();\n  \n  -- Visitor trend\n  SELECT count(DISTINCT session_id) INTO v_visitors_7d FROM events WHERE event_name = 'page_view' AND created_at >= now() - interval '7 days' AND session_id IS NOT NULL;\n  SELECT count(DISTINCT session_id) INTO v_visitors_prev_7d FROM events WHERE event_name = 'page_view' AND created_at >= now() - interval '14 days' AND created_at < now() - interval '7 days' AND session_id IS NOT NULL;\n  IF v_visitors_prev_7d > 0 THEN\n    v_visitors_change_pct := ROUND(((v_visitors_7d - v_visitors_prev_7d)::numeric / v_visitors_prev_7d * 100), 0);\n    IF v_visitors_change_pct <= -25 THEN\n      INSERT INTO strategy_signals (signal_type, severity, title, detail, suggested_action) VALUES ('visitor_drop', 'critical',\n        'Weekly visitors dropped ' || v_visitors_change_pct || '% (' || v_visitors_prev_7d || ' → ' || v_visitors_7d || ')',\n        'Pipeline depends on visitor flow.', 'Check LinkedIn group post status. Concentrate distribution on Batch Release.')\n      ON CONFLICT (signal_type, title) WHERE resolved_at IS NULL DO NOTHING;\n      IF FOUND THEN signal_count := signal_count + 1; END IF;\n    END IF;\n  END IF;\n\n  -- NEW: Phantombuster daily intake check\n  SELECT count(*)::int INTO v_daily_intake FROM contacts \n  WHERE created_at >= CURRENT_DATE \n    AND email NOT LIKE '%@complianceworxs.com' \n    AND email NOT LIKE '%@coursworx.com';\n  \n  -- Only fire after 6 PM ET (22 UTC) to avoid morning false alarms\n  v_hour_et := EXTRACT(HOUR FROM (now() AT TIME ZONE 'America/New_York'))::int;\n  IF v_hour_et >= 18 AND v_daily_intake < 25 THEN\n    INSERT INTO strategy_signals (signal_type, severity, title, detail, suggested_action) \n    VALUES ('phantombuster_intake_low', 'critical',\n      'Phantombuster intake at ' || v_daily_intake || ' today (target 50/day, threshold 25)',\n      'Daily new-contact intake from the Phantombuster pipeline (Sales Navigator Search Export, Profile Scraper, Group Members Export) is below half-target. The 12,000-prospect Sales Navigator search should be feeding 50/day at minimum.',\n      'Check Phantombuster: verify all phantoms are ON, have remaining daily slots, and the Sales Navigator session cookie has not expired. Also check that incoming profiles are being written to the contacts table by the enrichment flow.')\n    ON CONFLICT (signal_type, title) WHERE resolved_at IS NULL DO NOTHING;\n    IF FOUND THEN signal_count := signal_count + 1; END IF;\n  END IF;\n\n  -- NEW: Daily DM pace check\n  SELECT count(*)::int INTO v_dms_today FROM outreach_touches \n  WHERE source_type='outbound' AND sent_at >= CURRENT_DATE;\n  \n  -- Only fire after 2 PM ET (18 UTC), warning if behind 10 by mid-afternoon\n  IF v_hour_et >= 14 AND v_dms_today < 10 THEN\n    INSERT INTO strategy_signals (signal_type, severity, title, detail, suggested_action) \n    VALUES ('daily_dm_pace_low', 'warning',\n      'Only ' || v_dms_today || ' DMs sent today by ' || v_hour_et || ':00 ET (target 20/day)',\n      'Past mid-afternoon with fewer than 10 outbound touches today. Pace puts the daily 20-DM target at risk.',\n      'Pull next batch from outreach_queue: SELECT email_subject, email_body FROM outreach_queue WHERE trigger_reason LIKE ''staged_dm_v%'' AND status = ''pending'' LIMIT 10;')\n    ON CONFLICT (signal_type, title) WHERE resolved_at IS NULL DO NOTHING;\n    IF FOUND THEN signal_count := signal_count + 1; END IF;\n  END IF;\n\n  -- Capture rate from PostHog cache\n  SELECT metric_value::int INTO v_captures_7d FROM posthog_metric_cache WHERE metric_key = 'captures_7d';\n  IF v_visitors_7d > 50 AND v_captures_7d = 0 THEN\n    INSERT INTO strategy_signals (signal_type, severity, title, detail, suggested_action) VALUES ('zero_captures', 'critical',\n      'Zero captures from ' || v_visitors_7d || ' visitors in last 7 days',\n      'Form gate not converting.', 'Test the form yourself.')\n    ON CONFLICT (signal_type, title) WHERE resolved_at IS NULL DO NOTHING;\n    IF FOUND THEN signal_count := signal_count + 1; END IF;\n  END IF;\n\n  -- Outbound pace (weekly)\n  SELECT count(*) INTO v_touches_7d FROM outreach_touches WHERE source_type = 'outbound' AND sent_at >= now() - interval '7 days';\n  IF v_touches_7d < 50 AND EXTRACT(DOW FROM CURRENT_DATE) >= 4 THEN  -- raised threshold from 15 to 50\n    INSERT INTO strategy_signals (signal_type, severity, title, detail, suggested_action) VALUES ('outbound_slipping', 'warning',\n      'Only ' || v_touches_7d || ' outbound touches this week (target 100/wk = 20/day x 5)',\n      'New target: 20 DMs/day x 5 working days = 100/week. Pipeline can''t close what wasn''t opened.',\n      'Pull and send next batch from outreach_queue. Phantombuster intake should be feeding fresh prospects daily.')\n    ON CONFLICT (signal_type, title) WHERE resolved_at IS NULL DO NOTHING;\n    IF FOUND THEN signal_count := signal_count + 1; END IF;\n  END IF;\n\n  -- Revenue pace\n  v_days_remaining := GREATEST(0, EXTRACT(EPOCH FROM ('2026-06-01'::timestamp - now())) / 86400)::int;\n  SELECT GREATEST(0, (1500 - coalesce(sum(amount_cents),0)/100.0)) / GREATEST(1, v_days_remaining) INTO v_revenue_pace\n    FROM orders WHERE order_status='completed' AND refunded_at IS NULL AND purchased_at >= '2026-05-01' AND purchased_at < '2026-06-01';\n  IF v_revenue_pace > 100 THEN\n    INSERT INTO strategy_signals (signal_type, severity, title, detail, suggested_action) VALUES ('revenue_pace_high', 'warning',\n      'Required daily revenue pace: $' || ROUND(v_revenue_pace, 0)::text || '/day (' || v_days_remaining || ' days remaining)',\n      'May target requires escalating effort.', 'Close one $149-$297 sale this week, or revise May target.')\n    ON CONFLICT (signal_type, title) WHERE resolved_at IS NULL DO NOTHING;\n    IF FOUND THEN signal_count := signal_count + 1; END IF;\n  END IF;\n\n  -- Unworked leads (existing)\n  FOR rec IN\n    SELECT c.id, c.email, c.first_name, c.company, c.job_title, c.created_at FROM contacts c\n    WHERE c.lifecycle_stage = 'lead' AND c.created_at < now() - interval '5 days'\n      AND c.email NOT LIKE '%@complianceworxs.com' AND c.email NOT LIKE '%@coursworx.com'\n      AND NOT EXISTS (SELECT 1 FROM outreach_touches ot WHERE ot.target_email = c.email AND ot.sent_at >= c.created_at)\n    ORDER BY c.created_at DESC LIMIT 20\n  LOOP\n    INSERT INTO strategy_signals (signal_type, severity, title, detail, suggested_action) VALUES ('unworked_lead', 'warning',\n      'Unworked lead: ' || coalesce(rec.first_name, '') || ' ' || coalesce(rec.job_title, '') || ' at ' || coalesce(rec.company, '(unknown)') || ' — ' || rec.email,\n      'Captured ' || ROUND(EXTRACT(EPOCH FROM (now() - rec.created_at))/86400) || ' days ago, no follow-up sent.',\n      'DM or email this person.')\n    ON CONFLICT (signal_type, title) WHERE resolved_at IS NULL DO NOTHING;\n    IF FOUND THEN signal_count := signal_count + 1; END IF;\n  END LOOP;\n\n  RETURN signal_count;\nEND;\n$function$\n"
+ },
+ {
+  "name": "dm_send_eligibility",
+  "args": "p_outreach_queue_id uuid",
+  "returns": "TABLE(eligible boolean, reason text, q_email text, q_first_name text, q_last_name text, q_company text, q_job_title text, q_linkedin_url text, q_email_subject text, q_email_body text, q_case_file text)",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.dm_send_eligibility(p_outreach_queue_id uuid)\n RETURNS TABLE(eligible boolean, reason text, q_email text, q_first_name text, q_last_name text, q_company text, q_job_title text, q_linkedin_url text, q_email_subject text, q_email_body text, q_case_file text)\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nDECLARE\n  q RECORD;\n  c RECORD;\n  v_domain text;\n  v_company_lower text;\n  v_title_lower text;\n  v_passes_audience boolean := false;\n  v_passes_title_block boolean := true;\n  v_recent_touch_count int;\n  v_paid_count int;\n  v_replied_count int;\nBEGIN\n  -- Pull the queue row\n  SELECT * INTO q FROM outreach_queue WHERE id = p_outreach_queue_id;\n  IF NOT FOUND THEN\n    RETURN QUERY SELECT false, 'queue_row_not_found', NULL::text, NULL::text, NULL::text, NULL::text, NULL::text, NULL::text, NULL::text, NULL::text, NULL::text;\n    RETURN;\n  END IF;\n\n  -- Pull the contact\n  SELECT * INTO c FROM contacts WHERE normalized_email = lower(q.email);\n  IF NOT FOUND THEN\n    RETURN QUERY SELECT false, 'contact_not_found', q.email, NULL::text, NULL::text, NULL::text, NULL::text, NULL::text, q.email_subject, q.email_body, q.case_file;\n    RETURN;\n  END IF;\n\n  -- FILTER 1: Identity completeness\n  IF c.first_name IS NULL OR length(trim(c.first_name)) < 2 THEN\n    RETURN QUERY SELECT false, 'no_first_name', q.email, c.first_name, c.last_name, c.company, c.job_title, c.linkedin_url, q.email_subject, q.email_body, q.case_file;\n    RETURN;\n  END IF;\n  IF c.linkedin_url IS NULL OR c.linkedin_url = '' THEN\n    RETURN QUERY SELECT false, 'no_linkedin_url', q.email, c.first_name, c.last_name, c.company, c.job_title, c.linkedin_url, q.email_subject, q.email_body, q.case_file;\n    RETURN;\n  END IF;\n  IF c.company IS NULL OR length(trim(c.company)) < 2 THEN\n    RETURN QUERY SELECT false, 'no_company', q.email, c.first_name, c.last_name, c.company, c.job_title, c.linkedin_url, q.email_subject, q.email_body, q.case_file;\n    RETURN;\n  END IF;\n\n  v_domain := lower(split_part(q.email, '@', 2));\n  v_company_lower := lower(coalesce(c.company, ''));\n  v_title_lower := lower(coalesce(c.job_title, ''));\n\n  -- FILTER 2a: Domain blocklist (always reject)\n  IF EXISTS (SELECT 1 FROM dm_audience_signals WHERE signal_type = 'domain_block' AND lower(value) = v_domain) THEN\n    RETURN QUERY SELECT false, 'blocked_personal_domain:' || v_domain, q.email, c.first_name, c.last_name, c.company, c.job_title, c.linkedin_url, q.email_subject, q.email_body, q.case_file;\n    RETURN;\n  END IF;\n\n  -- FILTER 2b: Title blocklist (always reject if title contains blocked term)\n  IF v_title_lower != '' THEN\n    IF EXISTS (SELECT 1 FROM dm_audience_signals WHERE signal_type = 'title_block' AND v_title_lower LIKE '%' || lower(value) || '%') THEN\n      RETURN QUERY SELECT false, 'blocked_title:' || v_title_lower, q.email, c.first_name, c.last_name, c.company, c.job_title, c.linkedin_url, q.email_subject, q.email_body, q.case_file;\n      RETURN;\n    END IF;\n  END IF;\n\n  -- FILTER 2c: Audience fit — pass if any of these is true:\n  --   (a) Email domain on pharma allowlist\n  --   (b) Company name contains a pharma keyword\n  --   (c) Domain contains a pharma keyword\n  --   (d) Job title contains an allowed compliance signal\n  IF EXISTS (SELECT 1 FROM dm_audience_signals WHERE signal_type = 'pharma_domain' AND lower(value) = v_domain) THEN\n    v_passes_audience := true;\n  ELSIF EXISTS (SELECT 1 FROM dm_audience_signals WHERE signal_type = 'pharma_keyword' AND v_company_lower LIKE '%' || lower(value) || '%') THEN\n    v_passes_audience := true;\n  ELSIF EXISTS (SELECT 1 FROM dm_audience_signals WHERE signal_type = 'pharma_keyword' AND v_domain LIKE '%' || lower(value) || '%') THEN\n    v_passes_audience := true;\n  ELSIF v_title_lower != '' AND EXISTS (SELECT 1 FROM dm_audience_signals WHERE signal_type = 'title_allow' AND v_title_lower LIKE '%' || lower(value) || '%') THEN\n    v_passes_audience := true;\n  END IF;\n\n  IF NOT v_passes_audience THEN\n    RETURN QUERY SELECT false, 'audience_review_required', q.email, c.first_name, c.last_name, c.company, c.job_title, c.linkedin_url, q.email_subject, q.email_body, q.case_file;\n    RETURN;\n  END IF;\n\n  -- FILTER 3a: Cooldown — no DM/email touch in last N hours\n  SELECT count(*) INTO v_recent_touch_count\n  FROM outreach_touches\n  WHERE target_email = q.email\n    AND sent_at >= now() - ((SELECT cooldown_hours FROM dm_automation_config WHERE id=1)::text || ' hours')::interval\n    AND channel IN ('linkedin_dm', 'email');\n  IF v_recent_touch_count > 0 THEN\n    RETURN QUERY SELECT false, 'cooldown_active:' || v_recent_touch_count || '_recent_touches', q.email, c.first_name, c.last_name, c.company, c.job_title, c.linkedin_url, q.email_subject, q.email_body, q.case_file;\n    RETURN;\n  END IF;\n\n  -- FILTER 3b: Already paying customer\n  SELECT count(*) INTO v_paid_count FROM orders \n  WHERE contact_id = c.id AND order_status = 'completed' AND refunded_at IS NULL;\n  IF v_paid_count > 0 THEN\n    RETURN QUERY SELECT false, 'is_paying_customer', q.email, c.first_name, c.last_name, c.company, c.job_title, c.linkedin_url, q.email_subject, q.email_body, q.case_file;\n    RETURN;\n  END IF;\n\n  -- FILTER 3c: Already replied to a previous touch\n  SELECT count(*) INTO v_replied_count FROM outreach_touches\n  WHERE target_email = q.email AND reply_received = true;\n  IF v_replied_count > 0 THEN\n    RETURN QUERY SELECT false, 'already_replied', q.email, c.first_name, c.last_name, c.company, c.job_title, c.linkedin_url, q.email_subject, q.email_body, q.case_file;\n    RETURN;\n  END IF;\n\n  -- ALL FILTERS PASSED\n  RETURN QUERY SELECT true, 'eligible', q.email, c.first_name, c.last_name, c.company, c.job_title, c.linkedin_url, q.email_subject, q.email_body, q.case_file;\nEND;\n$function$\n"
+ },
+ {
+  "name": "enroll_from_link_click",
+  "args": "p_email text, p_page_url text, p_user_agent text, p_ip_address text",
+  "returns": "jsonb",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.enroll_from_link_click(p_email text, p_page_url text, p_user_agent text DEFAULT NULL::text, p_ip_address text DEFAULT NULL::text)\n RETURNS jsonb\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_staging_id    bigint;\n  v_slug          text;\n  v_mapped_cohort text;\n  v_lead          RECORD;\n  v_enroll_result jsonb;\n  v_log_id        bigint;\n  v_result_label  text;\n  v_enrollment_id bigint;\n  v_existing_active bigint;\nBEGIN\n  IF p_email IS NULL OR p_email = '' THEN\n    INSERT INTO nurture_link_click_log (email, page_url, result, result_detail, user_agent, ip_address)\n    VALUES (p_email, p_page_url, 'error',\n            jsonb_build_object('error', 'no_email_provided'),\n            p_user_agent, p_ip_address);\n    RETURN jsonb_build_object('ok', false, 'reason', 'no_email_provided');\n  END IF;\n\n  v_slug := extract_case_file_slug(p_page_url);\n\n  IF v_slug IS NOT NULL THEN\n    SELECT cohort INTO v_mapped_cohort FROM case_file_cohort_map WHERE page_slug = v_slug;\n  END IF;\n\n  SELECT id, full_name, email, case_file_interest, target_account_priority,\n         is_paying_customer, automation_paused\n    INTO v_lead\n  FROM warm_outbound_staging\n  WHERE lower(email) = lower(p_email)\n  ORDER BY id DESC\n  LIMIT 1;\n\n  IF NOT FOUND THEN\n    INSERT INTO nurture_link_click_log (email, page_url, page_slug, result, result_detail, user_agent, ip_address)\n    VALUES (p_email, p_page_url, v_slug, 'no_staging_match',\n            jsonb_build_object('email', p_email),\n            p_user_agent, p_ip_address);\n    RETURN jsonb_build_object('ok', false, 'reason', 'no_staging_match', 'email', p_email);\n  END IF;\n\n  v_staging_id := v_lead.id;\n\n  IF v_lead.is_paying_customer THEN\n    INSERT INTO nurture_link_click_log (email, page_url, page_slug, staging_id, result, result_detail, user_agent, ip_address)\n    VALUES (p_email, p_page_url, v_slug, v_staging_id, 'is_paying_customer',\n            jsonb_build_object('staging_id', v_staging_id),\n            p_user_agent, p_ip_address);\n    RETURN jsonb_build_object('ok', false, 'reason', 'is_paying_customer', 'staging_id', v_staging_id);\n  END IF;\n\n  -- CHECK FOR ACTIVE ENROLLMENT FIRST (before mutating anything)\n  SELECT id INTO v_existing_active\n  FROM nurture_enrollments\n  WHERE staging_id = v_staging_id AND status = 'active'\n  LIMIT 1;\n\n  IF v_existing_active IS NOT NULL THEN\n    INSERT INTO nurture_link_click_log\n      (email, page_url, page_slug, staging_id, enrollment_id, result, result_detail, user_agent, ip_address)\n    VALUES\n      (p_email, p_page_url, v_slug, v_staging_id, v_existing_active, 'already_enrolled',\n       jsonb_build_object('enrollment_id', v_existing_active, 'reason', 'already_enrolled'),\n       p_user_agent, p_ip_address)\n    RETURNING id INTO v_log_id;\n\n    RETURN jsonb_build_object(\n      'ok', false,\n      'reason', 'already_enrolled',\n      'enrollment_id', v_existing_active,\n      'staging_id', v_staging_id,\n      'page_slug', v_slug,\n      'log_id', v_log_id\n    );\n  END IF;\n\n  -- Only NOW write the case_file_interest, since we know we're proceeding to enroll\n  IF v_mapped_cohort IS NOT NULL THEN\n    UPDATE warm_outbound_staging\n    SET case_file_interest = v_mapped_cohort\n    WHERE id = v_staging_id;\n  END IF;\n\n  v_enroll_result := enroll_in_nurture(\n    v_staging_id,\n    'link_click',\n    'clicked: ' || COALESCE(p_page_url, '(no url)')\n  );\n\n  IF (v_enroll_result->>'ok')::boolean THEN\n    v_result_label := 'enrolled';\n    v_enrollment_id := (v_enroll_result->>'enrollment_id')::bigint;\n  ELSIF v_enroll_result->>'reason' = 'suppressed' THEN\n    v_result_label := 'suppressed';\n  ELSIF v_enroll_result->>'reason' = 'already_customer' THEN\n    v_result_label := 'is_paying_customer';\n  ELSE\n    v_result_label := 'error';\n  END IF;\n\n  INSERT INTO nurture_link_click_log\n    (email, page_url, page_slug, staging_id, enrollment_id, result, result_detail, user_agent, ip_address)\n  VALUES\n    (p_email, p_page_url, v_slug, v_staging_id, v_enrollment_id, v_result_label, v_enroll_result, p_user_agent, p_ip_address)\n  RETURNING id INTO v_log_id;\n\n  RETURN v_enroll_result || jsonb_build_object(\n    'log_id', v_log_id,\n    'staging_id', v_staging_id,\n    'page_slug', v_slug,\n    'mapped_cohort', v_mapped_cohort\n  );\nEND;\n$function$\n"
+ },
+ {
+  "name": "enroll_on_link_click",
+  "args": "p_email text, p_url text, p_case_file_slug text",
+  "returns": "jsonb",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.enroll_on_link_click(p_email text, p_url text, p_case_file_slug text DEFAULT NULL::text)\n RETURNS jsonb\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_staging_id bigint;\nBEGIN\n  IF p_email IS NULL THEN\n    RETURN jsonb_build_object('ok', false, 'reason', 'no_email_provided');\n  END IF;\n\n  -- Find the most recent matching staging row\n  SELECT id INTO v_staging_id\n  FROM warm_outbound_staging\n  WHERE lower(email) = lower(p_email)\n  ORDER BY created_at DESC\n  LIMIT 1;\n\n  IF v_staging_id IS NULL THEN\n    RETURN jsonb_build_object('ok', false, 'reason', 'email_not_in_staging', 'email', p_email);\n  END IF;\n\n  -- If a case file slug came in via the click event, refine the cohort hint on the staging row\n  -- (only if the row doesn't already have an interest set — preserve original targeting)\n  IF p_case_file_slug IS NOT NULL THEN\n    UPDATE warm_outbound_staging\n    SET case_file_interest = COALESCE(case_file_interest, p_case_file_slug)\n    WHERE id = v_staging_id;\n  END IF;\n\n  RETURN enroll_in_nurture(v_staging_id, 'link_click', 'url=' || COALESCE(p_url, 'unknown'));\nEND;\n$function$\n"
+ },
+ {
+  "name": "evaluate_lead_readiness",
+  "args": "row_id bigint",
+  "returns": "text",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.evaluate_lead_readiness(row_id bigint)\n RETURNS text\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  blocks JSONB;\n  block_count INT;\n  current_status TEXT;\n  current_attempts INT;\n  new_status TEXT;\nBEGIN\n  blocks := compute_lead_readiness_blocks(row_id);\n  block_count := jsonb_array_length(blocks);\n\n  SELECT readiness_status, COALESCE(readiness_attempts, 0)\n  INTO current_status, current_attempts\n  FROM warm_outbound_staging\n  WHERE id = row_id;\n\n  IF block_count = 0 THEN\n    -- All fields present. Lead is ready for personalization.\n    new_status := 'ready';\n    UPDATE warm_outbound_staging\n    SET readiness_status = new_status,\n        readiness_checked_at = NOW(),\n        readiness_block_reasons = blocks,\n        readiness_retry_due_at = NULL\n    WHERE id = row_id;\n  ELSE\n    -- Missing data. Decide between pending_retry and failed_enrichment.\n    IF current_attempts = 0 THEN\n      -- First failure: schedule a retry in 48 hours.\n      new_status := 'pending_retry';\n      UPDATE warm_outbound_staging\n      SET readiness_status = new_status,\n          readiness_checked_at = NOW(),\n          readiness_block_reasons = blocks,\n          readiness_attempts = 1,\n          readiness_retry_due_at = NOW() + INTERVAL '48 hours'\n      WHERE id = row_id;\n    ELSE\n      -- Second (or later) failure: archive.\n      new_status := 'failed_enrichment';\n      UPDATE warm_outbound_staging\n      SET readiness_status = new_status,\n          readiness_checked_at = NOW(),\n          readiness_block_reasons = blocks,\n          readiness_attempts = current_attempts + 1,\n          readiness_failed_at = NOW(),\n          archived_at = NOW(),\n          archive_reason = 'enrichment_failed_after_retry'\n      WHERE id = row_id;\n    END IF;\n  END IF;\n\n  RETURN new_status;\nEND;\n$function$\n"
+ },
+ {
+  "name": "exec_optimization_query",
+  "args": "sql text",
+  "returns": "jsonb",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.exec_optimization_query(sql text)\n RETURNS jsonb\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nDECLARE\n  result jsonb;\nBEGIN\n  -- Block obvious mutations\n  IF sql ~* '\\m(insert|update|delete|drop|truncate|alter|create|grant|revoke)\\M' THEN\n    RAISE EXCEPTION 'Mutation queries not allowed in exec_optimization_query';\n  END IF;\n  \n  EXECUTE 'SELECT to_jsonb(coalesce(jsonb_agg(t), ''[]''::jsonb)) FROM (' || sql || ') t' INTO result;\n  RETURN result;\nEND;\n$function$\n"
+ },
+ {
+  "name": "extract_case_file_slug",
+  "args": "p_url text",
+  "returns": "text",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.extract_case_file_slug(p_url text)\n RETURNS text\n LANGUAGE plpgsql\n IMMUTABLE\nAS $function$\nDECLARE\n  v_slug text;\nBEGIN\n  IF p_url IS NULL OR p_url = '' THEN\n    RETURN NULL;\n  END IF;\n\n  -- Match cases.complianceworxs.com/<slug> or complianceworxs.com/<slug>\n  -- Pull the first path segment after the host.\n  v_slug := lower(regexp_replace(\n    p_url,\n    '^https?://[^/]*complianceworxs\\.com/([a-z0-9\\-]+).*$',\n    '\\1',\n    'i'\n  ));\n\n  -- If regex didn't match (returned the whole URL), give up\n  IF v_slug = lower(p_url) OR v_slug = '' THEN\n    RETURN NULL;\n  END IF;\n\n  RETURN v_slug;\nEND;\n$function$\n"
+ },
+ {
+  "name": "fetch_followup_draft_candidates",
+  "args": "p_limit integer",
+  "returns": "TABLE(id bigint, full_name text, email text, job_title text, company text, industry text, fit_score integer, attio_record_id text, first_touch_draft_subject text, first_touch_draft_body text, sequence_email_count integer, followup_stage text, followup_drafts jsonb, next_followup_due_at timestamp with time zone, dispatched_at timestamp with time zone, send_message_id text, case_file_interest text)",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.fetch_followup_draft_candidates(p_limit integer DEFAULT 25)\n RETURNS TABLE(id bigint, full_name text, email text, job_title text, company text, industry text, fit_score integer, attio_record_id text, first_touch_draft_subject text, first_touch_draft_body text, sequence_email_count integer, followup_stage text, followup_drafts jsonb, next_followup_due_at timestamp with time zone, dispatched_at timestamp with time zone, send_message_id text, case_file_interest text)\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nDECLARE\nBEGIN\n  RETURN QUERY\n  SELECT \n    s.id,\n    s.full_name,\n    s.email,\n    s.job_title,\n    s.company,\n    s.industry,\n    s.fit_score,\n    s.attio_record_id,\n    s.first_touch_draft_subject,\n    s.first_touch_draft_body,\n    s.sequence_email_count,\n    s.followup_stage,\n    s.followup_drafts,\n    s.next_followup_due_at,\n    s.dispatched_at,\n    s.send_message_id,\n    s.case_file_interest\n  FROM warm_outbound_staging s\n  WHERE s.next_followup_due_at <= NOW()\n    AND s.replied_at IS NULL\n    AND s.automation_paused = false\n    AND s.archived_at IS NULL\n    AND s.followup_completed_at IS NULL\n    AND s.is_paying_customer = false\n    AND s.dispatched_at IS NOT NULL\n    AND s.send_message_id IS NOT NULL\n    AND NOT EXISTS (\n      SELECT 1\n      FROM jsonb_array_elements(COALESCE(s.followup_drafts, '[]'::jsonb)) AS d\n      WHERE (d->>'touch_number')::int = \n        COALESCE(\n          NULLIF(SUBSTRING(s.followup_stage FROM 'followup_(\\d+)_due'), '')::int,\n          1\n        )\n    )\n  ORDER BY s.next_followup_due_at ASC\n  LIMIT p_limit;\nEND;\n$function$\n"
+ },
+ {
+  "name": "fire_hot_lead_task_creator",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.fire_hot_lead_task_creator()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_base_url TEXT := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1';\n  v_secret TEXT := '3i_6DdFRT-EmxT0nczskfeA3HshAnu64w40C9-WmkAE';\n  v_request_id BIGINT;\nBEGIN\n  -- Only fire when reply_sentiment changes to a hot value AND no task exists yet\n  IF NEW.reply_sentiment IN ('asset_requested', 'positive_intent')\n     AND (OLD.reply_sentiment IS NULL OR OLD.reply_sentiment IS DISTINCT FROM NEW.reply_sentiment)\n     AND NEW.hot_lead_task_id IS NULL\n     AND NEW.attio_record_id IS NOT NULL THEN\n    BEGIN\n      SELECT net.http_get(\n        url := v_base_url || '/hot-lead-task-creator?reply_id=' || NEW.id || '&secret=' || v_secret,\n        timeout_milliseconds := 30000\n      ) INTO v_request_id;\n    EXCEPTION WHEN OTHERS THEN\n      INSERT INTO outbound_events (staging_id, event_name, provider, properties)\n      VALUES (NEW.staging_id, 'hot_lead_task_dispatch_failed', 'trigger',\n        jsonb_build_object('reply_id', NEW.id, 'error', SQLERRM));\n    END;\n  END IF;\n\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "fire_posthog_purchase_event",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.fire_posthog_purchase_event()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nBEGIN\n  -- Only fire on completed, non-refunded orders\n  IF NEW.order_status = 'completed' AND NEW.refunded_at IS NULL THEN\n    PERFORM net.http_post(\n      url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/posthog-purchase-event',\n      headers := '{\"Content-Type\": \"application/json\"}'::jsonb,\n      body := jsonb_build_object('order_id', NEW.id),\n      timeout_milliseconds := 10000\n    );\n  END IF;\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "fix_stage_touch_mismatch",
+  "args": "",
+  "returns": "bigint",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.fix_stage_touch_mismatch()\n RETURNS bigint\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'public'\nAS $function$\nDECLARE\n  v_count bigint;\nBEGIN\n  WITH updated AS (\n    UPDATE warm_outbound_staging w\n    SET followup_stage = \n      CASE w.followup_stage\n        WHEN 'followup_1_due' THEN 'followup_2_due'\n        WHEN 'followup_2_due' THEN 'followup_3_due'\n        WHEN 'followup_3_due' THEN 'followup_4_due'\n        WHEN 'followup_4_due' THEN 'followup_5_due'\n        WHEN 'followup_5_due' THEN 'followup_6_due'\n        WHEN 'followup_6_due' THEN 'followup_7_due'\n        WHEN 'followup_7_due' THEN 'breakup_due'\n        ELSE w.followup_stage\n      END\n    WHERE w.followup_stage LIKE 'followup_%_due'\n      AND w.replied_at IS NULL\n      AND w.archived_at IS NULL\n      AND w.followup_drafts IS NOT NULL\n      AND EXISTS (\n        SELECT 1 FROM jsonb_array_elements(w.followup_drafts) d\n        WHERE (d->>'touch_number')::int = \n          CASE w.followup_stage\n            WHEN 'followup_1_due' THEN 1\n            WHEN 'followup_2_due' THEN 2\n            WHEN 'followup_3_due' THEN 3\n            WHEN 'followup_4_due' THEN 4\n            WHEN 'followup_5_due' THEN 5\n            WHEN 'followup_6_due' THEN 6\n            WHEN 'followup_7_due' THEN 7\n          END\n        AND d->>'status' = 'sent'\n      )\n    RETURNING 1\n  )\n  SELECT COUNT(*)::bigint INTO v_count FROM updated;\n  RETURN v_count;\nEND;\n$function$\n"
+ },
+ {
+  "name": "flag_enterprise_community_members",
+  "args": "",
+  "returns": "void",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.flag_enterprise_community_members()\n RETURNS void\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  rec RECORD;\nBEGIN\n  FOR rec IN\n    SELECT cm.email, cm.name, cm.title, cm.company, cm.linkedin_url, cm.joined_at\n    FROM community_members cm\n    WHERE cm.email IS NOT NULL\n    AND (\n      cm.title ILIKE '%director%' OR\n      cm.title ILIKE '%vp%' OR\n      cm.title ILIKE '%vice president%' OR\n      cm.title ILIKE '%head of%' OR\n      cm.title ILIKE '%chief%' OR\n      cm.title ILIKE '%president%' OR\n      cm.title ILIKE '%svp%' OR\n      cm.title ILIKE '%evp%'\n    )\n    AND cm.email NOT IN (\n      SELECT email FROM purchases WHERE email IS NOT NULL\n    )\n  LOOP\n    INSERT INTO public.outreach_queue (\n      email,\n      trigger_reason,\n      status,\n      queued_at\n    ) VALUES (\n      rec.email,\n      'enterprise_community_member',\n      'pending',\n      now()\n    )\n    ON CONFLICT DO NOTHING;\n  END LOOP;\nEND;\n$function$\n"
+ },
+ {
+  "name": "format_lead_for_mailerlite",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.format_lead_for_mailerlite()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\r\nBEGIN\r\n  -- We are populating the 'answers' column to be used by the Webhook\r\n  NEW.answers = jsonb_build_object(\r\n    'email', NEW.email,\r\n    'fields', jsonb_build_object(\r\n        'risk_level', NEW.risk_level,\r\n        'case_file', NEW.case_file\r\n    )\r\n  );\r\n  RETURN NEW;\r\nEND;\r\n$function$\n"
+ },
+ {
+  "name": "generate_partner_code",
+  "args": "applicant_name text, applicant_company text",
+  "returns": "text",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.generate_partner_code(applicant_name text, applicant_company text)\n RETURNS text\n LANGUAGE plpgsql\nAS $function$\r\nDECLARE\r\n  base_source TEXT;\r\n  base_code   TEXT;\r\n  candidate   TEXT;\r\n  suffix      INT := 0;\r\nBEGIN\r\n  base_source := COALESCE(NULLIF(TRIM(applicant_company), ''), applicant_name);\r\n  base_code := UPPER(REGEXP_REPLACE(base_source, '[^A-Za-z0-9]', '', 'g'));\r\n  base_code := SUBSTRING(base_code FROM 1 FOR 8);\r\n\r\n  IF base_code = '' OR base_code IS NULL THEN\r\n    base_code := 'PARTNER';\r\n  END IF;\r\n\r\n  candidate := base_code;\r\n  WHILE EXISTS (SELECT 1 FROM partners WHERE partner_code = candidate) LOOP\r\n    suffix := suffix + 1;\r\n    candidate := base_code || suffix::TEXT;\r\n  END LOOP;\r\n\r\n  RETURN candidate;\r\nEND;\r\n$function$\n"
+ },
+ {
+  "name": "get_operating_dashboard",
+  "args": "",
+  "returns": "TABLE(section text, item text, detail text, item_status text)",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.get_operating_dashboard()\n RETURNS TABLE(section text, item text, detail text, item_status text)\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nBEGIN\n  PERFORM refresh_key_results();\n  \n  RETURN QUERY\n  SELECT '1_OBJECTIVE'::text, o.name::text, \n    o.period_start::text || ' to ' || o.period_end::text, \n    o.status::text\n  FROM objectives o WHERE o.status = 'active' ORDER BY o.id;\n  \n  RETURN QUERY\n  SELECT '2_KEY_RESULTS'::text, k.name::text,\n    'current: ' || k.current_value::text || ' / target: ' || k.target_value::text || ' (' ||\n    COALESCE(ROUND((k.current_value / NULLIF(k.target_value, 0) * 100)::numeric, 0)::text, '0') || '%)',\n    CASE \n      WHEN k.current_value >= k.target_value THEN 'achieved'\n      WHEN k.current_value >= k.target_value * 0.7 THEN 'on_track'\n      WHEN k.current_value >= k.target_value * 0.3 THEN 'behind'\n      ELSE 'critical'\n    END::text\n  FROM key_results k \n  INNER JOIN objectives o ON o.id = k.objective_id \n  WHERE o.status = 'active' ORDER BY k.id;\n  \n  RETURN QUERY\n  SELECT '3_INITIATIVES'::text, \n    'L' || i.filter_layer::text || ': ' || i.name::text,\n    COALESCE(i.measure_of_success, 'no measure defined')::text,\n    i.status::text\n  FROM initiatives i\n  WHERE i.status IN ('active', 'planned') \n  ORDER BY i.filter_layer, i.id;\n  \n  RETURN QUERY\n  SELECT '4_THIS_WEEK'::text, t.task::text,\n    COALESCE((SELECT i2.name FROM initiatives i2 WHERE i2.id = t.initiative_id), 'unattached')::text,\n    t.status::text\n  FROM weekly_tasks t\n  WHERE t.week_of = DATE_TRUNC('week', CURRENT_DATE)\n  ORDER BY t.initiative_id NULLS LAST, t.id;\n  \n  RETURN QUERY\n  SELECT '5_LEGACY_COMMITMENTS'::text, oc.commitment::text, oc.week_of::text, oc.status::text\n  FROM operator_commitments oc\n  WHERE oc.status = 'open' AND oc.week_of >= CURRENT_DATE - interval '14 days'\n  ORDER BY oc.week_of DESC, oc.id DESC;\nEND;\n$function$\n"
+ },
+ {
+  "name": "get_optimizer_config",
+  "args": "p_key text",
+  "returns": "jsonb",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.get_optimizer_config(p_key text)\n RETURNS jsonb\n LANGUAGE sql\n STABLE\nAS $function$\n  SELECT value FROM optimizer_config WHERE key = p_key;\n$function$\n"
+ },
+ {
+  "name": "get_optimizer_config",
+  "args": "p_key text, p_default jsonb",
+  "returns": "jsonb",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.get_optimizer_config(p_key text, p_default jsonb DEFAULT NULL::jsonb)\n RETURNS jsonb\n LANGUAGE plpgsql\n STABLE\nAS $function$\nDECLARE\n  v_value JSONB;\nBEGIN\n  SELECT value INTO v_value FROM optimizer_config WHERE key = p_key;\n  RETURN COALESCE(v_value, p_default);\nEND;\n$function$\n"
+ },
+ {
+  "name": "get_revenue_status",
+  "args": "",
+  "returns": "TABLE(metric text, value text)",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.get_revenue_status()\n RETURNS TABLE(metric text, value text)\n LANGUAGE sql\n SECURITY DEFINER\nAS $function$\n  WITH r AS (SELECT * FROM v_may2026_revenue)\n  SELECT 'May 2026 revenue', '$' || to_char((SELECT may_revenue_usd FROM r), 'FM999,990.00') FROM r\n  UNION ALL SELECT 'May 2026 target', '$1,500.00' FROM r\n  UNION ALL SELECT 'Pct to target', to_char((SELECT pct_to_target FROM r) * 100, 'FM990.0') || '%' FROM r\n  UNION ALL SELECT 'May orders', (SELECT may_orders::text FROM r) FROM r\n  UNION ALL SELECT 'Days remaining to May 31', (SELECT days_remaining_to_may31::text FROM r) FROM r\n  UNION ALL SELECT 'Required daily run rate', '$' || to_char((SELECT required_daily_run_rate_usd FROM r), 'FM999,990.00') FROM r\n  UNION ALL SELECT 'Last 7 days revenue', '$' || to_char((SELECT last_7d_revenue_usd FROM r), 'FM999,990.00') FROM r\n  UNION ALL SELECT 'Last 30 days revenue', '$' || to_char((SELECT last_30d_revenue_usd FROM r), 'FM999,990.00') FROM r\n  UNION ALL SELECT 'Lifetime revenue', '$' || to_char((SELECT lifetime_revenue_usd FROM r), 'FM999,990.00') FROM r\n  UNION ALL SELECT 'Lifetime orders', (SELECT lifetime_orders::text FROM r) FROM r;\n$function$\n"
+ },
+ {
+  "name": "halfvec",
+  "args": "halfvec, integer, boolean",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec(halfvec, integer, boolean)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec$function$\n"
+ },
+ {
+  "name": "halfvec_accum",
+  "args": "double precision[], halfvec",
+  "returns": "double precision[]",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_accum(double precision[], halfvec)\n RETURNS double precision[]\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_accum$function$\n"
+ },
+ {
+  "name": "halfvec_add",
+  "args": "halfvec, halfvec",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_add(halfvec, halfvec)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_add$function$\n"
+ },
+ {
+  "name": "halfvec_avg",
+  "args": "double precision[]",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_avg(double precision[])\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_avg$function$\n"
+ },
+ {
+  "name": "halfvec_cmp",
+  "args": "halfvec, halfvec",
+  "returns": "integer",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_cmp(halfvec, halfvec)\n RETURNS integer\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_cmp$function$\n"
+ },
+ {
+  "name": "halfvec_combine",
+  "args": "double precision[], double precision[]",
+  "returns": "double precision[]",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_combine(double precision[], double precision[])\n RETURNS double precision[]\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_combine$function$\n"
+ },
+ {
+  "name": "halfvec_concat",
+  "args": "halfvec, halfvec",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_concat(halfvec, halfvec)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_concat$function$\n"
+ },
+ {
+  "name": "halfvec_eq",
+  "args": "halfvec, halfvec",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_eq(halfvec, halfvec)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_eq$function$\n"
+ },
+ {
+  "name": "halfvec_ge",
+  "args": "halfvec, halfvec",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_ge(halfvec, halfvec)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_ge$function$\n"
+ },
+ {
+  "name": "halfvec_gt",
+  "args": "halfvec, halfvec",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_gt(halfvec, halfvec)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_gt$function$\n"
+ },
+ {
+  "name": "halfvec_in",
+  "args": "cstring, oid, integer",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_in(cstring, oid, integer)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_in$function$\n"
+ },
+ {
+  "name": "halfvec_l2_squared_distance",
+  "args": "halfvec, halfvec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_l2_squared_distance(halfvec, halfvec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_l2_squared_distance$function$\n"
+ },
+ {
+  "name": "halfvec_le",
+  "args": "halfvec, halfvec",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_le(halfvec, halfvec)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_le$function$\n"
+ },
+ {
+  "name": "halfvec_lt",
+  "args": "halfvec, halfvec",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_lt(halfvec, halfvec)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_lt$function$\n"
+ },
+ {
+  "name": "halfvec_mul",
+  "args": "halfvec, halfvec",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_mul(halfvec, halfvec)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_mul$function$\n"
+ },
+ {
+  "name": "halfvec_ne",
+  "args": "halfvec, halfvec",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_ne(halfvec, halfvec)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_ne$function$\n"
+ },
+ {
+  "name": "halfvec_negative_inner_product",
+  "args": "halfvec, halfvec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_negative_inner_product(halfvec, halfvec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_negative_inner_product$function$\n"
+ },
+ {
+  "name": "halfvec_out",
+  "args": "halfvec",
+  "returns": "cstring",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_out(halfvec)\n RETURNS cstring\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_out$function$\n"
+ },
+ {
+  "name": "halfvec_recv",
+  "args": "internal, oid, integer",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_recv(internal, oid, integer)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_recv$function$\n"
+ },
+ {
+  "name": "halfvec_send",
+  "args": "halfvec",
+  "returns": "bytea",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_send(halfvec)\n RETURNS bytea\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_send$function$\n"
+ },
+ {
+  "name": "halfvec_spherical_distance",
+  "args": "halfvec, halfvec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_spherical_distance(halfvec, halfvec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_spherical_distance$function$\n"
+ },
+ {
+  "name": "halfvec_sub",
+  "args": "halfvec, halfvec",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_sub(halfvec, halfvec)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_sub$function$\n"
+ },
+ {
+  "name": "halfvec_to_float4",
+  "args": "halfvec, integer, boolean",
+  "returns": "real[]",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_to_float4(halfvec, integer, boolean)\n RETURNS real[]\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_to_float4$function$\n"
+ },
+ {
+  "name": "halfvec_to_sparsevec",
+  "args": "halfvec, integer, boolean",
+  "returns": "sparsevec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_to_sparsevec(halfvec, integer, boolean)\n RETURNS sparsevec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_to_sparsevec$function$\n"
+ },
+ {
+  "name": "halfvec_to_vector",
+  "args": "halfvec, integer, boolean",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_to_vector(halfvec, integer, boolean)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_to_vector$function$\n"
+ },
+ {
+  "name": "halfvec_typmod_in",
+  "args": "cstring[]",
+  "returns": "integer",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.halfvec_typmod_in(cstring[])\n RETURNS integer\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_typmod_in$function$\n"
+ },
+ {
+  "name": "hamming_distance",
+  "args": "bit, bit",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.hamming_distance(bit, bit)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$hamming_distance$function$\n"
+ },
+ {
+  "name": "hnsw_bit_support",
+  "args": "internal",
+  "returns": "internal",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.hnsw_bit_support(internal)\n RETURNS internal\n LANGUAGE c\nAS '$libdir/vector', $function$hnsw_bit_support$function$\n"
+ },
+ {
+  "name": "hnsw_halfvec_support",
+  "args": "internal",
+  "returns": "internal",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.hnsw_halfvec_support(internal)\n RETURNS internal\n LANGUAGE c\nAS '$libdir/vector', $function$hnsw_halfvec_support$function$\n"
+ },
+ {
+  "name": "hnsw_sparsevec_support",
+  "args": "internal",
+  "returns": "internal",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.hnsw_sparsevec_support(internal)\n RETURNS internal\n LANGUAGE c\nAS '$libdir/vector', $function$hnsw_sparsevec_support$function$\n"
+ },
+ {
+  "name": "hnswhandler",
+  "args": "internal",
+  "returns": "index_am_handler",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.hnswhandler(internal)\n RETURNS index_am_handler\n LANGUAGE c\nAS '$libdir/vector', $function$hnswhandler$function$\n"
+ },
+ {
+  "name": "inner_product",
+  "args": "vector, vector",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.inner_product(vector, vector)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$inner_product$function$\n"
+ },
+ {
+  "name": "inner_product",
+  "args": "halfvec, halfvec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.inner_product(halfvec, halfvec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_inner_product$function$\n"
+ },
+ {
+  "name": "inner_product",
+  "args": "sparsevec, sparsevec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.inner_product(sparsevec, sparsevec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_inner_product$function$\n"
+ },
+ {
+  "name": "ivfflat_bit_support",
+  "args": "internal",
+  "returns": "internal",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.ivfflat_bit_support(internal)\n RETURNS internal\n LANGUAGE c\nAS '$libdir/vector', $function$ivfflat_bit_support$function$\n"
+ },
+ {
+  "name": "ivfflat_halfvec_support",
+  "args": "internal",
+  "returns": "internal",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.ivfflat_halfvec_support(internal)\n RETURNS internal\n LANGUAGE c\nAS '$libdir/vector', $function$ivfflat_halfvec_support$function$\n"
+ },
+ {
+  "name": "ivfflathandler",
+  "args": "internal",
+  "returns": "index_am_handler",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.ivfflathandler(internal)\n RETURNS index_am_handler\n LANGUAGE c\nAS '$libdir/vector', $function$ivfflathandler$function$\n"
+ },
+ {
+  "name": "jaccard_distance",
+  "args": "bit, bit",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.jaccard_distance(bit, bit)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$jaccard_distance$function$\n"
+ },
+ {
+  "name": "l1_distance",
+  "args": "vector, vector",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.l1_distance(vector, vector)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$l1_distance$function$\n"
+ },
+ {
+  "name": "l1_distance",
+  "args": "halfvec, halfvec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.l1_distance(halfvec, halfvec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_l1_distance$function$\n"
+ },
+ {
+  "name": "l1_distance",
+  "args": "sparsevec, sparsevec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.l1_distance(sparsevec, sparsevec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_l1_distance$function$\n"
+ },
+ {
+  "name": "l2_distance",
+  "args": "vector, vector",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.l2_distance(vector, vector)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$l2_distance$function$\n"
+ },
+ {
+  "name": "l2_distance",
+  "args": "halfvec, halfvec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.l2_distance(halfvec, halfvec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_l2_distance$function$\n"
+ },
+ {
+  "name": "l2_distance",
+  "args": "sparsevec, sparsevec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.l2_distance(sparsevec, sparsevec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_l2_distance$function$\n"
+ },
+ {
+  "name": "l2_norm",
+  "args": "halfvec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.l2_norm(halfvec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_l2_norm$function$\n"
+ },
+ {
+  "name": "l2_norm",
+  "args": "sparsevec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.l2_norm(sparsevec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_l2_norm$function$\n"
+ },
+ {
+  "name": "l2_normalize",
+  "args": "vector",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.l2_normalize(vector)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$l2_normalize$function$\n"
+ },
+ {
+  "name": "l2_normalize",
+  "args": "halfvec",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.l2_normalize(halfvec)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_l2_normalize$function$\n"
+ },
+ {
+  "name": "l2_normalize",
+  "args": "sparsevec",
+  "returns": "sparsevec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.l2_normalize(sparsevec)\n RETURNS sparsevec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_l2_normalize$function$\n"
+ },
+ {
+  "name": "log_inbound_reply_events",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.log_inbound_reply_events()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  IF TG_OP = 'INSERT' THEN\n    INSERT INTO outbound_events (staging_id, attio_record_id, email, event_name, provider, properties)\n    VALUES (\n      NEW.staging_id, NEW.attio_record_id, NEW.from_email,\n      'inbound_reply_received', 'gmail',\n      jsonb_build_object(\n        'reply_id', NEW.id,\n        'gmail_thread_id', NEW.gmail_thread_id,\n        'subject', NEW.subject,\n        'from_name', NEW.from_name\n      )\n    );\n\n    IF NEW.staging_id IS NOT NULL THEN\n      UPDATE warm_outbound_staging\n      SET replied_at = COALESCE(replied_at, NEW.received_at)\n      WHERE id = NEW.staging_id AND replied_at IS NULL;\n    END IF;\n\n    RETURN NEW;\n  END IF;\n\n  -- Classification arrived: emit reply_sentiment as a first-class dimension\n  IF NEW.classification IS NOT NULL AND OLD.classification IS NULL THEN\n    INSERT INTO outbound_events (staging_id, attio_record_id, email, event_name, provider, properties)\n    VALUES (\n      NEW.staging_id, NEW.attio_record_id, NEW.from_email,\n      'reply_classified', 'claude_haiku',\n      jsonb_build_object(\n        'reply_id', NEW.id,\n        'classification', NEW.classification,\n        'reply_sentiment', NEW.reply_sentiment,\n        'asset_requested', NEW.asset_requested,\n        'classification_confidence', NEW.classification_confidence,\n        'recommended_stage', NEW.recommended_stage,\n        'has_draft', NEW.draft_body IS NOT NULL\n      )\n    );\n  END IF;\n\n  -- Asset request specifically: emit a high-priority event for follow-up\n  IF NEW.asset_requested = TRUE AND (OLD.asset_requested IS NULL OR OLD.asset_requested = FALSE) THEN\n    INSERT INTO outbound_events (staging_id, attio_record_id, email, event_name, provider, properties)\n    VALUES (\n      NEW.staging_id, NEW.attio_record_id, NEW.from_email,\n      'asset_requested', 'cw',\n      jsonb_build_object(\n        'reply_id', NEW.id,\n        'gmail_thread_id', NEW.gmail_thread_id,\n        'reply_sentiment', NEW.reply_sentiment\n      )\n    );\n  END IF;\n\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "log_manual_dm",
+  "args": "p_staging_id bigint, p_dm_note text, p_sent_at timestamp with time zone",
+  "returns": "TABLE(id bigint, contact text, manual_dm_count integer, last_manual_dm_at timestamp with time zone, dm_status text, automation_paused boolean)",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.log_manual_dm(p_staging_id bigint, p_dm_note text DEFAULT NULL::text, p_sent_at timestamp with time zone DEFAULT now())\n RETURNS TABLE(id bigint, contact text, manual_dm_count integer, last_manual_dm_at timestamp with time zone, dm_status text, automation_paused boolean)\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_current_count INT;\nBEGIN\n  -- Get current count (stored in followup_stage as a parseable string or default 0)\n  -- We use the dm_status field convention: 'sent_manual' or 'sent_manual_3x' etc.\n  -- Simpler: store count in a dedicated column if we add one, otherwise use ingest_payload JSONB\n  \n  -- Get current manual DM count from ingest_payload (or initialize)\n  SELECT COALESCE((ingest_payload->>'manual_dm_count')::INT, 0)\n  INTO v_current_count\n  FROM warm_outbound_staging\n  WHERE warm_outbound_staging.id = p_staging_id;\n  \n  -- Increment + update\n  UPDATE warm_outbound_staging\n  SET\n    dm_status = 'sent_manual',\n    dm_first_message_sent_at = COALESCE(dm_first_message_sent_at, p_sent_at),\n    ingest_payload = COALESCE(ingest_payload, '{}'::jsonb) || jsonb_build_object(\n      'manual_dm_count', v_current_count + 1,\n      'last_manual_dm_at', p_sent_at,\n      'last_manual_dm_note', p_dm_note\n    ),\n    -- Auto-clear awaiting-human state when manual DM is sent\n    automation_paused = FALSE,\n    automation_paused_reason = CASE \n      WHEN automation_paused_reason ILIKE '%awaiting_human%' THEN NULL \n      ELSE automation_paused_reason \n    END,\n    followup_completed_at = p_sent_at,\n    followup_stage = 'manual_dm_' || (v_current_count + 1) || 'x'\n  WHERE warm_outbound_staging.id = p_staging_id;\n\n  -- Return summary\n  RETURN QUERY\n  SELECT \n    ws.id,\n    (ws.first_name || ' ' || ws.last_name)::TEXT as contact,\n    (ws.ingest_payload->>'manual_dm_count')::INT as manual_dm_count,\n    (ws.ingest_payload->>'last_manual_dm_at')::TIMESTAMPTZ as last_manual_dm_at,\n    ws.dm_status,\n    ws.automation_paused\n  FROM warm_outbound_staging ws\n  WHERE ws.id = p_staging_id;\nEND;\n$function$\n"
+ },
+ {
+  "name": "mark_staging_emailed_on_send",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.mark_staging_emailed_on_send()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nBEGIN\n  IF NEW.staging_id IS NOT NULL AND NEW.http_status = 200 THEN\n    UPDATE warm_outbound_staging\n    SET enrichment_status = 'Emailed',\n        dispatched_at = COALESCE(dispatched_at, NEW.send_date::timestamptz, NOW())\n    WHERE id = NEW.staging_id\n      AND enrichment_status NOT IN ('Replied', 'Booked', 'Hot', 'disqualified_in_attio');\n  END IF;\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "notify_partner_application",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.notify_partner_application()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nDECLARE\n  function_url text := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/partner-application-notifier';\n  payload jsonb;\nBEGIN\n  payload := jsonb_build_object(\n    'type', TG_OP,\n    'table', TG_TABLE_NAME,\n    'record', to_jsonb(NEW)\n  );\n\n  PERFORM net.http_post(\n    url := function_url,\n    headers := jsonb_build_object('Content-Type', 'application/json'),\n    body := payload\n  );\n\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "on_partner_application_approved",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.on_partner_application_approved()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\r\nDECLARE\r\n  new_code TEXT;\r\n  service_key TEXT;\r\nBEGIN\r\n  -- Only run when status transitions to 'approved'\r\n  IF NEW.status = 'approved' AND (OLD.status IS DISTINCT FROM 'approved') THEN\r\n\r\n    -- If a code was already assigned (manual override), use it; else generate\r\n    IF NEW.partner_code IS NULL OR NEW.partner_code = '' THEN\r\n      new_code := generate_partner_code(NEW.full_name, NEW.company);\r\n      NEW.partner_code := new_code;\r\n    ELSE\r\n      new_code := NEW.partner_code;\r\n    END IF;\r\n\r\n    -- Stamp approval timestamp\r\n    NEW.approved_at := COALESCE(NEW.approved_at, NOW());\r\n\r\n    -- Create the active partner row (idempotent)\r\n    INSERT INTO partners (partner_code, partner_name, contact_email, status)\r\n    VALUES (\r\n      new_code,\r\n      COALESCE(NULLIF(TRIM(NEW.company), ''), NEW.full_name),\r\n      NEW.email,\r\n      'active'\r\n    )\r\n    ON CONFLICT (contact_email) DO UPDATE\r\n      SET status = 'active',\r\n          partner_code = EXCLUDED.partner_code;\r\n\r\n    -- Fire welcome email via pg_net (async)\r\n    BEGIN\r\n      service_key := current_setting('app.service_role_key', true);\r\n    EXCEPTION WHEN OTHERS THEN\r\n      service_key := NULL;\r\n    END;\r\n\r\n    IF service_key IS NOT NULL THEN\r\n      PERFORM net.http_post(\r\n        url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/partner-welcome',\r\n        headers := jsonb_build_object(\r\n          'Content-Type', 'application/json',\r\n          'Authorization', 'Bearer ' || service_key\r\n        ),\r\n        body := jsonb_build_object(\r\n          'email', NEW.email,\r\n          'full_name', NEW.full_name,\r\n          'company', NEW.company,\r\n          'partner_code', new_code\r\n        )\r\n      );\r\n\r\n      NEW.welcome_email_sent_at := NOW();\r\n    END IF;\r\n\r\n  END IF;\r\n\r\n  RETURN NEW;\r\nEND;\r\n$function$\n"
+ },
+ {
+  "name": "populate_outreach_queue",
+  "args": "",
+  "returns": "void",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.populate_outreach_queue()\n RETURNS void\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nBEGIN\n  INSERT INTO public.outreach_queue (email, user_id, case_file, intent_score, trigger_reason)\n  SELECT\n    l.email,\n    l.session_id,\n    l.case_file,\n    COALESCE(us.intent_score, 20) as intent_score,\n    CASE\n      WHEN l.source = 'lock_overlay' THEN 'cta_no_purchase'\n      WHEN l.source ILIKE '%assessment%' THEN 'assessment_completed'\n      WHEN us.cta_clicks > 0 THEN 'cta_no_purchase'\n      WHEN us.locks_encountered >= 3 THEN 'high_lock_views'\n      ELSE 'email_captured'\n    END as trigger_reason\n  FROM public.leads l\n  LEFT JOIN public.user_state us ON l.session_id = us.user_id\n  WHERE\n    l.email IS NOT NULL\n    AND l.email NOT ILIKE '%complianceworxs%'\n    AND l.email NOT ILIKE '%coursworx%'\n    AND l.email NOT ILIKE '%test%'\n    AND l.email NOT ILIKE '%zapier%'\n    AND l.email NOT ILIKE '%example.com%'\n    AND l.source != 'disqualified'\n    AND COALESCE(us.purchases, 0) = 0\n    -- Already a buyer\n    AND l.email NOT IN (SELECT email FROM public.purchases)\n    -- Already drafted or sent in the last 30 days (check real log table)\n    AND l.email NOT IN (\n      SELECT lead_email FROM public.lead_outreach_log\n      WHERE sent_at >= now() - interval '30 days'\n    )\n    -- Already in the queue in ANY status in the last 30 days\n    -- (catches: pending, sent, skipped, drafted — anything recent)\n    AND l.email NOT IN (\n      SELECT email FROM public.outreach_queue\n      WHERE queued_at >= now() - interval '30 days'\n    )\n  ORDER BY l.created_at DESC;\nEND;\n$function$\n"
+ },
+ {
+  "name": "protect_cohort_leads_from_disqualification",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.protect_cohort_leads_from_disqualification()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  IF NEW.enrichment_status = 'disqualified_junk_company'\n     AND NEW.cohort_label IN (\n       'QA_LEADERSHIP', 'QA_OPERATIONS', 'QUALITY_SYSTEMS', 'QUALITY_CONTROL',\n       'REGULATORY_AFFAIRS', 'GMP_COMPLIANCE', 'CSV_VALIDATION',\n       'VALIDATION_GENERIC', 'AUDIT'\n     ) THEN\n    RAISE EXCEPTION 'Cannot mark cohort-tagged ICP lead (%) as disqualified_junk_company. Lead %, cohort %.',\n      NEW.full_name, NEW.id, NEW.cohort_label;\n  END IF;\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "queue_attio_after_reply",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.queue_attio_after_reply()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nDECLARE\n    v_attio_id TEXT;\nBEGIN\n    SELECT attio_record_id INTO v_attio_id\n    FROM warm_outbound_staging\n    WHERE id = NEW.staging_id;\n\n    IF v_attio_id IS NULL THEN\n        RETURN NEW;\n    END IF;\n\n    IF NEW.sentiment IS DISTINCT FROM 'auto_reply' THEN\n        INSERT INTO attio_sync_queue (attio_record_id, object_type, update_payload, triggered_by)\n        VALUES (\n            v_attio_id,\n            'people',\n            jsonb_build_object('outreach_status', 'Replied'),\n            'inbound_reply'\n        );\n\n        UPDATE warm_outbound_staging\n        SET replied_at = NEW.received_at\n        WHERE id = NEW.staging_id AND replied_at IS NULL;\n    END IF;\n\n    RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "queue_attio_after_send",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.queue_attio_after_send()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n    v_attio_id TEXT;\nBEGIN\n    SELECT attio_record_id INTO v_attio_id\n    FROM warm_outbound_staging\n    WHERE id = NEW.staging_id;\n\n    IF v_attio_id IS NULL THEN\n        RETURN NEW;\n    END IF;\n\n    INSERT INTO attio_sync_queue (attio_record_id, object_type, update_payload, triggered_by)\n    VALUES (\n        v_attio_id,\n        'people',\n        jsonb_build_object('outreach_status', 'Emailed'),\n        'outbound_send'\n    );\n\n    RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "recover_abandoned_payment_intents",
+  "args": "",
+  "returns": "void",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.recover_abandoned_payment_intents()\n RETURNS void\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  rec RECORD;\n  v_email text;\n  v_payload jsonb;\nBEGIN\n  FOR rec IN\n    SELECT id, amount, created, charges, _raw_data\n    FROM stripe.payment_intents\n    WHERE status IN ('requires_payment_method', 'requires_confirmation', 'requires_action', 'processing')\n    AND to_timestamp(created) BETWEEN now() - INTERVAL '24 hours' AND now() - INTERVAL '1 hour'\n  LOOP\n    v_email := COALESCE(\n      rec.charges->'data'->0->'billing_details'->>'email',\n      rec._raw_data->>'receipt_email',\n      rec._raw_data->'metadata'->>'email'\n    );\n\n    IF v_email IS NULL OR v_email = '' THEN CONTINUE; END IF;\n\n    IF EXISTS (SELECT 1 FROM public.purchases WHERE email = v_email) THEN CONTINUE; END IF;\n\n    IF EXISTS (SELECT 1 FROM public.outreach_log WHERE email = v_email AND trigger_reason = 'abandoned_payment') THEN CONTINUE; END IF;\n\n    v_payload := jsonb_build_object(\n      'email', v_email,\n      'fields', jsonb_build_object(\n        'source', 'abandoned_payment',\n        'amount_cents', rec.amount,\n        'payment_intent_id', rec.id\n      ),\n      'groups', jsonb_build_array('181203426870298094')\n    );\n\n    PERFORM net.http_post(\n      url := 'https://connect.mailerlite.com/api/subscribers',\n      headers := jsonb_build_object(\n        'Content-Type', 'application/json',\n        'Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiOTE0Nzc2Y2QzMWE1MTg5ZmQ1ZjMzMDExYTE3MjYwMmM5NmZkOTg5MDc3MDA2MzFlYzgyNjBjYjA5OTZmZTgwNGMwZTJiZDM0N2EwZWQzZjIiLCJpYXQiOjE3NzI4ODQyNzkuMjIxMzA4LCJuYmYiOjE3NzI4ODQyNzkuMjIxMzEyLCJleHAiOjQ5Mjg1NTc4NzkuMjExMTIzLCJzdWIiOiIyMTgzNjY1Iiwic2NvcGVzIjpbXX0.RLr170kV8fgmPK-BSK3LI5uXqf3efp4N_dvWGCD3jabbkDzdY6c6IpnrLXYC2RWW89pKWF3VkKHKprGI3kcKLByhCHOK5LH8a74I0P0dkXI7Of4HbYYqJpjAfqjCTteaZZECdDI5s-qQcgjNvpEIBMGUdeXOngwnrdj19PH102LnCo0MiOeckgggdf58fkK_F6bU0FNtTxpotXWkc3VFWyZeghxddNzBrHDC-mlvP4_sp46exdISi8cLG9WOThQkd_jtUalkqbu2KMPxhUXqZi--ccvJ4JJh2b8w93BYXKkBXtbx8o52HtOeLCQ5RNt9kqY4Sre9YZdW7FLErxUze_Z2dpnmpoLSwNBu9eHAhKcf5lixup74lUPiEN8wD2s40l8FLsDpMtqi4doRtu3KCig8ExGlhxmDYRrTNdBYhvxdPLZv3OU49Nrn9QaM1zKDqXnj1a81ojqoB8o1Sugg3Nqjo_4SSZacGRg0jSMrsB4A9Fb9ZsWRAkraeYsZJ8i0eWXR4B1kWdi4nSaFJle1OPBI4dS6ReSzmOzZvOnSJwgCuo7O2My_A8Nyu52Shb7nuxCXYTRrM-gyqhST_MO6SEST8-wwydcjljG3YSh5nuOihXSqyGqgPCaYrjGin5Fh5i75KyUy53gOWhy64o4U_qSkGukgHwF8-GMZ1j2cOD0'\n      ),\n      body := v_payload\n    );\n\n    INSERT INTO public.outreach_log (email, trigger_reason, result, subject)\n    VALUES (v_email, 'abandoned_payment', 'sent', 'Abandoned payment recovery')\n    ON CONFLICT DO NOTHING;\n\n  END LOOP;\nEND;\n$function$\n"
+ },
+ {
+  "name": "redact_old_ai_logs",
+  "args": "",
+  "returns": "void",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.redact_old_ai_logs()\n RETURNS void\n LANGUAGE plpgsql\nAS $function$\nbegin\n  update ai_service_log\n    set input = null,\n        output = null,\n        redacted_at = now()\n    where created_at < now() - interval '180 days'\n      and redacted_at is null;\nend;\n$function$\n"
+ },
+ {
+  "name": "refresh_daily_intelligence",
+  "args": "",
+  "returns": "void",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.refresh_daily_intelligence()\n RETURNS void\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nBEGIN\n\n  -- Step 1: Refresh buyer_journey from events\n  INSERT INTO public.buyer_journey\n  SELECT\n    session_id as user_id,\n    COUNT(*) FILTER (WHERE event_name = 'lock_view'),\n    COUNT(*) FILTER (WHERE event_name = 'cta_click'),\n    COUNT(DISTINCT session_id),\n    EXTRACT(EPOCH FROM (\n      MAX(created_at) FILTER (WHERE event_name = 'purchase')\n      - MIN(created_at)\n    ))::INT,\n    MIN(created_at),\n    MAX(created_at) FILTER (WHERE event_name = 'purchase')\n  FROM public.events\n  WHERE session_id IS NOT NULL\n  GROUP BY session_id\n  ON CONFLICT (user_id) DO UPDATE\n  SET\n    num_lock_views = EXCLUDED.num_lock_views,\n    num_cta_clicks = EXCLUDED.num_cta_clicks,\n    num_sessions = EXCLUDED.num_sessions,\n    time_to_purchase_seconds = EXCLUDED.time_to_purchase_seconds,\n    purchase_event = EXCLUDED.purchase_event;\n\n  -- Step 2: Update action_log outcomes from purchases\n  UPDATE public.action_log al\n  SET\n    result = 'purchase',\n    time_to_conversion_seconds = EXTRACT(EPOCH FROM (p.purchased_at - al.timestamp))::INT\n  FROM public.purchases p\n  WHERE al.user_id = p.email\n  AND al.result IS NULL;\n\n  -- Step 3: Recalibrate scoring\n  UPDATE public.user_state\n  SET conversion_probability =\n    LEAST(1, GREATEST(0, (intent_score * 0.6 - hesitation_score * 0.4) / 100));\n\n  -- Step 4: Update recency weights and priority scores\n  UPDATE public.user_state SET\n    recency_weight = GREATEST(0.1, 1.0 - (EXTRACT(EPOCH FROM (now() - last_seen_ts)) / 86400.0 / 30.0)),\n    priority_score = ROUND((\n      LEAST(1, GREATEST(0, (intent_score - hesitation_score) / 100.0))\n      * GREATEST(0.1, 1.0 - (EXTRACT(EPOCH FROM (now() - last_seen_ts)) / 86400.0 / 30.0))\n      * CASE WHEN hesitation_score > 0 THEN GREATEST(0.1, 1.0 - (hesitation_score / 200.0)) ELSE 1.0 END\n    )::numeric, 4);\n\n  -- Step 5: Write daily intelligence snapshot\n  INSERT INTO public.daily_intelligence (\n    total_revenue_cents,\n    total_purchases,\n    new_purchases_today,\n    total_lock_views,\n    total_cta_clicks,\n    lock_to_cta_rate,\n    cta_to_purchase_rate,\n    high_intent_users,\n    emails_captured,\n    unconverted_cta_clicks,\n    top_prospect_user_id,\n    top_prospect_intent,\n    top_prospect_last_action,\n    top_prospect_last_seen,\n    top_prospect_email,\n    action_queue,\n    avg_intent_score,\n    avg_conversion_probability\n  )\n  SELECT\n    (SELECT COUNT(*) * 14900 FROM purchases) as total_revenue_cents,\n    (SELECT COUNT(*) FROM purchases) as total_purchases,\n    (SELECT COUNT(*) FROM purchases WHERE purchased_at >= now() - interval '24 hours') as new_purchases_today,\n    (SELECT COUNT(*) FROM events WHERE event_name = 'lock_view') as total_lock_views,\n    (SELECT COUNT(*) FROM events WHERE event_name = 'cta_click') as total_cta_clicks,\n    CASE WHEN (SELECT COUNT(*) FROM events WHERE event_name = 'lock_view') > 0\n      THEN ROUND(((SELECT COUNT(*) FROM events WHERE event_name = 'cta_click')::numeric /\n           (SELECT COUNT(*) FROM events WHERE event_name = 'lock_view')::numeric) * 100, 1)\n      ELSE 0 END,\n    CASE WHEN (SELECT COUNT(*) FROM events WHERE event_name = 'cta_click') > 0\n      THEN ROUND(((SELECT COUNT(*) FROM purchases)::numeric /\n           (SELECT COUNT(*) FROM events WHERE event_name = 'cta_click')::numeric) * 100, 1)\n      ELSE 0 END,\n    (SELECT COUNT(*) FROM user_state WHERE intent_score >= 70 AND purchases = 0),\n    (SELECT COUNT(*) FROM leads WHERE email IS NOT NULL\n      AND email NOT ILIKE '%complianceworxs%'\n      AND email NOT ILIKE '%test%'),\n    (SELECT COUNT(*) FROM user_state WHERE cta_clicks > 0 AND purchases = 0),\n    (SELECT user_id FROM user_state WHERE purchases = 0 ORDER BY priority_score DESC LIMIT 1),\n    (SELECT intent_score FROM user_state WHERE purchases = 0 ORDER BY priority_score DESC LIMIT 1),\n    (SELECT last_action FROM user_state WHERE purchases = 0 ORDER BY priority_score DESC LIMIT 1),\n    (SELECT last_seen_ts FROM user_state WHERE purchases = 0 ORDER BY priority_score DESC LIMIT 1),\n    (SELECT l.email FROM leads l\n     JOIN user_state us ON l.session_id = us.user_id\n     WHERE us.purchases = 0\n     ORDER BY us.priority_score DESC LIMIT 1),\n    (SELECT COALESCE(jsonb_agg(\n      jsonb_build_object(\n        'user_id', user_id,\n        'intent', ROUND(intent_score::numeric, 0),\n        'hesitation', ROUND(hesitation_score::numeric, 0),\n        'cta_clicks', cta_clicks,\n        'lock_views', locks_encountered,\n        'visits', visits,\n        'last_action', last_action,\n        'priority', ROUND(priority_score::numeric, 3),\n        'last_seen', last_seen_ts\n      )\n    ), '[]'::jsonb)\n    FROM (\n      SELECT * FROM user_state\n      WHERE intent_score >= 40 AND purchases = 0\n      ORDER BY priority_score DESC LIMIT 10\n    ) q),\n    (SELECT ROUND(AVG(intent_score)::numeric, 1) FROM user_state WHERE intent_score > 0),\n    (SELECT ROUND(AVG(conversion_probability)::numeric, 3) FROM user_state WHERE conversion_probability > 0);\n\nEND;\n$function$\n"
+ },
+ {
+  "name": "refresh_key_results",
+  "args": "",
+  "returns": "TABLE(kr_name text, target numeric, current numeric, pct_to_target numeric, kr_status text)",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.refresh_key_results()\n RETURNS TABLE(kr_name text, target numeric, current numeric, pct_to_target numeric, kr_status text)\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nDECLARE\n  kr RECORD;\n  result_value numeric;\nBEGIN\n  FOR kr IN SELECT * FROM key_results WHERE metric_query IS NOT NULL LOOP\n    BEGIN\n      EXECUTE kr.metric_query INTO result_value;\n      UPDATE key_results SET current_value = COALESCE(result_value, 0), last_measured_at = now() WHERE id = kr.id;\n    EXCEPTION WHEN OTHERS THEN\n      UPDATE key_results SET last_measured_at = now() WHERE id = kr.id;\n    END;\n  END LOOP;\n  \n  RETURN QUERY\n    SELECT \n      k.name,\n      k.target_value,\n      k.current_value,\n      ROUND((k.current_value / NULLIF(k.target_value, 0) * 100)::numeric, 1) AS pct_to_target,\n      CASE \n        WHEN k.current_value >= k.target_value THEN 'achieved'\n        WHEN k.current_value >= k.target_value * 0.7 THEN 'on_track'\n        WHEN k.current_value >= k.target_value * 0.3 THEN 'behind'\n        ELSE 'critical'\n      END AS kr_status\n    FROM key_results k\n    INNER JOIN objectives o ON o.id = k.objective_id\n    WHERE o.status = 'active'\n    ORDER BY k.id;\nEND;\n$function$\n"
+ },
+ {
+  "name": "resolve_nurture_cohort",
+  "args": "p_case_file_interest text, p_target_account_priority text",
+  "returns": "text",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.resolve_nurture_cohort(p_case_file_interest text, p_target_account_priority text)\n RETURNS text\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_cohort text;\nBEGIN\n  -- case_file_interest is most specific (per-case-file landing page or DM)\n  IF p_case_file_interest IS NOT NULL THEN\n    v_cohort := lower(regexp_replace(p_case_file_interest, '[^a-zA-Z0-9_]+', '_', 'g'));\n    -- normalize trailing underscore\n    v_cohort := regexp_replace(v_cohort, '_+$', '');\n    -- If there's a sequence for this exact cohort, use it\n    IF EXISTS (SELECT 1 FROM nurture_sequences WHERE cohort = v_cohort AND active = true) THEN\n      RETURN v_cohort;\n    END IF;\n    -- Fuzzy match on prefix (e.g. \"batch-release\" -> batch_release_cohort)\n    SELECT cohort INTO v_cohort\n    FROM nurture_sequences\n    WHERE cohort ILIKE (lower(regexp_replace(p_case_file_interest, '[^a-zA-Z0-9]+', '_', 'g')) || '%')\n      AND active = true\n    ORDER BY cohort\n    LIMIT 1;\n    IF v_cohort IS NOT NULL THEN\n      RETURN v_cohort;\n    END IF;\n  END IF;\n\n  IF p_target_account_priority IS NOT NULL THEN\n    v_cohort := lower(regexp_replace(p_target_account_priority, '[^a-zA-Z0-9_]+', '_', 'g'));\n    v_cohort := regexp_replace(v_cohort, '_+$', '');\n    IF EXISTS (SELECT 1 FROM nurture_sequences WHERE cohort = v_cohort AND active = true) THEN\n      RETURN v_cohort;\n    END IF;\n  END IF;\n\n  RETURN 'universal';\nEND;\n$function$\n"
+ },
+ {
+  "name": "rls_auto_enable",
+  "args": "",
+  "returns": "event_trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.rls_auto_enable()\n RETURNS event_trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\n SET search_path TO 'pg_catalog'\nAS $function$\nDECLARE\n  cmd record;\nBEGIN\n  FOR cmd IN\n    SELECT *\n    FROM pg_event_trigger_ddl_commands()\n    WHERE command_tag IN ('CREATE TABLE', 'CREATE TABLE AS', 'SELECT INTO')\n      AND object_type IN ('table','partitioned table')\n  LOOP\n     IF cmd.schema_name IS NOT NULL AND cmd.schema_name IN ('public') AND cmd.schema_name NOT IN ('pg_catalog','information_schema') AND cmd.schema_name NOT LIKE 'pg_toast%' AND cmd.schema_name NOT LIKE 'pg_temp%' THEN\n      BEGIN\n        EXECUTE format('alter table if exists %s enable row level security', cmd.object_identity);\n        RAISE LOG 'rls_auto_enable: enabled RLS on %', cmd.object_identity;\n      EXCEPTION\n        WHEN OTHERS THEN\n          RAISE LOG 'rls_auto_enable: failed to enable RLS on %', cmd.object_identity;\n      END;\n     ELSE\n        RAISE LOG 'rls_auto_enable: skip % (either system schema or not in enforced list: %.)', cmd.object_identity, cmd.schema_name;\n     END IF;\n  END LOOP;\nEND;\n$function$\n"
+ },
+ {
+  "name": "set_banned_language_flag",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.set_banned_language_flag()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nbegin\n  new.banned_language_found := check_banned_language(coalesce(new.content, ''));\n  return new;\nend;\n$function$\n"
+ },
+ {
+  "name": "set_optimizer_config",
+  "args": "p_key text, p_new_value jsonb, p_reasoning text, p_reversal_trigger text, p_executed boolean",
+  "returns": "void",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.set_optimizer_config(p_key text, p_new_value jsonb, p_reasoning text, p_reversal_trigger text DEFAULT NULL::text, p_executed boolean DEFAULT true)\n RETURNS void\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_old jsonb;\n  v_mode text;\nBEGIN\n  SELECT value INTO v_old FROM optimizer_config WHERE key = p_key;\n  v_mode := (SELECT value::text FROM optimizer_config WHERE key = 'optimizer_mode');\n\n  INSERT INTO optimizer_decisions (\n    mode, stage, parameter_changed, old_value, new_value,\n    reasoning, reversal_trigger, executed\n  ) VALUES (\n    REPLACE(v_mode, '\"', ''), 'execute', p_key, v_old, p_new_value,\n    p_reasoning, p_reversal_trigger, p_executed\n  );\n\n  IF p_executed THEN\n    UPDATE optimizer_config\n       SET value = p_new_value,\n           updated_at = now(),\n           updated_by = 'outbound-optimizer',\n           reasoning = p_reasoning\n     WHERE key = p_key;\n  END IF;\nEND;\n$function$\n"
+ },
+ {
+  "name": "sparsevec",
+  "args": "sparsevec, integer, boolean",
+  "returns": "sparsevec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec(sparsevec, integer, boolean)\n RETURNS sparsevec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec$function$\n"
+ },
+ {
+  "name": "sparsevec_cmp",
+  "args": "sparsevec, sparsevec",
+  "returns": "integer",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_cmp(sparsevec, sparsevec)\n RETURNS integer\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_cmp$function$\n"
+ },
+ {
+  "name": "sparsevec_eq",
+  "args": "sparsevec, sparsevec",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_eq(sparsevec, sparsevec)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_eq$function$\n"
+ },
+ {
+  "name": "sparsevec_ge",
+  "args": "sparsevec, sparsevec",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_ge(sparsevec, sparsevec)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_ge$function$\n"
+ },
+ {
+  "name": "sparsevec_gt",
+  "args": "sparsevec, sparsevec",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_gt(sparsevec, sparsevec)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_gt$function$\n"
+ },
+ {
+  "name": "sparsevec_in",
+  "args": "cstring, oid, integer",
+  "returns": "sparsevec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_in(cstring, oid, integer)\n RETURNS sparsevec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_in$function$\n"
+ },
+ {
+  "name": "sparsevec_l2_squared_distance",
+  "args": "sparsevec, sparsevec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_l2_squared_distance(sparsevec, sparsevec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_l2_squared_distance$function$\n"
+ },
+ {
+  "name": "sparsevec_le",
+  "args": "sparsevec, sparsevec",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_le(sparsevec, sparsevec)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_le$function$\n"
+ },
+ {
+  "name": "sparsevec_lt",
+  "args": "sparsevec, sparsevec",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_lt(sparsevec, sparsevec)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_lt$function$\n"
+ },
+ {
+  "name": "sparsevec_ne",
+  "args": "sparsevec, sparsevec",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_ne(sparsevec, sparsevec)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_ne$function$\n"
+ },
+ {
+  "name": "sparsevec_negative_inner_product",
+  "args": "sparsevec, sparsevec",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_negative_inner_product(sparsevec, sparsevec)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_negative_inner_product$function$\n"
+ },
+ {
+  "name": "sparsevec_out",
+  "args": "sparsevec",
+  "returns": "cstring",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_out(sparsevec)\n RETURNS cstring\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_out$function$\n"
+ },
+ {
+  "name": "sparsevec_recv",
+  "args": "internal, oid, integer",
+  "returns": "sparsevec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_recv(internal, oid, integer)\n RETURNS sparsevec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_recv$function$\n"
+ },
+ {
+  "name": "sparsevec_send",
+  "args": "sparsevec",
+  "returns": "bytea",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_send(sparsevec)\n RETURNS bytea\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_send$function$\n"
+ },
+ {
+  "name": "sparsevec_to_halfvec",
+  "args": "sparsevec, integer, boolean",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_to_halfvec(sparsevec, integer, boolean)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_to_halfvec$function$\n"
+ },
+ {
+  "name": "sparsevec_to_vector",
+  "args": "sparsevec, integer, boolean",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_to_vector(sparsevec, integer, boolean)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_to_vector$function$\n"
+ },
+ {
+  "name": "sparsevec_typmod_in",
+  "args": "cstring[]",
+  "returns": "integer",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sparsevec_typmod_in(cstring[])\n RETURNS integer\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$sparsevec_typmod_in$function$\n"
+ },
+ {
+  "name": "stream_outbound_event_to_posthog",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.stream_outbound_event_to_posthog()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_posthog_key TEXT := 'phc_pYjwPXihpZPL8MaS86gxmEZMXvi3ZsvKdWuqZzLQEjt7';\n  v_payload JSONB;\n  v_distinct_id TEXT;\n  v_request_id BIGINT;\nBEGIN\n  -- Use email as distinct_id when available, else staging_id, else event id\n  v_distinct_id := COALESCE(NEW.email, 'staging_' || NEW.staging_id::text, 'event_' || NEW.id::text);\n\n  v_payload := jsonb_build_object(\n    'api_key', v_posthog_key,\n    'event', NEW.event_name,\n    'distinct_id', v_distinct_id,\n    'timestamp', NEW.created_at,\n    'properties', COALESCE(NEW.properties, '{}'::jsonb) || jsonb_build_object(\n      '$event_uuid', NEW.id::text,\n      'staging_id', NEW.staging_id,\n      'attio_record_id', NEW.attio_record_id,\n      'provider', NEW.provider,\n      'email', NEW.email,\n      'source', 'cw_outbound_pipeline'\n    )\n  );\n\n  BEGIN\n    SELECT net.http_post(\n      url := 'https://us.i.posthog.com/capture/',\n      body := v_payload,\n      headers := jsonb_build_object('Content-Type', 'application/json'),\n      timeout_milliseconds := 5000\n    ) INTO v_request_id;\n\n    -- Mark synced so the legacy posthog-sync cron skips it (defensive double-up guard)\n    -- Use a separate UPDATE to avoid recursion since this trigger is on outbound_events\n    UPDATE outbound_events\n       SET posthog_synced_at = NOW(), posthog_request_id = v_request_id\n     WHERE id = NEW.id;\n  EXCEPTION WHEN OTHERS THEN\n    -- Don't block the insert; only log\n    RAISE NOTICE 'PostHog stream failed for event %: %', NEW.id, SQLERRM;\n  END;\n\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "subvector",
+  "args": "vector, integer, integer",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.subvector(vector, integer, integer)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$subvector$function$\n"
+ },
+ {
+  "name": "subvector",
+  "args": "halfvec, integer, integer",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.subvector(halfvec, integer, integer)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_subvector$function$\n"
+ },
+ {
+  "name": "suppress_buyer_in_mailerlite",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.suppress_buyer_in_mailerlite()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_email text;\nBEGIN\n  -- Only fire on succeeded payment intents\n  IF NEW.status != 'succeeded' THEN\n    RETURN NEW;\n  END IF;\n\n  -- Extract email\n  v_email := COALESCE(\n    NEW.charges->'data'->0->'billing_details'->>'email',\n    NEW._raw_data->>'receipt_email',\n    NEW._raw_data->'metadata'->>'email'\n  );\n\n  IF v_email IS NULL OR v_email = '' THEN\n    RETURN NEW;\n  END IF;\n\n  -- Add to CW_Suppression_Purchased group in MailerLite\n  -- This stops all active nurture sequences for this subscriber\n  PERFORM net.http_post(\n    url := 'https://connect.mailerlite.com/api/subscribers',\n    headers := jsonb_build_object(\n      'Content-Type', 'application/json',\n      'Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiOTE0Nzc2Y2QzMWE1MTg5ZmQ1ZjMzMDExYTE3MjYwMmM5NmZkOTg5MDc3MDA2MzFlYzgyNjBjYjA5OTZmZTgwNGMwZTJiZDM0N2EwZWQzZjIiLCJpYXQiOjE3NzI4ODQyNzkuMjIxMzA4LCJuYmYiOjE3NzI4ODQyNzkuMjIxMzEyLCJleHAiOjQ5Mjg1NTc4NzkuMjExMTIzLCJzdWIiOiIyMTgzNjY1Iiwic2NvcGVzIjpbXX0.RLr170kV8fgmPK-BSK3LI5uXqf3efp4N_dvWGCD3jabbkDzdY6c6IpnrLXYC2RWW89pKWF3VkKHKprGI3kcKLByhCHOK5LH8a74I0P0dkXI7Of4HbYYqJpjAfqjCTteaZZECdDI5s-qQcgjNvpEIBMGUdeXOngwnrdj19PH102LnCo0MiOeckgggdf58fkK_F6bU0FNtTxpotXWkc3VFWyZeghxddNzBrHDC-mlvP4_sp46exdISi8cLG9WOThQkd_jtUalkqbu2KMPxhUXqZi--ccvJ4JJh2b8w93BYXKkBXtbx8o52HtOeLCQ5RNt9kqY4Sre9YZdW7FLErxUze_Z2dpnmpoLSwNBu9eHAhKcf5lixup74lUPiEN8wD2s40l8FLsDpMtqi4doRtu3KCig8ExGlhxmDYRrTNdBYhvxdPLZv3OU49Nrn9QaM1zKDqXnj1a81ojqoB8o1Sugg3Nqjo_4SSZacGRg0jSMrsB4A9Fb9ZsWRAkraeYsZJ8i0eWXR4B1kWdi4nSaFJle1OPBI4dS6ReSzmOzZvOnSJwgCuo7O2My_A8Nyu52Shb7nuxCXYTRrM-gyqhST_MO6SEST8-wwydcjljG3YSh5nuOihXSqyGqgPCaYrjGin5Fh5i75KyUy53gOWhy64o4U_qSkGukgHwF8-GMZ1j2cOD0'\n    ),\n    body := jsonb_build_object(\n      'email', LOWER(v_email),\n      'groups', jsonb_build_array('183721668625041237')\n    )\n  );\n\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "sync_community_member_to_leads",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sync_community_member_to_leads()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  IF NEW.email IS NULL OR NEW.email = '' THEN\n    RETURN NEW;\n  END IF;\n\n  INSERT INTO public.leads (\n    email,\n    name,\n    title,\n    company,\n    source,\n    session_id\n  ) VALUES (\n    LOWER(NEW.email),\n    NEW.name,\n    NEW.title,\n    NEW.company,\n    'community_member',\n    'tir_' || NEW.id::text\n  )\n  ON CONFLICT (email) DO UPDATE SET\n    name    = COALESCE(EXCLUDED.name, leads.name),\n    title   = COALESCE(EXCLUDED.title, leads.title),\n    company = COALESCE(EXCLUDED.company, leads.company),\n    source  = 'community_member';\n\n  -- Push to MailerLite with community group tag\n  PERFORM net.http_post(\n    url := 'https://connect.mailerlite.com/api/subscribers',\n    headers := jsonb_build_object(\n      'Content-Type', 'application/json',\n      'Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiOTE0Nzc2Y2QzMWE1MTg5ZmQ1ZjMzMDExYTE3MjYwMmM5NmZkOTg5MDc3MDA2MzFlYzgyNjBjYjA5OTZmZTgwNGMwZTJiZDM0N2EwZWQzZjIiLCJpYXQiOjE3NzI4ODQyNzkuMjIxMzA4LCJuYmYiOjE3NzI4ODQyNzkuMjIxMzEyLCJleHAiOjQ5Mjg1NTc4NzkuMjExMTIzLCJzdWIiOiIyMTgzNjY1Iiwic2NvcGVzIjpbXX0.RLr170kV8fgmPK-BSK3LI5uXqf3efp4N_dvWGCD3jabbkDzdY6c6IpnrLXYC2RWW89pKWF3VkKHKprGI3kcKLByhCHOK5LH8a74I0P0dkXI7Of4HbYYqJpjAfqjCTteaZZECdDI5s-qQcgjNvpEIBMGUdeXOngwnrdj19PH102LnCo0MiOeckgggdf58fkK_F6bU0FNtTxpotXWkc3VFWyZeghxddNzBrHDC-mlvP4_sp46exdISi8cLG9WOThQkd_jtUalkqbu2KMPxhUXqZi--ccvJ4JJh2b8w93BYXKkBXtbx8o52HtOeLCQ5RNt9kqY4Sre9YZdW7FLErxUze_Z2dpnmpoLSwNBu9eHAhKcf5lixup74lUPiEN8wD2s40l8FLsDpMtqi4doRtu3KCig8ExGlhxmDYRrTNdBYhvxdPLZv3OU49Nrn9QaM1zKDqXnj1a81ojqoB8o1Sugg3Nqjo_4SSZacGRg0jSMrsB4A9Fb9ZsWRAkraeYsZJ8i0eWXR4B1kWdi4nSaFJle1OPBI4dS6ReSzmOzZvOnSJwgCuo7O2My_A8Nyu52Shb7nuxCXYTRrM-gyqhST_MO6SEST8-wwydcjljG3YSh5nuOihXSqyGqgPCaYrjGin5Fh5i75KyUy53gOWhy64o4U_qSkGukgHwF8-GMZ1j2cOD0'\n    ),\n    body := jsonb_build_object(\n      'email', LOWER(NEW.email),\n      'fields', jsonb_build_object(\n        'name', NEW.name,\n        'company', NEW.company,\n        'title', NEW.title,\n        'source', 'community_member'\n      ),\n      'groups', jsonb_build_array('181203426870298094')\n    )\n  );\n\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "sync_dm_reply_to_email_replied",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sync_dm_reply_to_email_replied()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  -- Only fire when dm_replied_at transitions from NULL to a value\n  IF NEW.dm_replied_at IS NOT NULL\n     AND (OLD.dm_replied_at IS NULL OR OLD.dm_replied_at IS DISTINCT FROM NEW.dm_replied_at)\n     AND NEW.replied_at IS NULL\n  THEN\n    NEW.replied_at = NEW.dm_replied_at;\n  END IF;\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "sync_gmail_send_to_outbound_log",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sync_gmail_send_to_outbound_log()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_attio_record_id text;\n  v_touch_number int;\nBEGIN\n  IF NEW.staging_id IS NULL THEN\n    RETURN NEW;\n  END IF;\n  \n  SELECT attio_record_id INTO v_attio_record_id \n  FROM warm_outbound_staging WHERE id = NEW.staging_id;\n  \n  v_touch_number := CASE NEW.send_kind\n    WHEN 'first_touch' THEN 1\n    WHEN 'followup_1' THEN 2\n    WHEN 'followup_2' THEN 3\n    WHEN 'followup_3' THEN 4\n    ELSE COALESCE(NEW.nurture_touch_number, 1)\n  END;\n  \n  INSERT INTO outbound_log (id, staging_id, attio_record_id, channel, touch_number, sent_at, sent_by, note)\n  VALUES (\n    gen_random_uuid(),\n    NEW.staging_id,\n    v_attio_record_id,\n    'email',\n    v_touch_number,\n    NEW.created_at,\n    'gmail_send_log_trigger',\n    'Auto-synced from gmail_send_log: ' || COALESCE(NEW.send_kind, 'unknown')\n  );\n  \n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "sync_stripe_payment_to_purchases",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.sync_stripe_payment_to_purchases()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_email text;\n  v_name text;\n  v_amount int;\n  v_case_file text;\n  v_case_file_id text;\n  v_artifact_id text;\nBEGIN\n  IF NEW.status != 'succeeded' THEN\n    RETURN NEW;\n  END IF;\n\n  IF EXISTS (SELECT 1 FROM public.purchases WHERE stripe_session_id = NEW.id) THEN\n    RETURN NEW;\n  END IF;\n\n  -- Pull email from charges.billing_details (most reliable for Stripe Link)\n  SELECT \n    c.billing_details->>'email',\n    c.billing_details->>'name'\n  INTO v_email, v_name\n  FROM stripe.charges c\n  WHERE c.payment_intent = NEW.id\n  LIMIT 1;\n\n  -- Fallback: receipt_email on charges\n  IF v_email IS NULL OR v_email = '' THEN\n    SELECT c.receipt_email INTO v_email\n    FROM stripe.charges c\n    WHERE c.payment_intent = NEW.id\n    LIMIT 1;\n  END IF;\n\n  -- Fallback: checkout_sessions customer_email\n  IF v_email IS NULL OR v_email = '' THEN\n    SELECT cs.customer_email INTO v_email\n    FROM stripe.checkout_sessions cs\n    WHERE cs.payment_intent = NEW.id\n    LIMIT 1;\n  END IF;\n\n  -- Fallback: raw data\n  IF v_email IS NULL OR v_email = '' THEN\n    v_email := NEW._raw_data->>'receipt_email';\n  END IF;\n\n  v_amount := NEW.amount;\n\n  v_case_file_id := CASE\n    WHEN v_amount = 2700  THEN 'DAM'\n    WHEN v_amount = 29700 THEN 'BUNDLE'\n    WHEN v_amount = 14900 THEN 'CF-UNKNOWN'\n    ELSE 'CF-' || v_amount::text\n  END;\n\n  v_case_file := CASE\n    WHEN v_amount = 2700  THEN 'Decision Authority Matrix — $27'\n    WHEN v_amount = 29700 THEN 'Complete Authorization Package — $297'\n    WHEN v_amount = 14900 THEN 'Case File — $149'\n    ELSE 'Unknown — $' || (v_amount / 100)\n  END;\n\n  -- Map amount to artifact_id\n  v_artifact_id := CASE\n    WHEN v_amount = 2700  THEN 'decision-authority-matrix'\n    WHEN v_amount = 29700 THEN 'authorization-package'\n    ELSE NULL\n  END;\n\n  -- Write to purchases\n  INSERT INTO public.purchases (\n    email,\n    name,\n    case_file,\n    case_file_id,\n    stripe_session_id,\n    purchased_at\n  ) VALUES (\n    COALESCE(LOWER(v_email), 'unknown'),\n    v_name,\n    v_case_file,\n    v_case_file_id,\n    NEW.id,\n    to_timestamp(NEW.created)\n  )\n  ON CONFLICT (stripe_session_id) DO NOTHING;\n\n  -- Write to artifact_access for gated products\n  IF v_artifact_id IS NOT NULL AND v_email IS NOT NULL AND v_email != '' THEN\n    INSERT INTO public.artifact_access (\n      email,\n      artifact_id,\n      stripe_session_id,\n      stripe_payment_intent_id,\n      access_granted,\n      created_at\n    ) VALUES (\n      LOWER(v_email),\n      v_artifact_id,\n      NEW._raw_data->>'payment_details',\n      NEW.id,\n      true,\n      now()\n    )\n    ON CONFLICT DO NOTHING;\n  END IF;\n\n  IF v_email IS NOT NULL AND v_email != '' THEN\n    UPDATE public.leads\n    SET is_buyer = true, converted_at = now()\n    WHERE LOWER(email) = LOWER(v_email);\n\n    -- Suppress from nurture sequences\n    PERFORM net.http_post(\n      url := 'https://connect.mailerlite.com/api/subscribers',\n      headers := jsonb_build_object(\n        'Content-Type', 'application/json',\n        'Authorization', 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiI0IiwianRpIjoiOTE0Nzc2Y2QzMWE1MTg5ZmQ1ZjMzMDExYTE3MjYwMmM5NmZkOTg5MDc3MDA2MzFlYzgyNjBjYjA5OTZmZTgwNGMwZTJiZDM0N2EwZWQzZjIiLCJpYXQiOjE3NzI4ODQyNzkuMjIxMzA4LCJuYmYiOjE3NzI4ODQyNzkuMjIxMzEyLCJleHAiOjQ5Mjg1NTc4NzkuMjExMTIzLCJzdWIiOiIyMTgzNjY1Iiwic2NvcGVzIjpbXX0.RLr170kV8fgmPK-BSK3LI5uXqf3efp4N_dvWGCD3jabbkDzdY6c6IpnrLXYC2RWW89pKWF3VkKHKprGI3kcKLByhCHOK5LH8a74I0P0dkXI7Of4HbYYqJpjAfqjCTteaZZECdDI5s-qQcgjNvpEIBMGUdeXOngwnrdj19PH102LnCo0MiOeckgggdf58fkK_F6bU0FNtTxpotXWkc3VFWyZeghxddNzBrHDC-mlvP4_sp46exdISi8cLG9WOThQkd_jtUalkqbu2KMPxhUXqZi--ccvJ4JJh2b8w93BYXKkBXtbx8o52HtOeLCQ5RNt9kqY4Sre9YZdW7FLErxUze_Z2dpnmpoLSwNBu9eHAhKcf5lixup74lUPiEN8wD2s40l8FLsDpMtqi4doRtu3KCig8ExGlhxmDYRrTNdBYhvxdPLZv3OU49Nrn9QaM1zKDqXnj1a81ojqoB8o1Sugg3Nqjo_4SSZacGRg0jSMrsB4A9Fb9ZsWRAkraeYsZJ8i0eWXR4B1kWdi4nSaFJle1OPBI4dS6ReSzmOzZvOnSJwgCuo7O2My_A8Nyu52Shb7nuxCXYTRrM-gyqhST_MO6SEST8-wwydcjljG3YSh5nuOihXSqyGqgPCaYrjGin5Fh5i75KyUy53gOWhy64o4U_qSkGukgHwF8-GMZ1j2cOD0'\n      ),\n      body := jsonb_build_object(\n        'email', LOWER(v_email),\n        'groups', jsonb_build_array('183721668625041237')\n      )\n    );\n  END IF;\n\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "touch_content_pipeline",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.touch_content_pipeline()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  NEW.updated_at = now();\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "touch_nurture_updated_at",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.touch_nurture_updated_at()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN NEW.updated_at = now(); RETURN NEW; END;\n$function$\n"
+ },
+ {
+  "name": "trg_auto_evaluate_readiness",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.trg_auto_evaluate_readiness()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  IF NEW.readiness_status IS NULL AND NEW.archived_at IS NULL THEN\n    PERFORM evaluate_lead_readiness(NEW.id);\n  END IF;\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "trg_auto_evaluate_readiness_on_score",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.trg_auto_evaluate_readiness_on_score()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  -- Fire readiness eval when fit_score becomes high enough AND readiness was never checked\n  IF NEW.fit_score IS NOT NULL\n     AND NEW.fit_score >= (SELECT (value::text)::int FROM optimizer_config WHERE key = 'fit_score_threshold')\n     AND NEW.readiness_status IS NULL\n     AND NEW.archived_at IS NULL\n     AND (OLD.fit_score IS DISTINCT FROM NEW.fit_score OR OLD.readiness_status IS DISTINCT FROM NEW.readiness_status) THEN\n    PERFORM evaluate_lead_readiness(NEW.id);\n  END IF;\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "trg_block_draft_on_unready_lead",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.trg_block_draft_on_unready_lead()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  -- Triggered when the drafter tries to write a draft body or stamp\n  -- drafted_at. Allow only if readiness_status = 'ready'.\n  IF (\n    (NEW.first_touch_draft_body IS NOT NULL AND OLD.first_touch_draft_body IS NULL)\n    OR\n    (NEW.first_touch_drafted_at IS NOT NULL AND OLD.first_touch_drafted_at IS NULL)\n    OR\n    (NEW.dm_draft_body IS NOT NULL AND OLD.dm_draft_body IS NULL)\n  )\n  AND COALESCE(NEW.readiness_status, OLD.readiness_status, '') NOT IN ('ready')\n  -- Allow legacy historical rows to keep functioning: only block when\n  -- readiness contract has been applied (status IS NOT NULL).\n  AND (NEW.readiness_status IS NOT NULL OR OLD.readiness_status IS NOT NULL)\n  THEN\n    RAISE EXCEPTION 'Draft blocked: lead id % is not ready (status=%, blocks=%)',\n      NEW.id,\n      COALESCE(NEW.readiness_status, OLD.readiness_status),\n      COALESCE(NEW.readiness_block_reasons, OLD.readiness_block_reasons);\n  END IF;\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "trg_nurture_on_email_reply",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.trg_nurture_on_email_reply()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  -- Only fire when classification was just set\n  IF NEW.classification IS NULL THEN RETURN NEW; END IF;\n  IF OLD.classification = NEW.classification THEN RETURN NEW; END IF;\n  IF NEW.staging_id IS NULL THEN RETURN NEW; END IF;\n\n  IF NEW.classification IN ('positive', 'neutral', 'wrong_person') THEN\n    PERFORM enroll_in_nurture(NEW.staging_id, 'email_reply', 'classified as ' || NEW.classification);\n  ELSIF NEW.classification IN ('negative', 'unsubscribe') THEN\n    PERFORM cancel_nurture(NEW.staging_id, 'cancelled_replied:' || NEW.classification);\n  END IF;\n\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "trg_reevaluate_readiness_after_rescrape",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.trg_reevaluate_readiness_after_rescrape()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  IF NEW.readiness_status = 'rescrape_in_flight'\n     AND (\n       NEW.linkedin_headline IS DISTINCT FROM OLD.linkedin_headline\n       OR NEW.linkedin_description IS DISTINCT FROM OLD.linkedin_description\n       OR NEW.linkedin_scraped_at IS DISTINCT FROM OLD.linkedin_scraped_at\n     )\n  THEN\n    -- Defer the readiness re-evaluation to AFTER trigger via PERFORM in a\n    -- separate statement isn't possible here; instead just call it inline.\n    -- Note: this is a BEFORE trigger so we set fields directly.\n    DECLARE\n      blocks JSONB;\n      block_count INT;\n    BEGIN\n      -- We can't call compute_lead_readiness_blocks() yet because NEW\n      -- hasn't been written. Re-implement the check on NEW values.\n      blocks := '[]'::jsonb;\n\n      IF NEW.linkedin_url IS NULL OR length(trim(NEW.linkedin_url)) = 0 THEN\n        blocks := blocks || jsonb_build_array('missing_linkedin_url');\n      END IF;\n      IF NEW.linkedin_headline IS NULL OR length(trim(NEW.linkedin_headline)) = 0 THEN\n        blocks := blocks || jsonb_build_array('missing_linkedin_headline');\n      END IF;\n      IF NEW.linkedin_description IS NULL OR length(trim(NEW.linkedin_description)) < 50 THEN\n        blocks := blocks || jsonb_build_array('linkedin_description_too_short');\n      END IF;\n      IF NEW.job_title IS NULL OR length(trim(NEW.job_title)) = 0 THEN\n        blocks := blocks || jsonb_build_array('missing_job_title');\n      END IF;\n      IF NEW.first_name IS NULL OR length(trim(NEW.first_name)) = 0 THEN\n        blocks := blocks || jsonb_build_array('missing_first_name');\n      END IF;\n      IF NEW.company IS NULL OR length(trim(NEW.company)) = 0 THEN\n        blocks := blocks || jsonb_build_array('missing_company');\n      END IF;\n\n      block_count := jsonb_array_length(blocks);\n      NEW.readiness_block_reasons := blocks;\n      NEW.readiness_checked_at := NOW();\n      NEW.readiness_attempts := COALESCE(OLD.readiness_attempts, 1) + 1;\n\n      IF block_count = 0 THEN\n        NEW.readiness_status := 'ready';\n        NEW.readiness_retry_due_at := NULL;\n      ELSE\n        -- Second strike: archive\n        NEW.readiness_status := 'failed_enrichment';\n        NEW.readiness_failed_at := NOW();\n        NEW.archived_at := NOW();\n        NEW.archive_reason := 'enrichment_failed_after_retry';\n      END IF;\n    END;\n  END IF;\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "trigger_apollo_enrich",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.trigger_apollo_enrich()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nBEGIN\n  IF NEW.email IS NOT NULL THEN\n    PERFORM net.http_post(\n      url     := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/apollo-enrich',\n      headers := '{\"Content-Type\": \"application/json\"}'::jsonb,\n      body    := jsonb_build_object(\n        'email',           NEW.email,\n        'attio_record_id', NEW.attio_person_id\n      )\n    );\n  END IF;\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "trigger_lead_intent_state",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.trigger_lead_intent_state()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nDECLARE\n  v_email           text;\n  v_attio_person_id text;\nBEGIN\n\n  -- assessment_completed just flipped TRUE\n  IF (NEW.assessment_completed = true AND OLD.assessment_completed = false) THEN\n    SELECT c.email, c.attio_person_id\n    INTO v_email, v_attio_person_id\n    FROM contacts c\n    WHERE c.id = NEW.contact_id\n    LIMIT 1;\n\n    IF v_email IS NOT NULL THEN\n      -- Route to lead-outreach-email → Attio sync with assessment source\n      PERFORM net.http_post(\n        url     := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/lead-outreach-email',\n        headers := '{\"Content-Type\": \"application/json\"}'::jsonb,\n        body    := jsonb_build_object(\n          'email',  v_email,\n          'source', 'assessment_completed'\n        )\n      );\n\n      -- Apollo enrich if not yet done\n      PERFORM net.http_post(\n        url     := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/apollo-enrich',\n        headers := '{\"Content-Type\": \"application/json\"}'::jsonb,\n        body    := jsonb_build_object(\n          'email',           v_email,\n          'attio_record_id', v_attio_person_id\n        )\n      );\n    END IF;\n  END IF;\n\n  -- lock_viewed just flipped TRUE\n  IF (NEW.lock_viewed = true AND OLD.lock_viewed = false) THEN\n    SELECT c.email, c.attio_person_id\n    INTO v_email, v_attio_person_id\n    FROM contacts c\n    WHERE c.id = NEW.contact_id\n    LIMIT 1;\n\n    IF v_email IS NOT NULL THEN\n      PERFORM net.http_post(\n        url     := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/lead-outreach-email',\n        headers := '{\"Content-Type\": \"application/json\"}'::jsonb,\n        body    := jsonb_build_object(\n          'email',  v_email,\n          'source', 'lock_viewed'\n        )\n      );\n    END IF;\n  END IF;\n\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "trigger_lead_outreach_email",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.trigger_lead_outreach_email()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nBEGIN\n  PERFORM net.http_post(\n    url     := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/lead-outreach-email',\n    headers := jsonb_build_object('Content-Type', 'application/json'),\n    body    := jsonb_build_object(\n      'type',   'INSERT',\n      'record', jsonb_build_object(\n        'id',         NEW.id,\n        'email',      NEW.email,\n        'source',     NEW.source,\n        'page',       NEW.page,\n        'company',    NEW.company,\n        'first_name', split_part(COALESCE(NEW.name, ''), ' ', 1),\n        'utm_source', NEW.utm_source,\n        'created_at', NEW.created_at\n      )\n    )\n  );\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "trigger_lead_rescrapes",
+  "args": "",
+  "returns": "TABLE(staging_row_id bigint, action text)",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.trigger_lead_rescrapes()\n RETURNS TABLE(staging_row_id bigint, action text)\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  retry_row RECORD;\n  prior_enrich_status TEXT;\nBEGIN\n  FOR retry_row IN\n    SELECT id, enrichment_status\n    FROM warm_outbound_staging\n    WHERE readiness_status = 'pending_retry'\n      AND readiness_retry_due_at <= NOW()\n      AND archived_at IS NULL\n    ORDER BY readiness_retry_due_at ASC\n    LIMIT 50  -- protect PhantomBuster credit burn per run\n  LOOP\n    prior_enrich_status := retry_row.enrichment_status;\n\n    -- Reset enrichment_status so the existing 15-min enricher will retry.\n    -- Stamp readiness_attempts = 1 already happened on first failure;\n    -- the next evaluate_lead_readiness() call after re-enrichment will\n    -- either move row to 'ready' or to 'failed_enrichment' (since attempts>=1).\n    UPDATE warm_outbound_staging\n    SET enrichment_status = 'pending_retry_rescrape',\n        readiness_status = 'rescrape_in_flight',\n        readiness_checked_at = NOW()\n    WHERE id = retry_row.id;\n\n    INSERT INTO pipeline_readiness_log\n      (staging_row_id, prior_status, new_status, block_reasons, attempts)\n    VALUES\n      (retry_row.id, 'pending_retry', 'rescrape_in_flight',\n       jsonb_build_object('prior_enrichment_status', prior_enrich_status), 1);\n\n    staging_row_id := retry_row.id;\n    action := 'queued_for_rescrape';\n    RETURN NEXT;\n  END LOOP;\nEND;\n$function$\n"
+ },
+ {
+  "name": "trigger_nurture_on_lock",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.trigger_nurture_on_lock()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nDECLARE\n  v_email      text;\n  v_name       text;\n  v_company    text;\n  v_title      text;\n  v_case_file  text;\n  v_source     text;\n  v_page       text;\nBEGIN\n  -- Only fire on lock_view events\n  IF NEW.event_name != 'lock_view' THEN\n    RETURN NEW;\n  END IF;\n\n  -- Look up lead by session_id\n  SELECT l.email, l.name, l.company, l.title, l.case_file, l.source, l.page\n  INTO v_email, v_name, v_company, v_title, v_case_file, v_source, v_page\n  FROM leads l\n  WHERE l.session_id = NEW.session_id\n    AND l.email IS NOT NULL\n    AND l.email != ''\n  LIMIT 1;\n\n  -- No email on file — nothing to route\n  IF v_email IS NULL THEN\n    RETURN NEW;\n  END IF;\n\n  -- Fire lead-outreach-email → syncs to Attio, creates outreach note\n  PERFORM net.http_post(\n    url     := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/lead-outreach-email',\n    headers := '{\"Content-Type\": \"application/json\"}'::jsonb,\n    body    := jsonb_build_object(\n      'email',     v_email,\n      'name',      v_name,\n      'company',   v_company,\n      'title',     v_title,\n      'case_file', v_case_file,\n      'source',    COALESCE(v_source, 'lock_view'),\n      'page',      v_page\n    )\n  );\n\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "trigger_outbound_event",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.trigger_outbound_event()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_event_type TEXT;\n  v_props JSONB;\nBEGIN\n  -- Detect which field changed and emit the right event\n  IF TG_OP = 'INSERT' THEN\n    v_event_type := 'ingested';\n  ELSIF NEW.enriched_at IS NOT NULL AND (OLD.enriched_at IS NULL) THEN\n    v_event_type := 'enriched';\n  ELSIF NEW.fit_scored_at IS NOT NULL AND (OLD.fit_scored_at IS NULL) THEN\n    v_event_type := 'scored';\n  ELSIF NEW.dm_drafted_at IS NOT NULL AND (OLD.dm_drafted_at IS NULL) THEN\n    v_event_type := 'dm_drafted';\n  ELSIF NEW.dm_connection_request_sent_at IS NOT NULL AND (OLD.dm_connection_request_sent_at IS NULL) THEN\n    v_event_type := 'connection_sent';\n  ELSIF NEW.dm_connection_accepted_at IS NOT NULL AND (OLD.dm_connection_accepted_at IS NULL) THEN\n    v_event_type := 'connection_accepted';\n  ELSIF NEW.dm_first_message_sent_at IS NOT NULL AND (OLD.dm_first_message_sent_at IS NULL) THEN\n    v_event_type := 'message_sent';\n  ELSIF NEW.dm_replied_at IS NOT NULL AND (OLD.dm_replied_at IS NULL) THEN\n    v_event_type := 'reply_received';\n  ELSIF NEW.delivery_status = 'bounce' AND (OLD.delivery_status IS DISTINCT FROM 'bounce') THEN\n    v_event_type := 'email_bounced';\n  ELSIF NEW.delivery_status = 'sent' AND (OLD.delivery_status IS DISTINCT FROM 'sent') THEN\n    v_event_type := 'email_sent';\n  ELSIF NEW.replied_at IS NOT NULL AND (OLD.replied_at IS NULL) THEN\n    v_event_type := 'email_replied';\n  ELSE\n    RETURN NEW; -- no tracked event\n  END IF;\n\n  -- Build properties snapshot at event time\n  v_props := jsonb_build_object(\n    'fit_score',                    NEW.fit_score,\n    'cohort_label',                 NEW.cohort_label,\n    'role_function',                NEW.role_function,\n    'industry',                     NEW.linkedin_company_industry,\n    'company_size',                 NEW.linkedin_company_employees_count,\n    'linkedin_description_length',  length(COALESCE(NEW.linkedin_description, '')),\n    'linkedin_headline_present',    (NEW.linkedin_headline IS NOT NULL),\n    'has_email',                    (NEW.email IS NOT NULL),\n    'readiness_status',             NEW.readiness_status,\n    'dm_char_count',                length(COALESCE(NEW.dm_draft_body, '')),\n    'source',                       NEW.source,\n    'target_account_priority',      NEW.target_account_priority\n  );\n\n  INSERT INTO outbound_events (lead_id, event_type, properties)\n  VALUES (NEW.id, v_event_type, v_props);\n\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "trigger_playbook_execution_for_new_signal",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.trigger_playbook_execution_for_new_signal()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nBEGIN\n  PERFORM net.http_get(\n    url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/playbook-executor/process-signal?signal_id=' || NEW.id || '&secret=3i_6DdFRT-EmxT0nczskfeA3HshAnu64w40C9-WmkAE',\n    timeout_milliseconds := 10000\n  );\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "trigger_post_purchase",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.trigger_post_purchase()\n RETURNS trigger\n LANGUAGE plpgsql\n SECURITY DEFINER\nAS $function$\nDECLARE\n  v_contact_id      uuid;\n  v_attio_person_id text;\n  v_full_name       text;\nBEGIN\n  IF NEW.email IS NULL THEN\n    RETURN NEW;\n  END IF;\n\n  -- Update contact lifecycle to customer\n  UPDATE contacts\n  SET lifecycle_stage = 'customer',\n      updated_at      = now()\n  WHERE normalized_email = lower(trim(NEW.email))\n  RETURNING id, attio_person_id, full_name\n  INTO v_contact_id, v_attio_person_id, v_full_name;\n\n  -- Fire Apollo enrich if contact not yet enriched\n  IF v_contact_id IS NOT NULL AND v_full_name IS NULL THEN\n    PERFORM net.http_post(\n      url     := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/apollo-enrich',\n      headers := '{\"Content-Type\": \"application/json\"}'::jsonb,\n      body    := jsonb_build_object(\n        'email',           NEW.email,\n        'attio_record_id', v_attio_person_id\n      )\n    );\n  END IF;\n\n  -- Push to lead-outreach-email so Attio record is updated to buyer stage\n  PERFORM net.http_post(\n    url     := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/lead-outreach-email',\n    headers := '{\"Content-Type\": \"application/json\"}'::jsonb,\n    body    := jsonb_build_object(\n      'email',     NEW.email,\n      'source',    'purchase',\n      'case_file', NEW.case_file,\n      'page',      COALESCE(NEW.case_file_id, NEW.case_file)\n    )\n  );\n\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "try_reserve_send_slot",
+  "args": "p_staging_id bigint",
+  "returns": "TABLE(allowed boolean, reason text, current_count integer, budget integer)",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.try_reserve_send_slot(p_staging_id bigint)\n RETURNS TABLE(allowed boolean, reason text, current_count integer, budget integer)\n LANGUAGE plpgsql\nAS $function$\nDECLARE\n  v_lock_key BIGINT;\n  v_budget INT;\n  v_current_count INT;\n  v_already_dispatched BOOLEAN;\nBEGIN\n  -- Hash today's date into a 64-bit advisory lock key. All concurrent calls today block each other here.\n  v_lock_key := abs(hashtext(CURRENT_DATE::text))::bigint;\n  PERFORM pg_advisory_xact_lock(v_lock_key);\n\n  -- Has this lead already been dispatched? (idempotency guard)\n  SELECT (dispatched_at IS NOT NULL) INTO v_already_dispatched\n  FROM warm_outbound_staging WHERE id = p_staging_id;\n\n  IF v_already_dispatched THEN\n    RETURN QUERY SELECT false, 'already_dispatched'::TEXT, 0, 0;\n    RETURN;\n  END IF;\n\n  -- Get today's budget\n  SELECT daily_budget INTO v_budget\n  FROM outbound_send_budget_schedule\n  WHERE effective_date <= CURRENT_DATE\n  ORDER BY effective_date DESC LIMIT 1;\n  v_budget := COALESCE(v_budget, 25);\n\n  -- Count actual sends in last 24h (using send_provider='resend' as the canonical \"real send\" marker)\n  SELECT COUNT(*) INTO v_current_count\n  FROM warm_outbound_staging\n  WHERE send_provider = 'resend'\n    AND dispatched_at > NOW() - interval '24 hours';\n\n  IF v_current_count >= v_budget THEN\n    RETURN QUERY SELECT false, 'daily_budget_exhausted'::TEXT, v_current_count, v_budget;\n    RETURN;\n  END IF;\n\n  -- Reserve the slot by stamping a placeholder dispatched_at and provider='reserved'.\n  -- The actual sender call will overwrite to 'resend' on success or 'failed' on error.\n  -- This count is now visible to the next concurrent call, which will see N+1.\n  UPDATE warm_outbound_staging\n  SET dispatched_at = NOW(),\n      send_provider = 'resend'  -- counts toward budget immediately\n  WHERE id = p_staging_id;\n\n  RETURN QUERY SELECT true, 'reserved'::TEXT, v_current_count + 1, v_budget;\nEND;\n$function$\n"
+ },
+ {
+  "name": "update_irr_challenge_layer_updated_at",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.update_irr_challenge_layer_updated_at()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  NEW.updated_at = NOW();\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "update_target_accounts_updated_at",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.update_target_accounts_updated_at()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  NEW.updated_at = NOW();\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "update_updated_at",
+  "args": "",
+  "returns": "trigger",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.update_updated_at()\n RETURNS trigger\n LANGUAGE plpgsql\nAS $function$\nBEGIN\n  NEW.updated_at = now();\n  RETURN NEW;\nEND;\n$function$\n"
+ },
+ {
+  "name": "vector",
+  "args": "vector, integer, boolean",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector(vector, integer, boolean)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector$function$\n"
+ },
+ {
+  "name": "vector_accum",
+  "args": "double precision[], vector",
+  "returns": "double precision[]",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_accum(double precision[], vector)\n RETURNS double precision[]\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_accum$function$\n"
+ },
+ {
+  "name": "vector_add",
+  "args": "vector, vector",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_add(vector, vector)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_add$function$\n"
+ },
+ {
+  "name": "vector_avg",
+  "args": "double precision[]",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_avg(double precision[])\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_avg$function$\n"
+ },
+ {
+  "name": "vector_cmp",
+  "args": "vector, vector",
+  "returns": "integer",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_cmp(vector, vector)\n RETURNS integer\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_cmp$function$\n"
+ },
+ {
+  "name": "vector_combine",
+  "args": "double precision[], double precision[]",
+  "returns": "double precision[]",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_combine(double precision[], double precision[])\n RETURNS double precision[]\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_combine$function$\n"
+ },
+ {
+  "name": "vector_concat",
+  "args": "vector, vector",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_concat(vector, vector)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_concat$function$\n"
+ },
+ {
+  "name": "vector_dims",
+  "args": "vector",
+  "returns": "integer",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_dims(vector)\n RETURNS integer\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_dims$function$\n"
+ },
+ {
+  "name": "vector_dims",
+  "args": "halfvec",
+  "returns": "integer",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_dims(halfvec)\n RETURNS integer\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$halfvec_vector_dims$function$\n"
+ },
+ {
+  "name": "vector_eq",
+  "args": "vector, vector",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_eq(vector, vector)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_eq$function$\n"
+ },
+ {
+  "name": "vector_ge",
+  "args": "vector, vector",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_ge(vector, vector)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_ge$function$\n"
+ },
+ {
+  "name": "vector_gt",
+  "args": "vector, vector",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_gt(vector, vector)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_gt$function$\n"
+ },
+ {
+  "name": "vector_in",
+  "args": "cstring, oid, integer",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_in(cstring, oid, integer)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_in$function$\n"
+ },
+ {
+  "name": "vector_l2_squared_distance",
+  "args": "vector, vector",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_l2_squared_distance(vector, vector)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_l2_squared_distance$function$\n"
+ },
+ {
+  "name": "vector_le",
+  "args": "vector, vector",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_le(vector, vector)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_le$function$\n"
+ },
+ {
+  "name": "vector_lt",
+  "args": "vector, vector",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_lt(vector, vector)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_lt$function$\n"
+ },
+ {
+  "name": "vector_mul",
+  "args": "vector, vector",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_mul(vector, vector)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_mul$function$\n"
+ },
+ {
+  "name": "vector_ne",
+  "args": "vector, vector",
+  "returns": "boolean",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_ne(vector, vector)\n RETURNS boolean\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_ne$function$\n"
+ },
+ {
+  "name": "vector_negative_inner_product",
+  "args": "vector, vector",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_negative_inner_product(vector, vector)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_negative_inner_product$function$\n"
+ },
+ {
+  "name": "vector_norm",
+  "args": "vector",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_norm(vector)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_norm$function$\n"
+ },
+ {
+  "name": "vector_out",
+  "args": "vector",
+  "returns": "cstring",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_out(vector)\n RETURNS cstring\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_out$function$\n"
+ },
+ {
+  "name": "vector_recv",
+  "args": "internal, oid, integer",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_recv(internal, oid, integer)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_recv$function$\n"
+ },
+ {
+  "name": "vector_send",
+  "args": "vector",
+  "returns": "bytea",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_send(vector)\n RETURNS bytea\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_send$function$\n"
+ },
+ {
+  "name": "vector_spherical_distance",
+  "args": "vector, vector",
+  "returns": "double precision",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_spherical_distance(vector, vector)\n RETURNS double precision\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_spherical_distance$function$\n"
+ },
+ {
+  "name": "vector_sub",
+  "args": "vector, vector",
+  "returns": "vector",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_sub(vector, vector)\n RETURNS vector\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_sub$function$\n"
+ },
+ {
+  "name": "vector_to_float4",
+  "args": "vector, integer, boolean",
+  "returns": "real[]",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_to_float4(vector, integer, boolean)\n RETURNS real[]\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_to_float4$function$\n"
+ },
+ {
+  "name": "vector_to_halfvec",
+  "args": "vector, integer, boolean",
+  "returns": "halfvec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_to_halfvec(vector, integer, boolean)\n RETURNS halfvec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_to_halfvec$function$\n"
+ },
+ {
+  "name": "vector_to_sparsevec",
+  "args": "vector, integer, boolean",
+  "returns": "sparsevec",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_to_sparsevec(vector, integer, boolean)\n RETURNS sparsevec\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_to_sparsevec$function$\n"
+ },
+ {
+  "name": "vector_typmod_in",
+  "args": "cstring[]",
+  "returns": "integer",
+  "kind": "f",
+  "definition": "CREATE OR REPLACE FUNCTION public.vector_typmod_in(cstring[])\n RETURNS integer\n LANGUAGE c\n IMMUTABLE PARALLEL SAFE STRICT\nAS '$libdir/vector', $function$vector_typmod_in$function$\n"
+ }
+]

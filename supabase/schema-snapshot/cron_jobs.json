@@ -1,0 +1,122 @@
+[
+ {
+  "jobid": 5,
+  "jobname": "stripe-sync-worker",
+  "schedule": "*/1 * * * *",
+  "command": "\n        SELECT net.http_post(\n          url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/stripe-worker',\n          headers := jsonb_build_object(\n            'Authorization', 'Bearer ' || (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'stripe_sync_worker_secret')\n          )\n        )\n        WHERE NOT EXISTS (\n          SELECT 1 FROM vault.decrypted_secrets\n          WHERE name = 'stripe_sync_skip_until'\n            AND decrypted_secret::timestamptz > NOW()\n        )\n        ",
+  "active": true,
+  "database": "postgres"
+ },
+ {
+  "jobid": 59,
+  "jobname": "stripe-orders-reconcile",
+  "schedule": "30 9 * * *",
+  "command": "SELECT net.http_get(\n    url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/stripe-orders-reconcile',\n    timeout_milliseconds := 60000\n  );",
+  "active": true,
+  "database": "postgres"
+ },
+ {
+  "jobid": 92,
+  "jobname": "gmail-linkedin-acceptance-watcher-15min",
+  "schedule": "*/15 * * * *",
+  "command": "\n  SELECT net.http_get(\n    url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/gmail-linkedin-acceptance-watcher',\n    headers := jsonb_build_object('Content-Type','application/json')\n  );\n  ",
+  "active": true,
+  "database": "postgres"
+ },
+ {
+  "jobid": 96,
+  "jobname": "gmail-reply-poller-5min",
+  "schedule": "*/5 * * * *",
+  "command": " SELECT net.http_get( url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/gmail-reply-poller', timeout_milliseconds := 60000 ); ",
+  "active": true,
+  "database": "postgres"
+ },
+ {
+  "jobid": 109,
+  "jobname": "outbound-sender-gmail-daily-7am-edt",
+  "schedule": "0 11 * * *",
+  "command": "SELECT net.http_post(\n    url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/outbound-sender-gmail',\n    headers := jsonb_build_object(\n      'Content-Type', 'application/json',\n      'Authorization', 'Bearer ' || (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'service_role_key')\n    ),\n    body := '{}'::jsonb,\n    timeout_milliseconds := 120000\n  );",
+  "active": true,
+  "database": "postgres"
+ },
+ {
+  "jobid": 117,
+  "jobname": "page-price-audit-daily-505am-edt",
+  "schedule": "5 9 * * *",
+  "command": "\n  SELECT net.http_post(\n    url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/page-price-audit',\n    headers := jsonb_build_object(\n      'Content-Type', 'application/json',\n      'Authorization', 'Bearer ' || (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'service_role_key' LIMIT 1)\n    ),\n    body := '{}'::jsonb,\n    timeout_milliseconds := 180000\n  );\n  ",
+  "active": true,
+  "database": "postgres"
+ },
+ {
+  "jobid": 118,
+  "jobname": "posthog-conversion-monitor-daily-515am-edt",
+  "schedule": "15 9 * * *",
+  "command": "\n  SELECT net.http_post(\n    url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/posthog-conversion-monitor',\n    headers := jsonb_build_object(\n      'Content-Type', 'application/json',\n      'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key', true)\n    ),\n    body := '{}'::jsonb\n  );\n  ",
+  "active": true,
+  "database": "postgres"
+ },
+ {
+  "jobid": 119,
+  "jobname": "conversion-playbook-daily-8am-edt",
+  "schedule": "0 12 * * *",
+  "command": "\n  SELECT net.http_post(\n    url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/conversion-playbook',\n    headers := jsonb_build_object(\n      'Content-Type', 'application/json',\n      'Authorization', 'Bearer ' || current_setting('app.settings.service_role_key', true)\n    ),\n    body := '{}'::jsonb\n  );\n  ",
+  "active": true,
+  "database": "postgres"
+ },
+ {
+  "jobid": 120,
+  "jobname": "partner-conversion-alerts",
+  "schedule": "*/5 * * * *",
+  "command": " SELECT net.http_get(\n       url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/partner-reporter/conversion-alerts?secret=3i_6DdFRT-EmxT0nczskfeA3HshAnu64w40C9-WmkAE',\n       timeout_milliseconds := 60000\n     ); ",
+  "active": true,
+  "database": "postgres"
+ },
+ {
+  "jobid": 121,
+  "jobname": "partner-weekly-digest",
+  "schedule": "0 12 * * 1",
+  "command": " SELECT net.http_get(\n       url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/partner-reporter/weekly-digest?secret=3i_6DdFRT-EmxT0nczskfeA3HshAnu64w40C9-WmkAE',\n       timeout_milliseconds := 120000\n     ); ",
+  "active": true,
+  "database": "postgres"
+ },
+ {
+  "jobid": 122,
+  "jobname": "partner-monthly-statement",
+  "schedule": "0 13 1 * *",
+  "command": " SELECT net.http_get(\n       url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/partner-reporter/monthly-statement?secret=3i_6DdFRT-EmxT0nczskfeA3HshAnu64w40C9-WmkAE',\n       timeout_milliseconds := 120000\n     ); ",
+  "active": true,
+  "database": "postgres"
+ },
+ {
+  "jobid": 123,
+  "jobname": "reconstruction-conversion-monitor-daily-520am-edt",
+  "schedule": "20 9 * * *",
+  "command": "SELECT net.http_post(\n      url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/reconstruction-conversion-monitor',\n      headers := jsonb_build_object('Content-Type', 'application/json'),\n      body := '{}'::jsonb,\n      timeout_milliseconds := 30000\n    );",
+  "active": true,
+  "database": "postgres"
+ },
+ {
+  "jobid": 133,
+  "jobname": "redact-ai-logs-daily",
+  "schedule": "0 3 * * *",
+  "command": "select redact_old_ai_logs();",
+  "active": true,
+  "database": "postgres"
+ },
+ {
+  "jobid": 136,
+  "jobname": "runtime-worker-tick",
+  "schedule": "* * * * *",
+  "command": "\n  SELECT net.http_post(\n    url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/runtime-worker',\n    headers := jsonb_build_object(\n      'Content-Type', 'application/json',\n      'Authorization', 'Bearer ' || (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'service_role_key')\n    ),\n    body := '{}'::jsonb,\n    timeout_milliseconds := 420000\n  )\n  ",
+  "active": true,
+  "database": "postgres"
+ },
+ {
+  "jobid": 138,
+  "jobname": "irr-stage-engine-tick",
+  "schedule": "30 seconds",
+  "command": "\n  SELECT net.http_post(\n    url := 'https://balkvbmtummehgbbeqap.supabase.co/functions/v1/irr-stage-engine',\n    headers := jsonb_build_object(\n      'Content-Type', 'application/json',\n      'Authorization', 'Bearer ' || (SELECT decrypted_secret FROM vault.decrypted_secrets WHERE name = 'service_role_key')\n    ),\n    body := '{}'::jsonb,\n    timeout_milliseconds := 150000\n  )\n  ",
+  "active": true,
+  "database": "postgres"
+ }
+]
