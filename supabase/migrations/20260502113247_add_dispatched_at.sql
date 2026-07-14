@@ -1,0 +1,2 @@
+ALTER TABLE warm_outbound_staging
+  ADD COLUMN IF NOT EXISTS dispatched_at TIMESTAMP WITH TIME ZONE;

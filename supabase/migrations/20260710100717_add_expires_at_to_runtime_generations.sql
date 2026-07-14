@@ -1,0 +1,1 @@
+ALTER TABLE runtime_generations ADD COLUMN IF NOT EXISTS expires_at timestamptz;

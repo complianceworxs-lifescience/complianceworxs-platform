@@ -1,0 +1,1 @@
+ALTER TABLE irr_stage_runs ADD COLUMN IF NOT EXISTS checkpoint jsonb;

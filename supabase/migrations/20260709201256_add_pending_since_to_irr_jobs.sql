@@ -1,0 +1,1 @@
+ALTER TABLE irr_jobs ADD COLUMN IF NOT EXISTS pending_since timestamptz;
