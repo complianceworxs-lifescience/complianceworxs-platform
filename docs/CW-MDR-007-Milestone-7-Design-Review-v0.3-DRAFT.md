@@ -1,7 +1,7 @@
 # Milestone 7 Design Review — Developer Productivity and Verification
 
 **Document ID:** CW-MDR-007
-**Version:** 0.2.0 — **DRAFT (for review; NOT approved; implementation not authorized)**
+**Version:** 0.3.0 — **DRAFT (for review; NOT approved; implementation not authorized)**
 **Milestone:** 7 — Developer Productivity and Verification (CW-GOV-001 §6)
 **Gate:** CW-GOV-001 §4A — implementation may not begin until this Design Review is approved.
 **Author:** Platform recovery/engineering
@@ -17,6 +17,13 @@
 > `ENABLE ROW LEVEL SECURITY` + explicit policies in their own migration, so they are
 > unaffected by the `ensure_rls` caveat. Corrected §13 (migration), R-09 (downgraded to
 > a note), and D-2 (removed as a blocker; D-1 remains the real open choice).
+>
+> **Changes in v0.3 (review-prep strengtheners):** (1) concretized the IRR pipeline
+> stage list from production `irr_stage_runs` — new §5.1 enumerates all 15 stages and
+> sets the M7-04 canonical-case policy per stage kind (resolving the former "which
+> stages justify <5 cases" open item). (2) Settled the regression-storage decision:
+> new isolated tables `m7_regression_runs` + `m7_regression_case_results` (§13), not an
+> extension of `irr_regression_runs` — D-1 resolved. No scope change; still DRAFT.
 
 ---
 
@@ -79,6 +86,40 @@ validator tests; compiler-generated prompt-fragment tests; repeatable smoke-test
 automation; canonical regression corpus; permanent regression case IDs; immutable/
 controlled-version case inputs; regression run IDs; isolated regression batches;
 pass/fail reporting; one-command local verification; concise verification reports.
+
+### 5.1 IRR pipeline stages (ground truth, from production `irr_stage_runs`)
+
+The deployed engine runs a fixed **15-stage** sequence (enumerated from production
+`irr_stage_runs`; matches M6 closure evidence "completed all 15 stages"). Stages split
+into **model-reasoning** stages (produce contract fields via a model call, with
+validation/reconciliation) and **deterministic** stages (compile/assemble/validate, no
+model reasoning). This split sets the M7-04 canonical-case policy per stage.
+
+| # | `stage_name` | Kind | M7-04 canonical cases |
+|---:|---|---|---|
+| 1 | `validate_contract` | deterministic (contract) | covered by compiler verification (M7-02); minimal |
+| 2 | `compile_execution_spec` | deterministic (compile) | covered by M7-02; minimal |
+| 3 | `compile_prompt_spec` | deterministic (compile) | covered by M7-02; minimal |
+| 4 | `evidence_risk_reasoning` | model reasoning | 5–10 |
+| 5 | `authorization_reasoning` | model reasoning | 5–10 |
+| 6 | `gap_analysis` | model reasoning | 5–10 |
+| 7 | `claim_status` | model reasoning (reconciliation-heavy) | 5–10 |
+| 8 | `evidence_traceability` | model reasoning | 5–10 |
+| 9 | `unsupported_claims` | model reasoning | 5–10 |
+| 10 | `inspector_challenge` | model reasoning | 5–10 |
+| 11 | `remediation_scaffold` | model reasoning | 5–10 |
+| 12 | `deterministic_assembly` | deterministic (assembly) | minimal (structural) |
+| 13 | `executive_brief` | model reasoning | 5–10 |
+| 14 | `schema_validation` | deterministic (validation) | minimal (structural) |
+| 15 | `final_assembly` | deterministic (assembly) | minimal (structural) |
+
+**Case policy (resolves the former "which stages justify <5" open item):** the **9
+model-reasoning stages (4–11, 13)** each get **5–10** canonical cases (M7-04); the **6
+deterministic stages (1–3, 12, 14, 15)** are certified structurally + by compiler
+verification and therefore justify **fewer than 5** model cases — recorded per §6.3
+"where justified." So `tests/stage-certification/` holds a `certify.js` + `cases/` dir
+for each of the 9 model-reasoning stages; the deterministic stages get a structural
+certify with a small fixed case set.
 
 ## 6. Explicit Exclusions (CW-GOV-001 §6.8, verbatim)
 
@@ -149,9 +190,12 @@ complianceworxs-platform/
 ├─ tests/
 │  ├─ fixtures/generated/               ⊕ M7-05/06 compiler-generated valid/invalid fixtures
 │  ├─ generated/                        ⊕ M7-07/08 compiler-generated validator/prompt tests
-│  ├─ stage-certification/
-│  │  ├─ <stage_id>/cases/*.json        ⊕ M7-04: 5–10 canonical cases per justified stage
-│  │  └─ <stage_id>/certify.js          ⊕ M7-03: per-stage certification library entrypoint
+│  ├─ stage-certification/              (one dir per stage; stage list = §5.1)
+│  │  ├─ <stage_name>/cases/*.json      ⊕ M7-04: 5–10 cases for each of the 9 model-reasoning
+│  │  │                                    stages (04..11,13); minimal fixed set for the 6
+│  │  │                                    deterministic stages (01–03,12,14,15) — see §5.1
+│  │  └─ <stage_name>/certify.js        ⊕ M7-03: per-stage certification library entrypoint
+│  │                                       (e.g. authorization_reasoning/, claim_status/, ...)
 │  └─ regression-corpus/
 │     ├─ corpus.version                 ⊕ M7-10 corpus version marker
 │     ├─ cases/<case_id>.json           ⊕ M7-10 case: id, name, payload, scenario, expected
@@ -200,11 +244,19 @@ on earlier ones (no forward references).
 
 - **Contract changes:** none required. Compiler verification uses the existing
   `contract.yaml`; no field additions/renames.
-- **Schema (one migration, M7-11):** `..._m7_regression_isolation.sql` adds a regression
-  **run registry** (`run_id` PK, corpus_version, started_at, status, aggregate result) and
-  a **case-result** table (run_id FK, case_id, stage, outcome, error) — or extends the
-  existing `irr_regression_runs` / `irr_stage_runs` tables with `run_id` + isolation
-  columns if reuse is cleaner (decided in implementation, recorded in the migration).
+- **Schema (one migration, M7-11) — DECIDED: new isolated tables (not a reuse/extension
+  of `irr_regression_runs`/`irr_stage_runs`).** `..._m7_regression_isolation.sql` creates
+  two new tables:
+  - `m7_regression_runs` — `run_id` uuid PK, `corpus_version` text, `started_at`,
+    `completed_at`, `status`, `total`/`passed`/`failed` counts (the run registry);
+  - `m7_regression_case_results` — `id` PK, `run_id` FK → `m7_regression_runs`, `case_id`,
+    `stage`, `outcome`, `error_detail` (per-case results).
+
+  Rationale (D-1 resolved): dedicated tables keep regression runs fully separate from the
+  live `irr_jobs`/`irr_stage_runs`/`irr_regression_runs` job tables, so a run can never
+  read, write, or contend with production jobs and its membership cannot intersect a
+  production-table time window (satisfies A-M4). Extending the existing IRR job tables
+  was rejected because it would re-introduce exactly that intersection risk.
   RLS: the migration issues an explicit `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` and
   explicit `CREATE POLICY` statements on each new M7 table, so RLS state is fully defined
   by the migration itself — it does not rely on the `ensure_rls` event trigger and is
@@ -275,8 +327,9 @@ reproducible and attributable to an exact corpus version.
   contract fails the gate nonzero.
 - **A-03 (M7-03):** A reusable stage-certification library exists and certifies a stage
   from declared inputs/outputs/validation without a full pipeline run.
-- **A-04 (M7-04):** Every justified stage has **5–10** canonical cases; the justification
-  for any stage with fewer is recorded.
+- **A-04 (M7-04):** Each of the **9 model-reasoning stages (§5.1: 4–11, 13)** has **5–10**
+  canonical cases; the **6 deterministic stages (1–3, 12, 14, 15)** have a recorded
+  justification for fewer (covered by compiler verification + structural certification).
 - **A-05 (M7-05):** Compiler emits **valid** fixtures per contract field; they pass validation.
 - **A-06 (M7-06):** Compiler emits **invalid** fixtures per contract field; they fail
   validation with the expected reason.
@@ -395,16 +448,20 @@ Expanded to cover every added component (not compiler verification alone).
 
 ## 22. Open Decisions & Dependencies (must resolve before/at approval)
 
-- **D-1:** Reuse `irr_regression_runs`/`irr_stage_runs` vs. new M7 registry tables (§13). Recommend
-  new isolated tables to satisfy A-M4 cleanly.
-- **D-2:** Which stages justify fewer than 5 canonical cases (M7-04) — enumerate at build step 3.
-- **D-3:** Test-runner choice (node's built-in test runner vs. a minimal in-repo harness) —
-  keep dependency-light; decide at build step 1.
-- **D-4:** `contract.yaml` location fix (root → `compiler/`) — cosmetic but blocks a clean
-  `verify:compiler`; do at build step 1.
+- **D-1 (RESOLVED in v0.3):** regression storage = new isolated tables `m7_regression_runs`
+  + `m7_regression_case_results` (§13), not an extension of `irr_regression_runs`. Chosen
+  for clean isolation/attribution and to satisfy A-M4.
+- **D-2 (RESOLVED in v0.3):** stage canonical-case policy is set by §5.1 — the 9
+  model-reasoning stages (4–11, 13) get 5–10 cases; the 6 deterministic stages (1–3, 12,
+  14, 15) justify fewer and are certified structurally + by compiler verification.
+- **D-3 (open):** Test-runner choice (node's built-in test runner vs. a minimal in-repo
+  harness) — keep dependency-light; decide at build step 1.
+- **D-4 (open):** `contract.yaml` location fix (root → `compiler/`) — cosmetic but blocks a
+  clean `verify:compiler`; do at build step 1.
 
-(The former D-2 — a PF-1B RLS-replay dependency — was removed in v0.2; see §13 / R-09. It
-was a false dependency: the M7 tables set their own RLS explicitly.)
+(An earlier draft's D-2 — a PF-1B RLS-replay dependency — was removed in v0.2 as a false
+dependency; see §13 / R-09. Only D-3 and D-4 remain open, both build-time implementation
+choices, not design questions.)
 
 ---
 
