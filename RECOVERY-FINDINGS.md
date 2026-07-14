@@ -74,3 +74,13 @@ and it is not tracked in the manifest. Phantom reference — flag for later revi
   the deployed `schema_migrations` history, but proving they replay to exactly the
   live schema (no manual/out-of-band drift) needs a scratch-DB replay + diff. Until
   run, PF-1B is "recovered & captured" but not "proven drift-free."
+
+## 6. PF-1B out-of-band drift captured + RLS-replay caveat
+
+Metadata drift check found 29 app objects (3 tables, 12 functions, 2 triggers, 1 view,
+1 policy, 10 cron jobs) created outside the migration history, plus an `ensure_rls`
+event trigger. All captured as catch-up migrations from live definitions. Open item:
+the `ensure_rls` event trigger auto-enables RLS on new tables, so the live "all 67
+tables RLS-enabled" state is not deterministically reproduced by a from-scratch replay
+(only 27 tables have explicit ENABLE RLS in migrations). Decide at closure whether to
+reorder `ensure_rls` first or add explicit per-table ENABLE RLS. See DRIFT-REPORT.md.

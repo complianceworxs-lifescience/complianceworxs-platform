@@ -58,3 +58,28 @@ name-level metadata check and require a replay-diff (or a definition-level diff)
 Resolving 1 and 2 needs either a scratch-DB replay + schema diff, or a definition-level
 comparison of the live snapshot against the migration-declared DDL. Deferred to an
 explicit decision (per instruction, no branch provisioned).
+
+## Resolution — catch-up migrations added (Option A)
+
+The 29 out-of-band objects (plus the `ensure_rls` event trigger, found during capture)
+are now recovered as catch-up migrations, generated from their live definitions
+(`pg_get_functiondef`/`triggerdef`/`viewdef` + assembled CREATE TABLE/POLICY/cron),
+idempotent and safe to re-apply:
+
+- `20260714000001_pf1b_catchup_tables_and_policy.sql` — 3 tables + RLS enable + `"anon insert only"` policy
+- `20260714000002_pf1b_catchup_functions.sql` — 12 functions
+- `20260714000003_pf1b_catchup_views.sql` — `v_revenue_daily`
+- `20260714000004_pf1b_catchup_triggers.sql` — 2 posthog purchase triggers
+- `20260714000005_pf1b_catchup_event_trigger.sql` — `ensure_rls` event trigger (fires `rls_auto_enable`)
+- `20260714000006_pf1b_catchup_cron.sql` — 10 cron jobs
+
+### CAVEAT — RLS state is not deterministically replayable (flag for closure)
+The `ensure_rls` event trigger auto-enables RLS on every new `CREATE TABLE public.*`.
+In production it was active while tables were created, which is why all 67 tables are
+RLS-enabled even though only 27 have an explicit `ENABLE ROW LEVEL SECURITY` in a
+migration. Because this event trigger was created out-of-band (original timing unknown)
+and the catch-up creates it *after* the 330 migrations, a from-scratch replay would NOT
+reproduce the live RLS-enabled state on the ~40 tables that rely on the trigger. Making
+RLS deterministically replayable would require either creating `ensure_rls` first, or
+adding explicit `ENABLE ROW LEVEL SECURITY` per table. Left as an explicit decision — not
+guessed — since it changes migration ordering/semantics.

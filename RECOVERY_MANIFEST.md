@@ -123,7 +123,8 @@ Recovery target: `supabase/migrations/` (declared history) + `supabase/schema-sn
 ### Migrations
 | Item | Status | Verified Against Production | Commit |
 |---|---|---|---|
-| 330 migrations (`supabase/migrations/<version>_<name>.sql`) | Complete | Yes — each file md5 == DB `md5(statements[1])`, 330/330, 0 mismatch | 7cedd7f |
+| 330 recovered migrations (`<version>_<name>.sql`) | Complete | Yes — each file md5 == DB `md5(statements[1])`, 330/330, 0 mismatch | 7cedd7f |
+| 6 catch-up migrations (`20260714000001..06_pf1b_catchup_*`) | Complete | Generated from live defs (out-of-band objects) | (this commit) |
 
 Range `20260330090420` .. `20260712122453`. Each file is the migration body exactly as stored in `supabase_migrations.schema_migrations` (one statement per row; comments/whitespace preserved).
 
@@ -145,7 +146,8 @@ Range `20260330090420` .. `20260712122453`. Each file is the migration body exac
 - Live schema snapshot captured as the production reference. ✅
 - **Metadata drift check: DONE (see `supabase/schema-snapshot/DRIFT-REPORT.md`).** Result: the 330 migrations do **NOT** fully reproduce production — **29 app-level objects** (3 tables, 12 functions, 2 triggers, 1 view, 1 policy, 10 cron jobs) exist live but are created by no migration (applied out-of-band), plus 6 dashboard-enabled extensions. Their live definitions are captured in `schema-snapshot/`.
 - **Full replay-diff still NOT run** (no branch provisioned). Metadata check cannot detect *attribute drift* on migration-tracked tables (manual ALTER of a column/default/constraint) or *body drift* on migration-tracked functions/views/triggers (manual CREATE OR REPLACE). Those two classes require a scratch-DB replay+diff or a definition-level diff — deferred as an explicit decision.
-- **PF-1B status: recovered & captured, drift identified — NOT closed.** Closing requires (a) capturing the 29 out-of-band objects as catch-up migrations, and (b) the replay/definition diff to clear attribute/body drift.
+- **Drift captured (Option A DONE):** the 29 out-of-band objects + the `ensure_rls` event trigger are recovered as 6 idempotent catch-up migrations (`20260714000001..06_pf1b_catchup_*.sql`), generated from live definitions. Migration set is now 336 files.
+- **PF-1B status: recovered & captured incl. drift — NOT fully closed.** Remaining: (a) RLS not deterministically replayable due to the `ensure_rls` event-trigger ordering (see DRIFT-REPORT caveat); (b) attribute/body drift on migration-tracked objects still needs a replay/definition diff. Both deferred as explicit decisions.
 
 ## Summary
 
