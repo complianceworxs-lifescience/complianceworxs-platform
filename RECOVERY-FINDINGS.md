@@ -55,3 +55,22 @@ compiler-verification work (recovery discipline: no refactor until PF-1A closes)
 function is deployed in Supabase project `balkvbmtummehgbbeqap` (not among the 94)
 and it is not tracked in the manifest. Phantom reference — flag for later review
 (renamed, removed, or never-deployed dependency).
+
+## 5. PF-1B enumeration observations (for later triage)
+
+- **52 of 67 public tables are RLS-enabled with no policy (deny-all).** Faithful to
+  production and preserved as-is, but worth a security-posture review: confirm each
+  deny-all table is intended to be reached only via `service_role`/SECURITY DEFINER
+  functions, not accidentally locked.
+- **Function count 189 vs 193.** `pg_proc` reports 193 public routines; the snapshot
+  captured 189 via `pg_get_functiondef` (filtered to `prokind IN ('f','p')`). The 4
+  difference are aggregate/window routines `pg_get_functiondef` cannot emit — capture
+  them separately if full fidelity is required.
+- **Trigger scoping 11 vs 47.** 11 triggers are on `public` tables; the earlier "47
+  user triggers" counted all non-internal triggers across every schema (stripe FDW,
+  storage, auth, etc.). PF-1B app scope is the 11 public ones (all reproduced by
+  migrations).
+- **Migration→live replay-diff still pending.** Migrations are byte-verified against
+  the deployed `schema_migrations` history, but proving they replay to exactly the
+  live schema (no manual/out-of-band drift) needs a scratch-DB replay + diff. Until
+  run, PF-1B is "recovered & captured" but not "proven drift-free."
