@@ -1,7 +1,7 @@
 # Milestone 7 Design Review — Developer Productivity and Verification
 
 **Document ID:** CW-MDR-007
-**Version:** 0.1.0 — **DRAFT (for review; NOT approved; implementation not authorized)**
+**Version:** 0.2.0 — **DRAFT (for review; NOT approved; implementation not authorized)**
 **Milestone:** 7 — Developer Productivity and Verification (CW-GOV-001 §6)
 **Gate:** CW-GOV-001 §4A — implementation may not begin until this Design Review is approved.
 **Author:** Platform recovery/engineering
@@ -11,6 +11,12 @@
 > is scoped to the **entire** CW-GOV-001 §6 Milestone 7 definition (not compiler
 > verification alone) and is kept as a single Design Review mapped to the single
 > milestone (no "Phase 1" split).
+>
+> **Changes in v0.2 (review response):** removed a false dependency on the PF-1B
+> RLS-replay decision. The M7 regression tables are new tables and now carry explicit
+> `ENABLE ROW LEVEL SECURITY` + explicit policies in their own migration, so they are
+> unaffected by the `ensure_rls` caveat. Corrected §13 (migration), R-09 (downgraded to
+> a note), and D-2 (removed as a blocker; D-1 remains the real open choice).
 
 ---
 
@@ -199,11 +205,15 @@ on earlier ones (no forward references).
   a **case-result** table (run_id FK, case_id, stage, outcome, error) — or extends the
   existing `irr_regression_runs` / `irr_stage_runs` tables with `run_id` + isolation
   columns if reuse is cleaner (decided in implementation, recorded in the migration).
-  RLS: enabled, consistent with the `ensure_rls` posture (PF-1B DRIFT-REPORT caveat).
+  RLS: the migration issues an explicit `ALTER TABLE ... ENABLE ROW LEVEL SECURITY` and
+  explicit `CREATE POLICY` statements on each new M7 table, so RLS state is fully defined
+  by the migration itself — it does not rely on the `ensure_rls` event trigger and is
+  therefore unaffected by the PF-1B RLS-replay caveat.
 - **Data:** no backfill of production data. Corpus cases are new, versioned, immutable
   inputs stored in-repo (not derived by mutating production rows).
-- **Ordering:** the isolation migration lands after the PF-1B migration set (…000006) and
-  after the PF-1B RLS-replay decision is taken (dependency, §22).
+- **Ordering:** the isolation migration lands after the PF-1B migration set (…000006).
+  It has no dependency on the PF-1B RLS-replay decision (the new tables set their own RLS
+  explicitly).
 
 ## 14. Rollout Sequence
 
@@ -372,10 +382,10 @@ Expanded to cover every added component (not compiler verification alone).
 - **R-08 Contract-first erosion (CW-ARCH-001 §9.3).** Hand-edited fixtures/tests drift from
   the contract. *Affects:* the core architectural invariant. *Mitigation:* generation-only
   policy; regenerate-and-diff in CI; N-02.
-- **R-09 PF-1B dependency (RLS replay).** M7 regression tables inherit the `ensure_rls`
-  non-deterministic-RLS caveat (PF-1B DRIFT-REPORT). *Affects:* reproducible provisioning of
-  M7 tables. *Mitigation:* resolve the PF-1B RLS-replay decision before the isolation
-  migration lands (§13/§22); use explicit `ENABLE RLS` on M7 tables.
+- **R-09 (note, not a blocker) PF-1B RLS-replay is out of scope for M7.** The M7 tables
+  set their own RLS explicitly in the isolation migration (§13), so they are unaffected by
+  the PF-1B `ensure_rls` non-deterministic-RLS caveat. The PF-1B caveat remains a separate,
+  non-blocking PF-1B closure item and does not gate this milestone.
 - **R-10 Scope creep into 7A/8 (§6.8).** Certification "improvements" pull in retry/resilience
   or parallelization. *Affects:* milestone closes late/never. *Mitigation:* N-12; changes to
   scope require CW-GOV-001 §11 change control.
@@ -387,13 +397,14 @@ Expanded to cover every added component (not compiler verification alone).
 
 - **D-1:** Reuse `irr_regression_runs`/`irr_stage_runs` vs. new M7 registry tables (§13). Recommend
   new isolated tables to satisfy A-M4 cleanly.
-- **D-2:** PF-1B RLS-replay decision (reorder `ensure_rls` first vs. explicit per-table
-  `ENABLE RLS`) — blocks the M7 isolation migration (R-09). Take at PF-1B closure.
-- **D-3:** Which stages justify fewer than 5 canonical cases (M7-04) — enumerate at build step 3.
-- **D-4:** Test-runner choice (node's built-in test runner vs. a minimal in-repo harness) —
+- **D-2:** Which stages justify fewer than 5 canonical cases (M7-04) — enumerate at build step 3.
+- **D-3:** Test-runner choice (node's built-in test runner vs. a minimal in-repo harness) —
   keep dependency-light; decide at build step 1.
-- **D-5:** `contract.yaml` location fix (root → `compiler/`) — cosmetic but blocks a clean
+- **D-4:** `contract.yaml` location fix (root → `compiler/`) — cosmetic but blocks a clean
   `verify:compiler`; do at build step 1.
+
+(The former D-2 — a PF-1B RLS-replay dependency — was removed in v0.2; see §13 / R-09. It
+was a false dependency: the M7 tables set their own RLS explicitly.)
 
 ---
 
