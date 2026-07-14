@@ -106,6 +106,7 @@ serve(async (req) => {
       'allow_promotion_codes': 'true',
     });
 
+    // Partner referral attribution: stamp the session so checkout-session-handler credits the partner (e.g. VALDATA).
     if (partner_code && typeof partner_code === 'string' && partner_code.trim()) {
       const code = partner_code.trim().toUpperCase().slice(0, 32);
       params.append('client_reference_id', code);

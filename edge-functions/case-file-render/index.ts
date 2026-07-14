@@ -684,7 +684,7 @@ document.getElementById('cw-buy-bundle').addEventListener('click', function() { 
   var email = document.getElementById('cw-free-email'); var btn = document.getElementById('cw-free-submit'); var err = document.getElementById('cw-free-err');
   form.addEventListener('submit', function(e) {
     e.preventDefault(); var v = email.value.trim();
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)) { err.textContent = 'Please enter a valid email address.'; err.style.display = 'block'; email.focus(); return; }
+    if (!/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/.test(v)) { err.textContent = 'Please enter a valid email address.'; err.style.display = 'block'; email.focus(); return; }
     err.style.display = 'none'; btn.textContent = 'Sending…'; btn.disabled = true;
     if (typeof captureLeadDirect === 'function') {
       captureLeadDirect(v, 'page3_free_template_${s.public_slug}').then(function() {

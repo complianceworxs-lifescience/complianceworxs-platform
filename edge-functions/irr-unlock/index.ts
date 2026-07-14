@@ -19,6 +19,9 @@ const SITE = 'https://www.complianceworxs.com';
 const RECONSTRUCTION_PREVENTION_STATEMENT =
   'This record was generated to document the authorization rationale contemporaneously with the operational decision in order to prevent post-inspection reconstruction of release justification.';
 
+// ============================================================
+// FULL PACKAGE GENERATION (moved here from irr-generate; runs only after payment)
+// ============================================================
 const DEFENSE_PACK_FIELDS = `,
   \"defense_pack_title\": \"Inspection Defense Package — [decision descriptor]\",
   \"defensibility_rating\": \"EXACTLY one of: Critical Exposure, At Risk, Defensible with Gaps, Inspection-Ready.\",
@@ -40,7 +43,7 @@ const DEFENSE_PACK_FIELDS = `,
   },
   \"evidence_traceability\": [{\"evidence\": \"The evidence item or claimed result\", \"mentioned_in_rationale\": \"Yes or No\", \"attached_or_referenced\": \"Yes, No, or Referenced only\", \"inspection_risk\": \"Low, Medium, or High — risk this item creates if an investigator asks to see it\", \"needed_action\": \"What must be located, attached, or referenced to close the gap. Empty string if none.\"}],
   \"claim_status\": [{\"claim\": \"A specific factual claim stated in the rationale (a result, value, ID, or method)\", \"status\": \"EXACTLY one of: Claimed in rationale, Supported by attached evidence, Not traceable in record\"}],
-  \"unsupported_claims\": [\"Each item: a statement this record does NOT substantiate, written as what the record fails to establish — never as advice on what to say or not say to an investigator. Example: This record does not establish that the f2 calculation was performed before authorization; no contemporaneous worksheet is attached.\"],
+  \"unsupported_claims\": [\"Each item: a statement this record does NOT substantiate, written as what the record fails to establish — never as advice on what to say to an investigator. Example: This record does not establish that the f2 calculation was performed before authorization; no contemporaneous worksheet is attached.\"],
   \"inspector_challenge\": [{\"question\": \"A specific question an FDA investigator is likely to ask about THIS decision.\", \"inspection_risk\": \"EXACTLY one of: High, Likely follow-up, Medium, Low — how hard an investigator is likely to press this specific line.\", \"response\": \"The best supported response, written from the record. Grounded only in the inputs.\", \"weakness_to_acknowledge\": \"The weakness in this answer the responder should concede rather than conceal. Empty string if none.\", \"record_section_support\": \"Which record section or evidence item supports the response. Empty string if unsupported.\", \"do_not_overstate\": \"A specific claim the responder must NOT make because the record does not support it. Empty string if none.\"}]`;
 
 const INDUSTRY_PROFILES: Record<string, any> = {
@@ -66,6 +69,7 @@ function formatEvidenceItems(items: any): string {
 
 async function generateFullRecord(session: any): Promise<any> {
   const industry = (session.industry || 'pharma');
+  const is503b = industry === '503b';
   const systemPrompt = buildSystemPrompt(industry);
   const evidenceBlock = formatEvidenceItems(session.evidence_items);
   const anchorsList = Array.isArray(session.regulatory_anchors) && session.regulatory_anchors.length ? session.regulatory_anchors.join(', ') : 'None selected by user';
@@ -102,13 +106,18 @@ async function generateFullRecord(session: any): Promise<any> {
   return record;
 }
 
+// idempotent: returns { record } if full package ready, { generating:true } if another
+// request holds the lock, generates+persists once if this request wins the lock.
 async function ensureFullRecord(supabase: any, sessionId: string): Promise<{ record?: any; generating?: boolean }> {
   const { data: fresh } = await supabase.from('irr_sessions').select('*').eq('id', sessionId).single();
   if (!fresh) throw new Error('Session not found during generation');
 
-  if (fresh.record_json && fresh.record_json._full === true) return { record: fresh.record_json };
+  if (fresh.record_json && fresh.record_json._full === true) {
+    return { record: fresh.record_json };
+  }
 
   const preview = fresh.record_json || {};
+  // Atomic lock claim: only the request that flips _full_lock from null proceeds.
   const { data: claimed } = await supabase
     .from('irr_sessions')
     .update({ record_json: { ...preview, _full_lock: new Date().toISOString() } })
@@ -117,6 +126,7 @@ async function ensureFullRecord(supabase: any, sessionId: string): Promise<{ rec
     .select('id');
 
   if (!claimed || claimed.length === 0) {
+    // someone else is generating (or already finished) — re-check for completion
     const { data: recheck } = await supabase.from('irr_sessions').select('record_json').eq('id', sessionId).single();
     if (recheck?.record_json?._full === true) return { record: recheck.record_json };
     return { generating: true };
@@ -124,14 +134,22 @@ async function ensureFullRecord(supabase: any, sessionId: string): Promise<{ rec
 
   try {
     const fullRecord = await generateFullRecord(fresh);
-    await supabase.from('irr_sessions').update({ record_json: fullRecord, gap_count: fullRecord.gap_count || 0, flags: fullRecord.flags || [] }).eq('id', sessionId);
+    await supabase.from('irr_sessions').update({
+      record_json: fullRecord,
+      gap_count: fullRecord.gap_count || 0,
+      flags: fullRecord.flags || [],
+    }).eq('id', sessionId);
     return { record: fullRecord };
   } catch (e) {
+    // release lock so a retry can regenerate
     await supabase.from('irr_sessions').update({ record_json: preview }).eq('id', sessionId);
     throw e;
   }
 }
 
+// ============================================================
+// Delivery email (unchanged transport)
+// ============================================================
 const PAGE_BY_INDUSTRY: Record<string, string> = {
   '503b': '/503b/irr', 'pharma': '/pharma/irr', 'cosmetics': '/cosmetics/irr',
   'food-beverage': '/food-beverage/irr', 'food_beverage': '/food-beverage/irr',
@@ -168,7 +186,9 @@ function buildRawHtmlEmail(toEmail: string, subject: string, html: string): stri
 }
 async function sendDeliveryEmail(supabase: any, session: any, email: string | null): Promise<void> {
   try {
-    if (!email || session.delivery_email_sent_at || !GMAIL_CLIENT_ID || !GMAIL_CLIENT_SECRET || !GMAIL_REFRESH_TOKEN) return;
+    if (!email) return;
+    if (session.delivery_email_sent_at) return;
+    if (!GMAIL_CLIENT_ID || !GMAIL_CLIENT_SECRET || !GMAIL_REFRESH_TOKEN) return;
     const { data: claimed } = await supabase.from('irr_sessions').update({ delivery_email_sent_at: new Date().toISOString() }).eq('id', session.id).is('delivery_email_sent_at', null).select('id');
     if (!claimed || claimed.length === 0) return;
     const recordUrl = recordUrlFor(session);
@@ -207,6 +227,7 @@ serve(async (req) => {
     let deliverEmail = session.email;
     let emailSession = session;
 
+    // Verify payment with Stripe if not already marked paid in DB. Payment is the gate.
     if (!paid && stripe_session_id) {
       const stripeRes = await fetch(`https://api.stripe.com/v1/checkout/sessions/${stripe_session_id}`, { headers: { 'Authorization': `Bearer ${STRIPE_SECRET_KEY}` } });
       const stripeSession = await stripeRes.json();
@@ -221,9 +242,13 @@ serve(async (req) => {
 
     if (!paid) return new Response(JSON.stringify({ unlocked: false, error: 'Payment not confirmed' }), { status: 402, headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
 
+    // Paid. Generate (or fetch) the full package idempotently.
     const result = await ensureFullRecord(supabase, session_id);
-    if (result.generating) return new Response(JSON.stringify({ unlocked: true, generating: true, membership_credit_expires_at: creditExpiry }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    if (result.generating) {
+      return new Response(JSON.stringify({ unlocked: true, generating: true, membership_credit_expires_at: creditExpiry }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });
+    }
 
+    // Full record ready — now deliver email (link points to a complete record).
     await sendDeliveryEmail(supabase, emailSession, deliverEmail);
 
     return new Response(JSON.stringify({ unlocked: true, record: result.record, membership_credit_expires_at: creditExpiry }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } });

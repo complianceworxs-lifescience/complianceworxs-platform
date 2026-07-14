@@ -54,7 +54,7 @@ function validateAgainstOutputSchema(parsed: Record<string, unknown> | null, sch
   return { valid: missingFields.length === 0 && typeMismatches.length === 0, missingFields, typeMismatches };
 }
 
-async function callAnthropic(promptPackage: any, filledUserPrompt: string, maxTokens: number, fetchImpl: typeof fetch): Promise
+async function callAnthropic(promptPackage: any, filledUserPrompt: string, maxTokens: number, fetchImpl: typeof fetch): Promise<
   | { ok: true; textContent: string; model: string; tokens: { input: number | null; output: number | null }; latencyMs: number }
   | { ok: false; reason: 'generation_timeout' | 'network_error' | 'api_error'; message: string; latencyMs: number }
 > {
