@@ -8,8 +8,8 @@ until PF-1A closes (see README.md).
 
 | Component | Status | Verified Against Production | Commit |
 |---|---|---|---|
-| contract.yaml | Pending | — | — |
-| compile.js | Pending | — | — |
+| contract.yaml | Complete | Yes | f974d6282ed96196d2e315a3eae9e7237ec73b40 |
+| compile.js | Complete | Yes | da4cd47da5811767a1661ebb2a96360f0faa60a8 |
 | irr-stage-engine | Complete | Yes | fcf6cde7d73fefa1ba23d2203f7e636e29200615 |
 | irr-job-worker | Complete | Yes | fcf6cde7d73fefa1ba23d2203f7e636e29200615 |
 | irr-generate | Complete | Yes | fcf6cde7d73fefa1ba23d2203f7e636e29200615 |
@@ -118,4 +118,4 @@ until PF-1A closes (see README.md).
 ## Summary
 
 Total tracked: 96 (2 compiler assets + 94 edge functions)
-Complete: 94 (all 94 edge functions; 2 compiler assets still Pending)
+Complete: 96 (all 94 edge functions + 2 compiler assets). PF-1A recovery scope complete; PF-1B (schema/migrations/RLS) not started.
