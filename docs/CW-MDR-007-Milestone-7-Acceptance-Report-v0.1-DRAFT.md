@@ -137,14 +137,13 @@ Immutability gate demonstrated to fail on an in-place case edit.
 - **A-10 field naming (resolved):** the corpus field `name` was renamed to `case_name` to
   match the DR (`case_id` / `case_name`) exactly. `expected` was deliberately **not**
   renamed to `expected_terminal_result` — that would newly conflict with CW-EXEC-001's
-  "terminal state" vocabulary while fixing a DR-text mismatch. The corpus was updated via
-  the sanctioned `--reindex`, so `corpus_hash` moved `29a33455…` → `f44bef39…` under
-  version 1.0.0; CP-5 re-verified green after the rename. The step-5 demo run persisted in
-  `m7_regression_runs` predates the rename and remains attributable to the pre-rename 1.0.0
-  hash (`29a33455…`) — i.e. a version-label/hash divergence exists between that historical
-  DB row and the current repo corpus. If strict one-version-one-hash uniqueness is
-  preferred, a `corpus.version` bump (1.0.0 → 1.1.0) is the clean alternative; flagged for
-  the owner.
+  "terminal state" vocabulary while fixing a DR-text mismatch. The corpus was bumped
+  `1.0.0` → `1.1.0` to carry the renamed content, preserving the content-addressing
+  guarantee that one version label denotes one fixed byte set: version **1.1.0** is the
+  current corpus (`corpus_hash f44bef39…`), and version **1.0.0** is the superseded
+  pre-rename corpus (`corpus_hash 29a33455…`), which the one-off step-5 isolation-demo run
+  persisted in `m7_regression_runs` is attributed to. Each version maps to exactly one
+  hash — no divergence remains. CP-5 re-verified green under 1.1.0.
 - **Scope discipline:** each step was committed within its stated scope; no §6.8-excluded
   work was introduced.
 
