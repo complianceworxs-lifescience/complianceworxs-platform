@@ -1,6 +1,6 @@
 {
   "case_id": "rc-005-unexpected-field",
-  "name": "Output carrying a field outside the contract schema is rejected (strict shape)",
+  "case_name": "Output carrying a field outside the contract schema is rejected (strict shape)",
   "scenario": "schema-unexpected-field",
   "stage": "runtime",
   "expected": { "status": "failed", "reason": "invalid_response_schema" },

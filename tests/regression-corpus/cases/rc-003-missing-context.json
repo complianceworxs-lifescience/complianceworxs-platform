@@ -1,6 +1,6 @@
 {
   "case_id": "rc-003-missing-context",
-  "name": "A required context variable is not supplied; runtime fails before the model call",
+  "case_name": "A required context variable is not supplied; runtime fails before the model call",
   "scenario": "missing-context-variable",
   "stage": "runtime",
   "expected": { "status": "failed", "reason": "missing_context_variable" },

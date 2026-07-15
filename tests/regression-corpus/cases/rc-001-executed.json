@@ -1,6 +1,6 @@
 {
   "case_id": "rc-001-executed",
-  "name": "Well-formed IRR package reaches a validated executed terminal state",
+  "case_name": "Well-formed IRR package reaches a validated executed terminal state",
   "scenario": "happy-path",
   "stage": "runtime",
   "expected": { "status": "executed" },

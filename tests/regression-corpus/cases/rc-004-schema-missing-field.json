@@ -1,6 +1,6 @@
 {
   "case_id": "rc-004-schema-missing-field",
-  "name": "Valid JSON that omits a required contract field fails schema validation",
+  "case_name": "Valid JSON that omits a required contract field fails schema validation",
   "scenario": "schema-missing-required-field",
   "stage": "runtime",
   "expected": { "status": "failed", "reason": "invalid_response_schema" },

@@ -1,6 +1,6 @@
 {
   "case_id": "rc-002-invalid-json",
-  "name": "Non-JSON model output fails as invalid_json_output after parse retry",
+  "case_name": "Non-JSON model output fails as invalid_json_output after parse retry",
   "scenario": "malformed-model-output",
   "stage": "runtime",
   "expected": { "status": "failed", "reason": "invalid_json_output" },

@@ -53,7 +53,7 @@ Schema migration applied to production (`balkvbmtummehgbbeqap`):
 | A-07 | Generated validator tests pass valid / fail invalid | ✅ | `tests/generated/validator.test.mjs`; `# tests 40 / # pass 40 / # fail 0`. |
 | A-08 | Generated prompt-fragment tests match contract | ✅ | `tests/generated/prompt-fragment.test.mjs` (part of the 40). |
 | A-09 | Repeatable smoke: one complete execution, re-runnable | ✅ | `verify:smoke` runs each case; suite executed twice with identical result shape (`1be589a`). |
-| A-10 | Corpus per-case: id, name, payload, scenario, expected terminal, version, immutable inputs | ✅ (note) | `tests/regression-corpus/`: each case has `case_id`, `name`, `scenario`, `stage`, `expected` (terminal status+reason), `payload`; `corpus.version` + `index.json` (sha256 per case + `corpus_hash`). **Note:** the case field is named `name` (DR text says `case_name`); content is equivalent. |
+| A-10 | Corpus per-case: case_id, case_name, payload, scenario, expected terminal, version, immutable inputs | ✅ | `tests/regression-corpus/`: each case has `case_id`, `case_name`, `scenario`, `stage`, `expected` (terminal status+reason), `payload`; `corpus.version` + `index.json` (sha256 per case + `corpus_hash`). Field names match the DR (`case_id` / `case_name`); `expected` retained deliberately (see §8). |
 | A-11 | Regression run: run_id, per-case, stage+error, aggregate, isolated | ✅ | `run-regression.js` → run_id + 5 per-case rows + aggregate; direct DB proof of isolation (§6 below) (`30666e7`). |
 | A-12 | `npm run verify` performs §6.5 steps 1–6 in one command | ✅ | `verification/verify.js`; single command runs compiler+unit+stage+smoke(+regression)+report. Confirmed from a genuinely clean clone after the `99185e6` fix. |
 | A-13 | Single unambiguous, concise report (human + JSON) | ✅ | `report.js`; `--json` machine form + human summary, one OVERALL pass/fail (`4258cfa`). |
@@ -134,9 +134,17 @@ Immutability gate demonstrated to fail on an in-place case edit.
 - **Clean-checkout gap (resolved):** an independent check found `npm run verify` failed
   from a fresh clone because `js-yaml` (in `compiler/package.json`) is not installed by a
   root `npm install`. Fixed with a root `postinstall` (`99185e6`); re-verified from clean.
-- **A-10 naming note:** corpus cases use `name` (DR text says `case_name`) and `expected`
-  for the terminal result. Content is equivalent; flagging for the owner in case exact
-  field naming is desired before closure.
+- **A-10 field naming (resolved):** the corpus field `name` was renamed to `case_name` to
+  match the DR (`case_id` / `case_name`) exactly. `expected` was deliberately **not**
+  renamed to `expected_terminal_result` — that would newly conflict with CW-EXEC-001's
+  "terminal state" vocabulary while fixing a DR-text mismatch. The corpus was updated via
+  the sanctioned `--reindex`, so `corpus_hash` moved `29a33455…` → `f44bef39…` under
+  version 1.0.0; CP-5 re-verified green after the rename. The step-5 demo run persisted in
+  `m7_regression_runs` predates the rename and remains attributable to the pre-rename 1.0.0
+  hash (`29a33455…`) — i.e. a version-label/hash divergence exists between that historical
+  DB row and the current repo corpus. If strict one-version-one-hash uniqueness is
+  preferred, a `corpus.version` bump (1.0.0 → 1.1.0) is the clean alternative; flagged for
+  the owner.
 - **Scope discipline:** each step was committed within its stated scope; no §6.8-excluded
   work was introduced.
 
