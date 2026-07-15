@@ -1,12 +1,13 @@
 # CW-MDR-007 — Milestone 7 Acceptance Report
 
-**Status:** DRAFT — for Milestone Owner review (NOT a closure declaration)
-**Milestone:** 7 — Verification & Regression Foundation (CW-GOV-001 §6)
+**Status:** FINAL v1.0 — ACCEPTED. Closure evidence for Milestone 7.
+**Milestone:** 7 — Developer Productivity and Verification (CW-GOV-001 §6)
 **Governing Design Review:** CW-MDR-007 v1.0 (APPROVED 2026-07-15, commit `e3a42cf`)
 **Author:** Claude Code (implementer)
 **Date drafted:** 2026-07-15
-**Closure authority:** CEO / Milestone Owner (per CW-GOV-001 §12). The author does **not**
-self-declare closure; this report is evidence for the owner's closure decision.
+**Closure:** Milestone 7 closed by the CEO / Milestone Owner (Jon Nugent) per CW-GOV-001
+§12, decision recorded 2026-07-15 (governance doc §6.1/§6.9–§6.11). The author did not
+self-declare closure; this report is the closure evidence the owner acted on.
 
 ---
 
@@ -147,12 +148,14 @@ Immutability gate demonstrated to fail on an in-place case edit.
 - **Scope discipline:** each step was committed within its stated scope; no §6.8-excluded
   work was introduced.
 
-## 9. Recommendation
+## 9. Closure
 
 All A-* criteria are satisfied, no N-* condition holds, and all six §6.7 metrics are met,
-each with reproducible evidence. Subject to the Milestone Owner's review of this report
-(and the A-10 naming note), Milestone 7 appears ready to close. **Closure remains the
-Owner's decision; this document does not declare it.**
+each with reproducible evidence; the A-10 field naming was resolved and the corpus
+version/hash uniqueness closed. The Milestone Owner reviewed this report — including an
+independent re-query of the production isolation numbers directly against Supabase — and
+**recorded the closure of Milestone 7 on 2026-07-15** per CW-GOV-001 §12. The governance
+doc §6.1 is set to **Closed** with closure date, authority, and evidence in §6.9–§6.11.
 
 ---
 

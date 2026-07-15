@@ -188,7 +188,7 @@ It may be reopened only if evidence establishes that its closure evidence was ma
 
 ## 6.1 Status
 
-**Planned**
+**Closed**
 
 ## 6.2 Objective
 
@@ -283,6 +283,44 @@ Milestone 7 does not include:
 * cron removal;
 * worker-owned continuous execution;
 * parallel execution optimization.
+
+## 6.9 Closure Date
+
+**July 15, 2026**
+
+## 6.10 Closure Authority
+
+Closed by the CEO / Milestone Owner (per §12), decision recorded 2026-07-15.
+
+## 6.11 Closure Evidence
+
+Milestone 7 closed based on:
+
+* Milestone Design Review CW-MDR-007 v1.0 approved (2026-07-15, commit `e3a42cf`)
+  before any implementation began (§4A gate satisfied);
+* implementation delivered in six independently-gated build steps (CP-1…CP-6):
+  `4878c8f` (compiler verification), `f30fbd0` (fixtures/tests), `facc3d8` (stage
+  certification), `1be589a` (smoke/runtime certification), `30666e7` (regression corpus +
+  isolation migration), `4258cfa` (verify orchestrator + gate policy + reporting);
+* `npm run verify` runs from a clean checkout in one command and auto-selects gates from
+  the diff; a routine stage change verifies in ~0.9 s (well under the two-minute metric),
+  excluding external-provider latency (fix `99185e6`);
+* one complete smoke execution is repeatable and isolated — direct production check showed
+  `irr_jobs`/`irr_stage_runs` unchanged with zero network egress;
+* the regression corpus is content-addressed and immutable (version 1.1.0), and a
+  regression run is attributable (`run_id` + `corpus_hash`) with membership defined without
+  any shared production-table time window;
+* the M7 regression tables (`m7_regression_runs`, `m7_regression_case_results`) are
+  dedicated and isolated with explicit RLS + policies (migration
+  `20260714000007_m7_regression_isolation`); a persisted run wrote only to those tables
+  while the `irr_*` job tables stayed unchanged;
+* all §6.7 success metrics met; every acceptance criterion (A-01…A-14, A-M1…A-M6) satisfied
+  and no non-acceptance condition (N-01…N-13) triggered;
+* full closure evidence: Acceptance Report CW-MDR-007-Milestone-7-Acceptance-Report v1.0.
+
+Deviations found during the build were disclosed and closed, not smoothed over: the
+clean-checkout bootstrap gap (`99185e6`), the A-10 field-name alignment `name` → `case_name`
+(`1e90d80`), and the corpus version/hash uniqueness bump 1.0.0 → 1.1.0 (`ae1b88e`).
 
 ---
 
