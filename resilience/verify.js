@@ -24,7 +24,7 @@ const REPO = path.resolve(HERE, '..');
 // Consumer copies to verify once they exist. Each edge function bundles a verbatim copy of the
 // resilience subtree (generated artifact + classify/evaluate); each copy must byte-match its
 // canonical source. Absent copies are fine (a path not yet built). { copy (repo-rel), src (resilience-rel) }.
-const SUBTREE = ['generated/resilience-generated.ts', 'classify.ts', 'evaluate-policy.ts'];
+const SUBTREE = ['generated/resilience-generated.ts', 'classify.ts', 'evaluate-policy.ts', 'decide-failure.ts'];
 const CONSUMER_COPIES = [];
 for (const fn of ['irr-stage-engine', 'irr-job-worker']) {  // stage-engine: step 3; job-worker: step 4
   for (const rel of SUBTREE) {

@@ -1,6 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { PROMPT_CONSTRAINTS, constraintsFor, validateFieldItems, TYPE_CONTRACT_LINE } from './contract-generated.ts';
-import { evaluate } from './resilience/evaluate-policy.ts';
+import { decideFailure } from './resilience/decide-failure.ts';
 
 // Parse a provider Retry-After header (delta-seconds) into ms; null if absent/unparseable.
 function parseRetryAfterMs(v: string | null): number | undefined {
@@ -840,9 +840,8 @@ async function runStage(jobId: string, def: typeof STAGES[number], inputPayload:
     // engine keeps its EXISTING max_attempts as the retry COUNT ceiling — per-category ceilings
     // and delay-honoring are NOT adopted here (D-2(a): delayMs is recorded, not enforced), so
     // retry counts are unchanged. "Retryable in principle" ignores the ceiling (evaluate at attempt 1).
-    const decision = evaluate(err?.reason ?? 'unknown', attempt, { httpStatus: err?.httpStatus, retryAfterMs: err?.retryAfterMs, jitterKey: `${jobId}:${nextStage}` });
-    const retryableInPrinciple = !evaluate(err?.reason ?? 'unknown', 1, { httpStatus: err?.httpStatus, retryAfterMs: err?.retryAfterMs }).terminal;
-    const canRetry = retryableInPrinciple && attempt < maxAttempts;
+    const decision = decideFailure(err?.reason ?? 'unknown', attempt, maxAttempts, { httpStatus: err?.httpStatus, retryAfterMs: err?.retryAfterMs, jitterKey: `${jobId}:${nextStage}` });
+    const canRetry = decision.action === 'retry';
     const errorReason = decision.reason_normalized;   // normalized: api_error+429 -> rate_limit, +401 -> authentication_error
     const errorCategory = decision.category;
     const telemetryFields = {
@@ -856,13 +855,13 @@ async function runStage(jobId: string, def: typeof STAGES[number], inputPayload:
     if (canRetry) {
       await sbRest(`irr_stage_runs?job_id=eq.${jobId}&stage=eq.${nextStage}`, {
         method: 'PATCH',
-        body: JSON.stringify({ status: 'queued', classified_failure: errorReason, error_detail: { message: err.message, category: errorCategory, delay_ms: decision.delayMs }, ...telemetryFields, updated_at: new Date().toISOString() }),
+        body: JSON.stringify({ status: 'queued', classified_failure: errorReason, error_detail: { message: err.message, category: errorCategory, delay_ms: decision.delay_ms }, ...telemetryFields, updated_at: new Date().toISOString() }),
       });
       return;
     }
     await sbRest(`irr_stage_runs?job_id=eq.${jobId}&stage=eq.${nextStage}`, {
       method: 'PATCH',
-      body: JSON.stringify({ status: 'failed', completed_at: new Date().toISOString(), duration_ms: Date.now() - t0, classified_failure: errorReason, error_detail: { message: err.message, category: errorCategory, delay_ms: decision.delayMs }, ...telemetryFields, updated_at: new Date().toISOString() }),
+      body: JSON.stringify({ status: 'failed', completed_at: new Date().toISOString(), duration_ms: Date.now() - t0, classified_failure: errorReason, error_detail: { message: err.message, category: errorCategory, delay_ms: decision.delay_ms }, ...telemetryFields, updated_at: new Date().toISOString() }),
     });
     await sbRest(`irr_jobs?job_id=eq.${jobId}`, {
       method: 'PATCH',
