@@ -38,9 +38,24 @@ Schema migration applied to production (`balkvbmtummehgbbeqap`):
 `20260714000008_m7a_resilience_telemetry` — added `irr_stage_runs.error_category` (additive
 nullable column) + `m7a_retry_events` table (new, isolated, explicit RLS).
 
-**Deployment status:** the edge-function source changes (`irr-stage-engine`, `irr-job-worker`)
-are committed but **NOT redeployed** to Supabase — deployment is a separate owner decision.
-The taxonomy/evaluator/breaker (`resilience/`) and tests are repo artifacts.
+**Deployment status (updated 2026-07-15 — byte-verified production deploy):** the refactored
+edge functions are now **deployed to production** (`balkvbmtummehgbbeqap`) under the owner's
+explicit, step-confirmed authorization:
+
+| Function | Live version | verify_jwt | Live bundle `ezbr_sha256` | Byte-verification |
+|----------|--------------|------------|----------------------------|-------------------|
+| `irr-stage-engine` | v32 (from v31) | false | `0bd2afa6224254ccea816d62073f95137d0fde63e984e5fc186a85e559409c88` | all files byte-identical to committed repo source (`61e882f`/`f4126f8`) |
+| `irr-job-worker` | v12 (from v11) | false | `c3a226fc662b3957959d1ac613e7d33b4d0554da547afa51e02970e30fac8a5c` | all 10 code files byte-identical to committed repo source (`f4126f8`); `DEPRECATED.md` excluded (docs, not part of the live function) |
+
+Each deploy was byte-verified by re-pulling the live function and confirming per-file sha256
+equality (built from raw disk bytes via Python, no hand transcription) plus bundle-hash equality
+between `deploy` and `get`. **Zero data impact:** the production snapshot immediately after both
+deploys was identical to the pre-deploy baseline (`irr_jobs`/`irr_stage_runs`/`m7a_retry_events`
+= 95 / 427 / 0 unchanged; queue idle at deploy). The **rollback baseline** (engine v31 / worker
+v11, byte-verified against repo `7106c9f`/`61e882f`, matching what PF-1A originally recovered)
+remains intact and untouched. The resilience behavior now takes effect on the next real job that
+processes a stage failure. The taxonomy/evaluator/breaker (`resilience/`) and tests remain repo
+artifacts.
 
 ## 3. Acceptance criteria → evidence
 
@@ -125,8 +140,13 @@ M7A.
 
 ## 8. Open items for the owner (not blockers to acceptance)
 
-1. **Deployment.** The refactored `irr-stage-engine` / `irr-job-worker` are committed but not
-   deployed. The resilience behavior takes effect only on redeploy — an explicit owner decision.
+1. **Deployment — DONE (2026-07-15).** The refactored `irr-stage-engine` (v32) and
+   `irr-job-worker` (v12) are now deployed to production under explicit, step-confirmed owner
+   authorization, byte-verified against the committed repo source with zero data impact and the
+   rollback baseline (v31/v11) intact (§2). The resilience behavior is live and awaits the first
+   real job that hits a stage failure. Remaining follow-through is only observational — confirming
+   `error_category` populates and `m7a_retry_events` records once organic traffic exercises the
+   path (monitored manually; a connector-backed scheduled watch is a separate deliberate setup).
 2. **Per-category retry ceilings (D-5).** Bootstrap = 6 for all; tightening to the DR's
    evidence-based ceilings (e.g. model_output = 2) is a deliberate later change once telemetry
    accumulates.
@@ -138,7 +158,8 @@ M7A.
 ## 9. Recommendation
 
 All A-* criteria are satisfied, no N-* condition holds, all §7.6 metrics are met, and every
-build step passed its gate with reproducible evidence. Subject to the Owner's review — and the
-explicit note that the edge functions are **not yet deployed** — Milestone 7A's build appears
-complete and acceptable. **Closure and deployment remain the Owner's decisions; this document
-declares neither.**
+build step passed its gate with reproducible evidence. The refactored edge functions have since
+been deployed to production (2026-07-15), byte-verified and with zero data impact, under explicit
+step-confirmed owner authorization (§2). Subject to the Owner's review, Milestone 7A's build
+appears complete and acceptable. **Closure remains the Owner's decision; this document is
+evidence, not a closure declaration.**
