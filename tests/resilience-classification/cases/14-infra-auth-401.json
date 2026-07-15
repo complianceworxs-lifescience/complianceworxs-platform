@@ -1,0 +1,18 @@
+{
+  "id": "14-infra-auth-401",
+  "description": "api_error+HTTP 401 subclassifies to authentication_error/infrastructure/terminal (real gap #2)",
+  "input": {
+    "reason": "api_error",
+    "attempt": 1,
+    "context": {
+      "httpStatus": 401
+    }
+  },
+  "expect": {
+    "category": "infrastructure",
+    "reason_normalized": "authentication_error",
+    "retry": false,
+    "terminal": true,
+    "delay": "zero"
+  }
+}

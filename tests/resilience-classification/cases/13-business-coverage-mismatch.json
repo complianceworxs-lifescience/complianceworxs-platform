@@ -1,0 +1,15 @@
+{
+  "id": "13-business-coverage-mismatch",
+  "description": "traceability_coverage_mismatch is business_logic/terminal",
+  "input": {
+    "reason": "traceability_coverage_mismatch",
+    "attempt": 1
+  },
+  "expect": {
+    "category": "business_logic",
+    "reason_normalized": "traceability_coverage_mismatch",
+    "retry": false,
+    "terminal": true,
+    "delay": "zero"
+  }
+}

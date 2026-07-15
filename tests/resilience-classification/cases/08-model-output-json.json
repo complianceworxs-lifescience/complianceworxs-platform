@@ -1,0 +1,16 @@
+{
+  "id": "08-model-output-json",
+  "description": "invalid_json_output is model_output/retryable, bounded ceiling",
+  "input": {
+    "reason": "invalid_json_output",
+    "attempt": 1
+  },
+  "expect": {
+    "category": "model_output",
+    "reason_normalized": "invalid_json_output",
+    "retry": true,
+    "terminal": false,
+    "max_attempts": 2,
+    "delay": "backoff"
+  }
+}

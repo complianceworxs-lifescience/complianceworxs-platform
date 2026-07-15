@@ -1,0 +1,16 @@
+{
+  "id": "05-operational-exhausted",
+  "description": "operational retry exhausted at the ceiling → terminal, no delay",
+  "input": {
+    "reason": "generation_timeout",
+    "attempt": 6
+  },
+  "expect": {
+    "category": "operational",
+    "reason_normalized": "generation_timeout",
+    "retry": false,
+    "terminal": true,
+    "max_attempts": 6,
+    "delay": "zero"
+  }
+}

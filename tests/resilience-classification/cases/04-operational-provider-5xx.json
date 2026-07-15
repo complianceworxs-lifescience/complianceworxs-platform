@@ -1,0 +1,18 @@
+{
+  "id": "04-operational-provider-5xx",
+  "description": "api_error+HTTP 503 stays operational/retryable",
+  "input": {
+    "reason": "api_error",
+    "attempt": 2,
+    "context": {
+      "httpStatus": 503
+    }
+  },
+  "expect": {
+    "category": "operational",
+    "reason_normalized": "api_error",
+    "retry": true,
+    "terminal": false,
+    "delay": "backoff"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "06-operational-basepolicy-terminal",
+  "description": "platform_kill_exhausted_retries: operational category but base_policy terminal → terminal override",
+  "input": {
+    "reason": "platform_kill_exhausted_retries",
+    "attempt": 1
+  },
+  "expect": {
+    "category": "operational",
+    "reason_normalized": "platform_kill_exhausted_retries",
+    "retry": false,
+    "terminal": true,
+    "delay": "zero"
+  }
+}

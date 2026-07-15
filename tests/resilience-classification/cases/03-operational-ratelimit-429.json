@@ -1,0 +1,21 @@
+{
+  "id": "03-operational-ratelimit-429",
+  "description": "api_error+HTTP 429 subclassifies to rate_limit; honors Retry-After (real gap #1)",
+  "input": {
+    "reason": "api_error",
+    "attempt": 1,
+    "context": {
+      "httpStatus": 429,
+      "retryAfterMs": 5000
+    }
+  },
+  "expect": {
+    "category": "operational",
+    "reason_normalized": "rate_limit",
+    "retry": true,
+    "terminal": false,
+    "honor_retry_after": true,
+    "max_attempts": 6,
+    "delay": "retry_after"
+  }
+}

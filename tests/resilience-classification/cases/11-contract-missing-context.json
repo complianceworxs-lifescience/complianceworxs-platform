@@ -1,0 +1,15 @@
+{
+  "id": "11-contract-missing-context",
+  "description": "missing_context_variable is contract/terminal",
+  "input": {
+    "reason": "missing_context_variable",
+    "attempt": 1
+  },
+  "expect": {
+    "category": "contract",
+    "reason_normalized": "missing_context_variable",
+    "retry": false,
+    "terminal": true,
+    "delay": "zero"
+  }
+}

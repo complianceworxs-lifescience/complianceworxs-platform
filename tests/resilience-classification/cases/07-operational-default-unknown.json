@@ -1,0 +1,16 @@
+{
+  "id": "07-operational-default-unknown",
+  "description": "an unmapped reason uses the fail-safe default (bounded operational retry)",
+  "input": {
+    "reason": "some_unmapped_future_reason",
+    "attempt": 1
+  },
+  "expect": {
+    "category": "operational",
+    "reason_normalized": "some_unmapped_future_reason",
+    "retry": true,
+    "terminal": false,
+    "max_attempts": 6,
+    "delay": "backoff"
+  }
+}

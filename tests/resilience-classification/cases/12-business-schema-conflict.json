@@ -1,0 +1,15 @@
+{
+  "id": "12-business-schema-conflict",
+  "description": "invalid_response_schema → business_logic/terminal (DR §6.2 conflict resolution; corrects irr-job-worker)",
+  "input": {
+    "reason": "invalid_response_schema",
+    "attempt": 1
+  },
+  "expect": {
+    "category": "business_logic",
+    "reason_normalized": "invalid_response_schema",
+    "retry": false,
+    "terminal": true,
+    "delay": "zero"
+  }
+}

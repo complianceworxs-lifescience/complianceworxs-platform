@@ -1,0 +1,15 @@
+{
+  "id": "15-infra-auth-explicit",
+  "description": "authentication_error is infrastructure/terminal",
+  "input": {
+    "reason": "authentication_error",
+    "attempt": 1
+  },
+  "expect": {
+    "category": "infrastructure",
+    "reason_normalized": "authentication_error",
+    "retry": false,
+    "terminal": true,
+    "delay": "zero"
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "id": "01-operational-timeout",
+  "description": "generation_timeout is operational/retryable with backoff",
+  "input": {
+    "reason": "generation_timeout",
+    "attempt": 1
+  },
+  "expect": {
+    "category": "operational",
+    "reason_normalized": "generation_timeout",
+    "retry": true,
+    "terminal": false,
+    "honor_retry_after": false,
+    "max_attempts": 6,
+    "delay": "backoff"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "id": "02-operational-network",
+  "description": "network_error is operational/retryable",
+  "input": {
+    "reason": "network_error",
+    "attempt": 1
+  },
+  "expect": {
+    "category": "operational",
+    "reason_normalized": "network_error",
+    "retry": true,
+    "terminal": false,
+    "delay": "backoff"
+  }
+}

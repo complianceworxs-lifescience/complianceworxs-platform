@@ -1,0 +1,16 @@
+{
+  "id": "09-model-output-exhausted",
+  "description": "invalid_json_output exhausted at its low ceiling → terminal",
+  "input": {
+    "reason": "invalid_json_output",
+    "attempt": 2
+  },
+  "expect": {
+    "category": "model_output",
+    "reason_normalized": "invalid_json_output",
+    "retry": false,
+    "terminal": true,
+    "max_attempts": 2,
+    "delay": "zero"
+  }
+}

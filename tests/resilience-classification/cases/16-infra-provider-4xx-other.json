@@ -1,0 +1,18 @@
+{
+  "id": "16-infra-provider-4xx-other",
+  "description": "api_error+HTTP 400 (non-auth 4xx) is a terminal client error → infrastructure/terminal",
+  "input": {
+    "reason": "api_error",
+    "attempt": 1,
+    "context": {
+      "httpStatus": 400
+    }
+  },
+  "expect": {
+    "category": "infrastructure",
+    "reason_normalized": "api_error",
+    "retry": false,
+    "terminal": true,
+    "delay": "zero"
+  }
+}

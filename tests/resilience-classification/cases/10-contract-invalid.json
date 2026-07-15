@@ -1,0 +1,15 @@
+{
+  "id": "10-contract-invalid",
+  "description": "contract_invalid is contract/terminal",
+  "input": {
+    "reason": "contract_invalid",
+    "attempt": 1
+  },
+  "expect": {
+    "category": "contract",
+    "reason_normalized": "contract_invalid",
+    "retry": false,
+    "terminal": true,
+    "delay": "zero"
+  }
+}
