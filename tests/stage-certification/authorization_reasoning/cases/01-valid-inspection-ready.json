@@ -1,0 +1,14 @@
+{
+  "id": "01-valid-inspection-ready",
+  "description": "all fields present, enum = Inspection-Ready",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "investigatorQuestion": "Who authorized release?",
+    "authorizationSummary": "QA head authorized on review.",
+    "authorizationRationale": "Full evidence package supported release.",
+    "knownLimitations": "None material.",
+    "defensibilityRating": "Inspection-Ready"
+  }
+}

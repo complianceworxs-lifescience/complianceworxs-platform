@@ -1,0 +1,8 @@
+{
+  "id": "02-bare-response-rejected",
+  "description": "a bare non-object response is rejected (N-03)",
+  "expect": {
+    "accepted": false
+  },
+  "output": "raw model text, not an object"
+}

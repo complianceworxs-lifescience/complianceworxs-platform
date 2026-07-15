@@ -1,0 +1,14 @@
+{
+  "id": "06-valid-critical-exposure",
+  "description": "valid, enum = Critical Exposure",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "investigatorQuestion": "q",
+    "authorizationSummary": "s",
+    "authorizationRationale": "r",
+    "knownLimitations": "k",
+    "defensibilityRating": "Critical Exposure"
+  }
+}

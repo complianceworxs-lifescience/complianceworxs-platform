@@ -1,0 +1,15 @@
+{
+  "id": "01-valid",
+  "description": "well-formed object entries",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "unsupportedClaims_list": [
+      {
+        "claim": "C3",
+        "reason": "no evidence attached"
+      }
+    ]
+  }
+}

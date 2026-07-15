@@ -1,0 +1,12 @@
+{
+  "id": "04-number-item",
+  "description": "item is a number",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "remediationScaffold_list": [
+      123
+    ]
+  }
+}

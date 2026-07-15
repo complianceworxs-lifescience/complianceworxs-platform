@@ -1,0 +1,19 @@
+{
+  "id": "01-valid",
+  "description": "both lists well-formed",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "gapFlags_list": [
+      {
+        "gap": "no second review",
+        "severity": "high"
+      }
+    ],
+    "criticalGapsRanked_list": [
+      "no second review",
+      "missing signature"
+    ]
+  }
+}

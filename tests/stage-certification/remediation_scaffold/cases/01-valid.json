@@ -1,0 +1,15 @@
+{
+  "id": "01-valid",
+  "description": "well-formed scaffold objects",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "remediationScaffold_list": [
+      {
+        "gap": "no second review",
+        "scaffold": "Reviewed by [name] on [date]."
+      }
+    ]
+  }
+}

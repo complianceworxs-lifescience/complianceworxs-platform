@@ -1,0 +1,12 @@
+{
+  "id": "04-null-item",
+  "description": "item is null",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "inspectorChallenge_list": [
+      null
+    ]
+  }
+}

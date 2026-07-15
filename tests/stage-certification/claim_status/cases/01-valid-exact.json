@@ -1,0 +1,23 @@
+{
+  "id": "01-valid-exact",
+  "description": "exact coverage of the two claims",
+  "expect": {
+    "accepted": true
+  },
+  "reconcileAgainst": [
+    "C1",
+    "C2"
+  ],
+  "output": {
+    "claimStatus_list": [
+      {
+        "claim": "C1",
+        "status": "Claimed in rationale"
+      },
+      {
+        "claim": "C2",
+        "status": "Supported by attached evidence"
+      }
+    ]
+  }
+}

@@ -1,0 +1,18 @@
+{
+  "id": "03-claim-not-string",
+  "description": "claim property is a number",
+  "expect": {
+    "accepted": false
+  },
+  "reconcileAgainst": [
+    "C1"
+  ],
+  "output": {
+    "claimStatus_list": [
+      {
+        "claim": 99,
+        "status": "Claimed in rationale"
+      }
+    ]
+  }
+}

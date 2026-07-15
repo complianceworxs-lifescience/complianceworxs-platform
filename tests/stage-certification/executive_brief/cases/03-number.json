@@ -1,0 +1,10 @@
+{
+  "id": "03-number",
+  "description": "brief returned as a number",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "executiveBrief": 5
+  }
+}

@@ -1,0 +1,20 @@
+{
+  "id": "02-matrix-bare-string",
+  "description": "evidenceMatrix_list item is a bare string",
+  "expect": {
+    "accepted": false
+  },
+  "reconcileAgainst": [
+    "C1"
+  ],
+  "output": {
+    "evidenceMatrix_list": [
+      "BR-104"
+    ],
+    "evidenceTraceability_list": [
+      {
+        "claimId": "C1"
+      }
+    ]
+  }
+}

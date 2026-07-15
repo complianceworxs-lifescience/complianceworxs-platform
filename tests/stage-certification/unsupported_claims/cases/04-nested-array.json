@@ -1,0 +1,14 @@
+{
+  "id": "04-nested-array",
+  "description": "item is a nested array",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "unsupportedClaims_list": [
+      [
+        "C3"
+      ]
+    ]
+  }
+}

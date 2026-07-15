@@ -1,0 +1,14 @@
+{
+  "id": "02-valid-at-risk",
+  "description": "valid, enum = At Risk",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "investigatorQuestion": "Was the deviation closed?",
+    "authorizationSummary": "Provisional authorization.",
+    "authorizationRationale": "CAPA still open.",
+    "knownLimitations": "Open CAPA CA-9.",
+    "defensibilityRating": "At Risk"
+  }
+}

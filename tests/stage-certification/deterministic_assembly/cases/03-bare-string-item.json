@@ -1,0 +1,12 @@
+{
+  "id": "03-bare-string-item",
+  "description": "breakdown item is a bare string",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "executiveBriefBreakdown_list": [
+      "no second review"
+    ]
+  }
+}

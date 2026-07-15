@@ -1,0 +1,23 @@
+{
+  "id": "04-missing-claimId",
+  "description": "a claim id is not traced",
+  "expect": {
+    "accepted": false
+  },
+  "reconcileAgainst": [
+    "C1",
+    "C2"
+  ],
+  "output": {
+    "evidenceMatrix_list": [
+      {
+        "claim": "C1"
+      }
+    ],
+    "evidenceTraceability_list": [
+      {
+        "claimId": "C1"
+      }
+    ]
+  }
+}

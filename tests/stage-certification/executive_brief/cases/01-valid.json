@@ -1,0 +1,10 @@
+{
+  "id": "01-valid",
+  "description": "a 2-3 sentence prose brief",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "executiveBrief": "The lot was released with a documented open CAPA. Residual exposure is limited to one lot. Second-review gap flagged for remediation."
+  }
+}

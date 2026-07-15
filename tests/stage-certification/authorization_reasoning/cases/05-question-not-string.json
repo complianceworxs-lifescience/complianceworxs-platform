@@ -1,0 +1,14 @@
+{
+  "id": "05-question-not-string",
+  "description": "scalar returned as a number",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "investigatorQuestion": 42,
+    "authorizationSummary": "s",
+    "authorizationRationale": "r",
+    "knownLimitations": "k",
+    "defensibilityRating": "Critical Exposure"
+  }
+}

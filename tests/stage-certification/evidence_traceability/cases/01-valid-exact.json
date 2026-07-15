@@ -1,0 +1,27 @@
+{
+  "id": "01-valid-exact",
+  "description": "traceability exactly covers the claim ids",
+  "expect": {
+    "accepted": true
+  },
+  "reconcileAgainst": [
+    "C1",
+    "C2"
+  ],
+  "output": {
+    "evidenceMatrix_list": [
+      {
+        "claim": "C1",
+        "evidence": "BR-104"
+      }
+    ],
+    "evidenceTraceability_list": [
+      {
+        "claimId": "C1"
+      },
+      {
+        "claimId": "C2"
+      }
+    ]
+  }
+}

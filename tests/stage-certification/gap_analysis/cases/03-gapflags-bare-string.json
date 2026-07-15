@@ -1,0 +1,15 @@
+{
+  "id": "03-gapflags-bare-string",
+  "description": "gapFlags_list item is a bare string",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "gapFlags_list": [
+      "no second review"
+    ],
+    "criticalGapsRanked_list": [
+      "no second review"
+    ]
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "id": "01-valid",
+  "description": "complete, well-formed reasoning output",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "evidenceReviewed_list": [
+      {
+        "item": "batch record BR-104",
+        "reviewed": true
+      },
+      {
+        "item": "deviation DV-22",
+        "reviewed": true
+      }
+    ],
+    "riskEvaluation": "Residual risk is moderate given the open CAPA.",
+    "alternativesConsidered": "Considered rejecting the lot outright.",
+    "regulatoryAlignment": "Aligned with 21 CFR 211.192.",
+    "residualExposureStatement": "Exposure limited to a single lot."
+  }
+}

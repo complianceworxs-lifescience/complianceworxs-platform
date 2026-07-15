@@ -1,0 +1,15 @@
+{
+  "id": "01-valid",
+  "description": "well-formed challenge/response objects",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "inspectorChallenge_list": [
+      {
+        "challenge": "Why no second review?",
+        "response": "Documented per SOP-12."
+      }
+    ]
+  }
+}

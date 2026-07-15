@@ -1,0 +1,14 @@
+{
+  "id": "05-missing-ranked",
+  "description": "criticalGapsRanked_list absent",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "gapFlags_list": [
+      {
+        "gap": "x"
+      }
+    ]
+  }
+}

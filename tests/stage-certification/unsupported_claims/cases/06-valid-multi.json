@@ -1,0 +1,17 @@
+{
+  "id": "06-valid-multi",
+  "description": "multiple object entries",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "unsupportedClaims_list": [
+      {
+        "claim": "C3"
+      },
+      {
+        "claim": "C4"
+      }
+    ]
+  }
+}

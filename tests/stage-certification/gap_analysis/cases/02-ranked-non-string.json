@@ -1,0 +1,18 @@
+{
+  "id": "02-ranked-non-string",
+  "description": "criticalGapsRanked_list item is a number",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "gapFlags_list": [
+      {
+        "gap": "x"
+      }
+    ],
+    "criticalGapsRanked_list": [
+      "ok",
+      7
+    ]
+  }
+}

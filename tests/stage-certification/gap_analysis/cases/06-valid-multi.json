@@ -1,0 +1,21 @@
+{
+  "id": "06-valid-multi",
+  "description": "multiple well-formed entries",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "gapFlags_list": [
+      {
+        "gap": "a"
+      },
+      {
+        "gap": "b"
+      }
+    ],
+    "criticalGapsRanked_list": [
+      "a",
+      "b"
+    ]
+  }
+}

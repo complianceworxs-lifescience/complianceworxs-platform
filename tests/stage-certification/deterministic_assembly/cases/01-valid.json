@@ -1,0 +1,15 @@
+{
+  "id": "01-valid",
+  "description": "well-formed breakdown entries",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "executiveBriefBreakdown_list": [
+      {
+        "gap": "no second review",
+        "defensibilityRating": "At Risk"
+      }
+    ]
+  }
+}

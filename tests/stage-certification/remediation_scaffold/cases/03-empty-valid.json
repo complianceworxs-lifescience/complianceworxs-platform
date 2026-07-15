@@ -1,0 +1,10 @@
+{
+  "id": "03-empty-valid",
+  "description": "empty list is valid",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "remediationScaffold_list": []
+  }
+}

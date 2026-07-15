@@ -1,0 +1,13 @@
+{
+  "id": "02-array-not-string",
+  "description": "brief returned as an array",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "executiveBrief": [
+      "sentence one",
+      "sentence two"
+    ]
+  }
+}

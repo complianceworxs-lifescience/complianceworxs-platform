@@ -1,0 +1,18 @@
+{
+  "id": "05-evidence-nested-array-item",
+  "description": "evidenceReviewed_list item is a nested array",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "evidenceReviewed_list": [
+      [
+        "BR-104"
+      ]
+    ],
+    "riskEvaluation": "x",
+    "alternativesConsidered": "y",
+    "regulatoryAlignment": "z",
+    "residualExposureStatement": "w"
+  }
+}

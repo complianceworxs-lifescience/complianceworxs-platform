@@ -1,0 +1,15 @@
+{
+  "id": "02-rating-not-string",
+  "description": "defensibilityRating property is a number",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "executiveBriefBreakdown_list": [
+      {
+        "gap": "x",
+        "defensibilityRating": 3
+      }
+    ]
+  }
+}

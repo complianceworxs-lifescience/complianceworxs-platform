@@ -1,0 +1,12 @@
+{
+  "id": "07-valid-empty",
+  "description": "no claims to trace (both lists empty, empty coverage)",
+  "expect": {
+    "accepted": true
+  },
+  "reconcileAgainst": [],
+  "output": {
+    "evidenceMatrix_list": [],
+    "evidenceTraceability_list": []
+  }
+}

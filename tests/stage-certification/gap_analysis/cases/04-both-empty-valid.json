@@ -1,0 +1,11 @@
+{
+  "id": "04-both-empty-valid",
+  "description": "empty lists are structurally valid",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "gapFlags_list": [],
+    "criticalGapsRanked_list": []
+  }
+}

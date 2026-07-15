@@ -1,0 +1,25 @@
+{
+  "id": "04-riskEvaluation-not-string",
+  "description": "scalar prose field returned as an array",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "evidenceReviewed_list": [
+      {
+        "item": "batch record BR-104",
+        "reviewed": true
+      },
+      {
+        "item": "deviation DV-22",
+        "reviewed": true
+      }
+    ],
+    "riskEvaluation": [
+      "moderate"
+    ],
+    "alternativesConsidered": "y",
+    "regulatoryAlignment": "z",
+    "residualExposureStatement": "w"
+  }
+}

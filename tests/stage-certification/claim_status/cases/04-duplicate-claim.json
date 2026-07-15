@@ -1,0 +1,22 @@
+{
+  "id": "04-duplicate-claim",
+  "description": "same claim appears twice",
+  "expect": {
+    "accepted": false
+  },
+  "reconcileAgainst": [
+    "C1"
+  ],
+  "output": {
+    "claimStatus_list": [
+      {
+        "claim": "C1",
+        "status": "Claimed in rationale"
+      },
+      {
+        "claim": "C1",
+        "status": "Not traceable in record"
+      }
+    ]
+  }
+}

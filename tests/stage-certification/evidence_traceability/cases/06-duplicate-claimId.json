@@ -1,0 +1,25 @@
+{
+  "id": "06-duplicate-claimId",
+  "description": "same claim id traced twice",
+  "expect": {
+    "accepted": false
+  },
+  "reconcileAgainst": [
+    "C1"
+  ],
+  "output": {
+    "evidenceMatrix_list": [
+      {
+        "claim": "C1"
+      }
+    ],
+    "evidenceTraceability_list": [
+      {
+        "claimId": "C1"
+      },
+      {
+        "claimId": "C1"
+      }
+    ]
+  }
+}

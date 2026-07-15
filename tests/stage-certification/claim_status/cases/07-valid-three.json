@@ -1,0 +1,28 @@
+{
+  "id": "07-valid-three",
+  "description": "exact coverage of three claims, mixed statuses",
+  "expect": {
+    "accepted": true
+  },
+  "reconcileAgainst": [
+    "C1",
+    "C2",
+    "C3"
+  ],
+  "output": {
+    "claimStatus_list": [
+      {
+        "claim": "C1",
+        "status": "Claimed in rationale"
+      },
+      {
+        "claim": "C2",
+        "status": "Supported by attached evidence"
+      },
+      {
+        "claim": "C3",
+        "status": "Not traceable in record"
+      }
+    ]
+  }
+}

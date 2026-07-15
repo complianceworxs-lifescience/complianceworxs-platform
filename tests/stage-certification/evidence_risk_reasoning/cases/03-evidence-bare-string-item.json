@@ -1,0 +1,16 @@
+{
+  "id": "03-evidence-bare-string-item",
+  "description": "evidenceReviewed_list item is a bare string, not an object",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "evidenceReviewed_list": [
+      "batch record BR-104"
+    ],
+    "riskEvaluation": "x",
+    "alternativesConsidered": "y",
+    "regulatoryAlignment": "z",
+    "residualExposureStatement": "w"
+  }
+}

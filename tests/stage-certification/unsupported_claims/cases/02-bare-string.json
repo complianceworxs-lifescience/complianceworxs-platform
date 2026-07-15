@@ -1,0 +1,12 @@
+{
+  "id": "02-bare-string",
+  "description": "item is a bare string",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "unsupportedClaims_list": [
+      "C3 unsupported"
+    ]
+  }
+}

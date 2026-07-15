@@ -1,0 +1,19 @@
+{
+  "id": "06-valid-multi",
+  "description": "multiple entries",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "inspectorChallenge_list": [
+      {
+        "challenge": "a",
+        "response": "x"
+      },
+      {
+        "challenge": "b",
+        "response": "y"
+      }
+    ]
+  }
+}

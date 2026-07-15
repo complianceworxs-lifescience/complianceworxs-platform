@@ -1,0 +1,12 @@
+{
+  "id": "02-bare-string",
+  "description": "item is a bare string",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "remediationScaffold_list": [
+      "Reviewed by [name] on [date]."
+    ]
+  }
+}

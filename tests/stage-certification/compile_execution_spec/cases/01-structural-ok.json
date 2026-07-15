@@ -1,0 +1,10 @@
+{
+  "id": "01-structural-ok",
+  "description": "a structured (object) stage output certifies",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "ok": true
+  }
+}

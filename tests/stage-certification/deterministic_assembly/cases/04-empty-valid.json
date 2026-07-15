@@ -1,0 +1,10 @@
+{
+  "id": "04-empty-valid",
+  "description": "empty breakdown is structurally valid",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "executiveBriefBreakdown_list": []
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "id": "06-valid-empty-evidence",
+  "description": "empty evidence list is structurally valid (no items to violate)",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "evidenceReviewed_list": [],
+    "riskEvaluation": "No evidence yet reviewed.",
+    "alternativesConsidered": "n/a",
+    "regulatoryAlignment": "n/a",
+    "residualExposureStatement": "Unknown pending review."
+  }
+}

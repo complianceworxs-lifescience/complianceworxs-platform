@@ -1,0 +1,19 @@
+{
+  "id": "06-valid-multi",
+  "description": "multiple entries",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "remediationScaffold_list": [
+      {
+        "gap": "a",
+        "scaffold": "x"
+      },
+      {
+        "gap": "b",
+        "scaffold": "y"
+      }
+    ]
+  }
+}

@@ -1,0 +1,22 @@
+{
+  "id": "02-missing-riskEvaluation",
+  "description": "required scalar field absent",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "evidenceReviewed_list": [
+      {
+        "item": "batch record BR-104",
+        "reviewed": true
+      },
+      {
+        "item": "deviation DV-22",
+        "reviewed": true
+      }
+    ],
+    "alternativesConsidered": "x",
+    "regulatoryAlignment": "y",
+    "residualExposureStatement": "z"
+  }
+}

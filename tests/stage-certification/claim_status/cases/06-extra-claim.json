@@ -1,0 +1,22 @@
+{
+  "id": "06-extra-claim",
+  "description": "classifies a claim that is not in the record",
+  "expect": {
+    "accepted": false
+  },
+  "reconcileAgainst": [
+    "C1"
+  ],
+  "output": {
+    "claimStatus_list": [
+      {
+        "claim": "C1",
+        "status": "Claimed in rationale"
+      },
+      {
+        "claim": "C9",
+        "status": "Claimed in rationale"
+      }
+    ]
+  }
+}

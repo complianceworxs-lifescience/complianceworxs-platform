@@ -1,0 +1,18 @@
+{
+  "id": "02-bad-status-enum",
+  "description": "status not in allowed enum",
+  "expect": {
+    "accepted": false
+  },
+  "reconcileAgainst": [
+    "C1"
+  ],
+  "output": {
+    "claimStatus_list": [
+      {
+        "claim": "C1",
+        "status": "Maybe"
+      }
+    ]
+  }
+}

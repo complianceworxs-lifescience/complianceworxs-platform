@@ -1,0 +1,25 @@
+{
+  "id": "05-extra-claimId",
+  "description": "traces a claim id not in the record",
+  "expect": {
+    "accepted": false
+  },
+  "reconcileAgainst": [
+    "C1"
+  ],
+  "output": {
+    "evidenceMatrix_list": [
+      {
+        "claim": "C1"
+      }
+    ],
+    "evidenceTraceability_list": [
+      {
+        "claimId": "C1"
+      },
+      {
+        "claimId": "C7"
+      }
+    ]
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "id": "05-valid-alt",
+  "description": "another valid single-string brief",
+  "expect": {
+    "accepted": true
+  },
+  "output": {
+    "executiveBrief": "Analysis complete: record is Defensible with Gaps; one traceability gap remains."
+  }
+}

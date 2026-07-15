@@ -1,0 +1,14 @@
+{
+  "id": "03-bad-enum",
+  "description": "defensibilityRating not in allowed enum",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "investigatorQuestion": "q",
+    "authorizationSummary": "s",
+    "authorizationRationale": "r",
+    "knownLimitations": "k",
+    "defensibilityRating": "Pretty Solid"
+  }
+}

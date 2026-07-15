@@ -1,0 +1,8 @@
+{
+  "id": "05-missing-field",
+  "description": "required list absent",
+  "expect": {
+    "accepted": false
+  },
+  "output": {}
+}

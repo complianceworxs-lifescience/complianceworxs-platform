@@ -1,0 +1,13 @@
+{
+  "id": "04-missing-rationale",
+  "description": "required scalar absent",
+  "expect": {
+    "accepted": false
+  },
+  "output": {
+    "investigatorQuestion": "q",
+    "authorizationSummary": "s",
+    "knownLimitations": "k",
+    "defensibilityRating": "Defensible with Gaps"
+  }
+}

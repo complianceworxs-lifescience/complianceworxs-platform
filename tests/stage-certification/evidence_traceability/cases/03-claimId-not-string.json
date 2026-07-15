@@ -1,0 +1,22 @@
+{
+  "id": "03-claimId-not-string",
+  "description": "claimId property is a number",
+  "expect": {
+    "accepted": false
+  },
+  "reconcileAgainst": [
+    "C1"
+  ],
+  "output": {
+    "evidenceMatrix_list": [
+      {
+        "claim": "C1"
+      }
+    ],
+    "evidenceTraceability_list": [
+      {
+        "claimId": 1
+      }
+    ]
+  }
+}
