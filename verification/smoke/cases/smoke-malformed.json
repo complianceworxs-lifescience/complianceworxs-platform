@@ -1,0 +1,25 @@
+{
+  "id": "smoke-malformed",
+  "description": "Terminal-classification check: the injected model response is not valid JSON, so the runtime exhausts its parse retry and reaches a 'failed' terminal state (invalid_json_output) — proving the smoke path distinguishes terminal states, not just 'ran'.",
+  "expect": { "status": "failed", "reason": "invalid_json_output" },
+  "injectResponse": "this is not valid JSON at all {{{",
+  "userVariables": { "investigation": "SMOKE-002" },
+  "promptPackage": {
+    "manifest": {
+      "promptCompilerVersion": "1.0.0",
+      "timestamp": "2026-07-15T00:00:00.000Z"
+    },
+    "promptSpecification": {
+      "systemPrompt": "You are the IRR stage engine (smoke).",
+      "userPromptTemplate": "Investigation: {{investigation}}. Produce the executive brief.",
+      "contextRequirements": ["investigation"],
+      "targetRuntime": "smoke"
+    },
+    "outputSchema": {
+      "required": ["executiveBrief"],
+      "properties": {
+        "executiveBrief": { "type": "string" }
+      }
+    }
+  }
+}

@@ -1,0 +1,25 @@
+{
+  "id": "smoke-irr",
+  "description": "Happy path: one complete runtime execution of a small IRR-shaped Prompt Package through the smoke adapter; reaches a schema-validated 'executed' terminal state.",
+  "expect": { "status": "executed" },
+  "userVariables": { "investigation": "SMOKE-001" },
+  "promptPackage": {
+    "manifest": {
+      "promptCompilerVersion": "1.0.0",
+      "timestamp": "2026-07-15T00:00:00.000Z"
+    },
+    "promptSpecification": {
+      "systemPrompt": "You are the IRR stage engine (smoke).",
+      "userPromptTemplate": "Investigation: {{investigation}}. Produce the executive brief and ranked critical gaps.",
+      "contextRequirements": ["investigation"],
+      "targetRuntime": "smoke"
+    },
+    "outputSchema": {
+      "required": ["executiveBrief", "criticalGapsRanked_list"],
+      "properties": {
+        "executiveBrief": { "type": "string" },
+        "criticalGapsRanked_list": { "type": "array" }
+      }
+    }
+  }
+}
