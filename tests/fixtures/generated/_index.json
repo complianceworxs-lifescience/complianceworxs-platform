@@ -1,0 +1,182 @@
+[
+  {
+    "field": "investigatorQuestion",
+    "type": "string",
+    "item": null,
+    "array_validated": false,
+    "source": "model",
+    "valid": "investigatorQuestion.valid.json",
+    "invalid": "investigatorQuestion.invalid.json"
+  },
+  {
+    "field": "authorizationSummary",
+    "type": "string",
+    "item": null,
+    "array_validated": false,
+    "source": "model",
+    "valid": "authorizationSummary.valid.json",
+    "invalid": "authorizationSummary.invalid.json"
+  },
+  {
+    "field": "authorizationRationale",
+    "type": "string",
+    "item": null,
+    "array_validated": false,
+    "source": "model",
+    "valid": "authorizationRationale.valid.json",
+    "invalid": "authorizationRationale.invalid.json"
+  },
+  {
+    "field": "knownLimitations",
+    "type": "string",
+    "item": null,
+    "array_validated": false,
+    "source": "model",
+    "valid": "knownLimitations.valid.json",
+    "invalid": "knownLimitations.invalid.json"
+  },
+  {
+    "field": "defensibilityRating",
+    "type": "string",
+    "item": null,
+    "array_validated": false,
+    "source": "model",
+    "valid": "defensibilityRating.valid.json",
+    "invalid": "defensibilityRating.invalid.json"
+  },
+  {
+    "field": "evidenceReviewed_list",
+    "type": "array",
+    "item": "object",
+    "array_validated": true,
+    "source": "model",
+    "valid": "evidenceReviewed_list.valid.json",
+    "invalid": "evidenceReviewed_list.invalid.json"
+  },
+  {
+    "field": "riskEvaluation",
+    "type": "string",
+    "item": null,
+    "array_validated": false,
+    "source": "model",
+    "valid": "riskEvaluation.valid.json",
+    "invalid": "riskEvaluation.invalid.json"
+  },
+  {
+    "field": "alternativesConsidered",
+    "type": "string",
+    "item": null,
+    "array_validated": false,
+    "source": "model",
+    "valid": "alternativesConsidered.valid.json",
+    "invalid": "alternativesConsidered.invalid.json"
+  },
+  {
+    "field": "regulatoryAlignment",
+    "type": "string",
+    "item": null,
+    "array_validated": false,
+    "source": "model",
+    "valid": "regulatoryAlignment.valid.json",
+    "invalid": "regulatoryAlignment.invalid.json"
+  },
+  {
+    "field": "residualExposureStatement",
+    "type": "string",
+    "item": null,
+    "array_validated": false,
+    "source": "model",
+    "valid": "residualExposureStatement.valid.json",
+    "invalid": "residualExposureStatement.invalid.json"
+  },
+  {
+    "field": "gapFlags_list",
+    "type": "array",
+    "item": "object",
+    "array_validated": true,
+    "source": "model",
+    "valid": "gapFlags_list.valid.json",
+    "invalid": "gapFlags_list.invalid.json"
+  },
+  {
+    "field": "criticalGapsRanked_list",
+    "type": "array",
+    "item": "string",
+    "array_validated": true,
+    "source": "model",
+    "valid": "criticalGapsRanked_list.valid.json",
+    "invalid": "criticalGapsRanked_list.invalid.json"
+  },
+  {
+    "field": "claimStatus_list",
+    "type": "array",
+    "item": "object",
+    "array_validated": true,
+    "source": "model",
+    "valid": "claimStatus_list.valid.json",
+    "invalid": "claimStatus_list.invalid.json"
+  },
+  {
+    "field": "evidenceMatrix_list",
+    "type": "array",
+    "item": "object",
+    "array_validated": true,
+    "source": "model",
+    "valid": "evidenceMatrix_list.valid.json",
+    "invalid": "evidenceMatrix_list.invalid.json"
+  },
+  {
+    "field": "evidenceTraceability_list",
+    "type": "array",
+    "item": "object",
+    "array_validated": true,
+    "source": "model",
+    "valid": "evidenceTraceability_list.valid.json",
+    "invalid": "evidenceTraceability_list.invalid.json"
+  },
+  {
+    "field": "unsupportedClaims_list",
+    "type": "array",
+    "item": "object",
+    "array_validated": true,
+    "source": "model",
+    "valid": "unsupportedClaims_list.valid.json",
+    "invalid": "unsupportedClaims_list.invalid.json"
+  },
+  {
+    "field": "inspectorChallenge_list",
+    "type": "array",
+    "item": "object",
+    "array_validated": true,
+    "source": "model",
+    "valid": "inspectorChallenge_list.valid.json",
+    "invalid": "inspectorChallenge_list.invalid.json"
+  },
+  {
+    "field": "remediationScaffold_list",
+    "type": "array",
+    "item": "object",
+    "array_validated": true,
+    "source": "model",
+    "valid": "remediationScaffold_list.valid.json",
+    "invalid": "remediationScaffold_list.invalid.json"
+  },
+  {
+    "field": "executiveBriefBreakdown_list",
+    "type": "array",
+    "item": "object",
+    "array_validated": true,
+    "source": "derived",
+    "valid": "executiveBriefBreakdown_list.valid.json",
+    "invalid": "executiveBriefBreakdown_list.invalid.json"
+  },
+  {
+    "field": "executiveBrief",
+    "type": "string",
+    "item": null,
+    "array_validated": false,
+    "source": "model",
+    "valid": "executiveBrief.valid.json",
+    "invalid": "executiveBrief.invalid.json"
+  }
+]
