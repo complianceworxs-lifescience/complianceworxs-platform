@@ -328,7 +328,7 @@ clean-checkout bootstrap gap (`99185e6`), the A-10 field-name alignment `name` �
 
 ## 7.1 Status
 
-**Planned**
+**Closed**
 
 ## 7.2 Objective
 
@@ -396,6 +396,61 @@ Milestone 7A does not include:
 * full scheduler redesign;
 * removal of checkpointing;
 * latency optimization unrelated to resilience.
+
+## 7.8 Closure Date
+
+**July 15, 2026**
+
+## 7.9 Closure Authority
+
+Closed by the CEO / Milestone Owner (per §12), decision recorded 2026-07-15.
+
+## 7.10 Closure Evidence
+
+Milestone 7A closed based on:
+
+* Milestone Design Review CW-MDR-007A v1.0 approved (2026-07-15, commit `8b99acf`) before any
+  implementation began (§4A gate satisfied); a post-approval v1.1 factual correction (`7106c9f`)
+  fixed an attribution detail (`invalid_response_schema` is worker-only) with no scope, decision,
+  or acceptance-criterion change;
+* implementation delivered in six independently-gated build steps (CP-A1…CP-A6): `fe4e28f`
+  (error taxonomy + retry policy + compiler + verify gate), `cd986ea` (central evaluator +
+  classification certification), `61e882f` (`irr-stage-engine` consumer refactor), `f4126f8`
+  (`irr-job-worker` align + shared `decideFailure()`), `79169a2` (`error_category` column +
+  retry telemetry migration), `6348b3b` (circuit-breaker specified + fault-injection test);
+* retry behavior is controlled centrally — both execution paths call one `decideFailure()`
+  (→ `evaluate()`); the engine's inline `retryable:` flags and the worker's `RETRYABLE_STAGES`
+  set are removed (static grep = 0);
+* transient failures recover — the operational category (timeout / network / 429 / 5xx) retries
+  with exponential backoff and deterministic jitter within an evidence-bootstrapped ceiling;
+  `network_error` / `api_error`, previously non-retryable in both paths, now recover;
+* deterministic failures are not retried unchanged — contract / business-logic categories are
+  terminal, and `invalid_response_schema` is terminal in the worker;
+* retry attempts and delays are measurable — the append-only `m7a_retry_events` table records
+  attempt and delay per decision; terminal failures are normalized to `{reason_normalized,
+  category}` and persisted alongside the new `irr_stage_runs.error_category` column;
+* circuit-breaking is specified and fault-injection-proven (opens at threshold, fast-fails during
+  cooldown, resets), shipped **off** (`BREAKER.enabled = false`) pending operational-outage
+  evidence, per §7.6 "where operational evidence justifies it";
+* the telemetry migration (`20260714000008_m7a_resilience_telemetry`) is additive-only — a
+  before/after production snapshot showed `irr_jobs` / `irr_stage_runs` / `irr_regression_runs`
+  = 95 / 427 / 1 unchanged, `error_category` added with zero existing rows rewritten, and
+  `m7a_retry_events` created isolated with explicit RLS + service_role policy;
+* the four M7A verification gates (taxonomy, classification, decide, breaker) are wired into the
+  one-command `npm run verify` and bootstrap from a clean checkout (fix `0df456e`), extending the
+  M7 from-clean guarantee to M7A;
+* the refactored functions were deployed to production (`balkvbmtummehgbbeqap`) under explicit,
+  step-confirmed owner authorization — `irr-stage-engine` v31 → v32 and `irr-job-worker` v11 → v12,
+  each byte-verified against committed repo source with zero data impact and the rollback baseline
+  (v31 / v11) intact;
+* all §7.6 success metrics met; every acceptance criterion (A-01…A-06, A-M1) satisfied and no
+  non-acceptance condition (N-01…N-13) triggered;
+* full closure evidence: Acceptance Report CW-MDR-007A-Milestone-7A-Acceptance-Report v1.0.
+
+Deviations found during the build were disclosed and closed, not smoothed over: the DR v1.1
+attribution correction (`7106c9f`) and the pre-closure gap fixes (`0df456e`) — the resilience
+dependencies were not bootstrapped by the root postinstall and the M7A gates were not yet wired
+into `npm run verify`, both closed before closure.
 
 ---
 

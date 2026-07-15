@@ -1,13 +1,14 @@
 # CW-MDR-007A — Milestone 7A Acceptance Report
 
-**Status:** DRAFT — for Milestone Owner review (NOT a closure declaration)
+**Status:** FINAL v1.0 — ACCEPTED. Closure evidence for Milestone 7A.
 **Milestone:** 7A — Resilient Execution (CW-GOV-001 §7)
 **Governing Design Review:** CW-MDR-007A v1.0 (APPROVED 2026-07-15, commit `8b99acf`; + v1.1
 factual correction `7106c9f`)
 **Author:** Claude Code (implementer)
 **Date drafted:** 2026-07-15
-**Closure authority:** CEO / Milestone Owner (per CW-GOV-001 §12). The author does **not**
-self-declare closure; this report is evidence for the owner's closure decision.
+**Closure:** Milestone 7A closed by the CEO / Milestone Owner (Jon Nugent) per CW-GOV-001 §12,
+decision recorded 2026-07-15 (governance doc §7.1/§7.8–§7.10). The author did not self-declare
+closure; this report is the closure evidence the owner acted on.
 
 ---
 
@@ -15,8 +16,8 @@ self-declare closure; this report is evidence for the owner's closure decision.
 
 Closure evidence for Milestone 7A (CW-GOV-001 §4A.2). Maps every acceptance criterion
 (A-01…A-06, A-M1) and non-acceptance condition (N-01…N-13) from CW-MDR-007A §17–§18 to
-reproducible evidence, and records the decisions resolved during the build (D-1…D-5). It does
-not assert that Milestone 7A is closed.
+reproducible evidence, and records the decisions resolved during the build (D-1…D-5). This is
+the closure evidence the Owner acted on in declaring Milestone 7A closed (2026-07-15).
 
 ## 2. Build summary
 
@@ -158,8 +159,8 @@ M7A.
 ## 9. Recommendation
 
 All A-* criteria are satisfied, no N-* condition holds, all §7.6 metrics are met, and every
-build step passed its gate with reproducible evidence. The refactored edge functions have since
-been deployed to production (2026-07-15), byte-verified and with zero data impact, under explicit
-step-confirmed owner authorization (§2). Subject to the Owner's review, Milestone 7A's build
-appears complete and acceptable. **Closure remains the Owner's decision; this document is
-evidence, not a closure declaration.**
+build step passed its gate with reproducible evidence. The refactored edge functions were
+deployed to production (2026-07-15), byte-verified and with zero data impact, under explicit
+step-confirmed owner authorization (§2). On this evidence the CEO / Milestone Owner (Jon Nugent)
+**declared Milestone 7A closed on 2026-07-15** (CW-GOV-001 §7.1/§7.8–§7.10). The author did not
+self-declare closure; this document is the evidence the Owner acted on.
