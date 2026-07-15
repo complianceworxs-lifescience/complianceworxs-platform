@@ -1,0 +1,57 @@
+# Canonical error taxonomy for the ComplianceWorxs IRR pipeline (Milestone 7A, M7A-01/02).
+# SINGLE SOURCE OF TRUTH for reason -> category. Nobody hand-edits resilience/generated/.
+# Edit this file (+ policy.yaml) and rerun: node compile.js
+#
+# Grounded in the reason codes actually thrown today (CW-MDR-007A §6.3) and CW-GOV-001 §7.5.
+# `base_policy` is the class default (retryable | conditional | terminal); concrete retry
+# limits / backoff live in policy.yaml (keyed by category), per DR §10 (M7A-04).
+version: "1.0.0"
+
+# The five error categories (CW-GOV-001 §7.4).
+categories:
+  - contract
+  - business_logic
+  - model_output
+  - operational
+  - infrastructure
+
+# reason -> { category, base_policy, [honor_retry_after] }.
+reasons:
+  # operational (transient) — retry with backoff
+  generation_timeout:               { category: operational,    base_policy: retryable }
+  network_error:                    { category: operational,    base_policy: retryable }
+  rate_limit:                       { category: operational,    base_policy: retryable, honor_retry_after: true }
+  api_error:                        { category: operational,    base_policy: conditional }   # runtime-subclassified (429/5xx vs 4xx-auth) in build step 5
+  platform_kill_exhausted_retries:  { category: operational,    base_policy: terminal }      # already exhausted upstream
+
+  # model_output — a re-generation may fix it; bounded retry
+  invalid_json_output:              { category: model_output,   base_policy: conditional }
+  traceability_coverage_omitted:    { category: model_output,   base_policy: conditional }
+  traceability_coverage_duplicated: { category: model_output,   base_policy: conditional }
+
+  # contract — non-retryable without changed input/code
+  contract_invalid:                 { category: contract,       base_policy: terminal }
+  execution_compile_failed:         { category: contract,       base_policy: terminal }
+  prompt_package_invalid:           { category: contract,       base_policy: terminal }
+  checksum_invalid:                 { category: contract,       base_policy: terminal }
+  manifest_invalid:                 { category: contract,       base_policy: terminal }
+  missing_context_variable:         { category: contract,       base_policy: terminal }
+  unsupported_runtime:              { category: contract,       base_policy: terminal }
+
+  # business_logic — deterministic; retrying unchanged input cannot pass
+  invalid_response_schema:                 { category: business_logic, base_policy: terminal }   # DR §9.2 note: normalized terminal (matches irr-stage-engine, corrects irr-job-worker)
+  structural_validation_failed:            { category: business_logic, base_policy: terminal }
+  traceability_coverage_mismatch:          { category: business_logic, base_policy: terminal }
+  unsupported_claims_coverage_mismatch:    { category: business_logic, base_policy: terminal }
+  inspector_challenge_coverage_mismatch:   { category: business_logic, base_policy: terminal }
+  remediation_scaffold_coverage_mismatch:  { category: business_logic, base_policy: terminal }
+  stage11_structural_inputs_missing:       { category: business_logic, base_policy: terminal }
+
+  # infrastructure / configuration — non-retryable without a config change
+  authentication_error:             { category: infrastructure, base_policy: terminal }
+
+# Fail-safe for an unmapped reason: bounded operational retry (NOT infinite, NOT silently
+# terminal) so an unknown error is neither hammered nor swallowed. Reviewed at CP-A2.
+default:
+  category: operational
+  base_policy: conditional

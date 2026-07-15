@@ -1,0 +1,159 @@
+{
+  "taxonomy_version": "1.0.0",
+  "policy_version": "1.0.0",
+  "categories": [
+    "contract",
+    "business_logic",
+    "model_output",
+    "operational",
+    "infrastructure"
+  ],
+  "reasons": {
+    "generation_timeout": {
+      "category": "operational",
+      "base_policy": "retryable"
+    },
+    "network_error": {
+      "category": "operational",
+      "base_policy": "retryable"
+    },
+    "rate_limit": {
+      "category": "operational",
+      "base_policy": "retryable",
+      "honor_retry_after": true
+    },
+    "api_error": {
+      "category": "operational",
+      "base_policy": "conditional"
+    },
+    "platform_kill_exhausted_retries": {
+      "category": "operational",
+      "base_policy": "terminal"
+    },
+    "invalid_json_output": {
+      "category": "model_output",
+      "base_policy": "conditional"
+    },
+    "traceability_coverage_omitted": {
+      "category": "model_output",
+      "base_policy": "conditional"
+    },
+    "traceability_coverage_duplicated": {
+      "category": "model_output",
+      "base_policy": "conditional"
+    },
+    "contract_invalid": {
+      "category": "contract",
+      "base_policy": "terminal"
+    },
+    "execution_compile_failed": {
+      "category": "contract",
+      "base_policy": "terminal"
+    },
+    "prompt_package_invalid": {
+      "category": "contract",
+      "base_policy": "terminal"
+    },
+    "checksum_invalid": {
+      "category": "contract",
+      "base_policy": "terminal"
+    },
+    "manifest_invalid": {
+      "category": "contract",
+      "base_policy": "terminal"
+    },
+    "missing_context_variable": {
+      "category": "contract",
+      "base_policy": "terminal"
+    },
+    "unsupported_runtime": {
+      "category": "contract",
+      "base_policy": "terminal"
+    },
+    "invalid_response_schema": {
+      "category": "business_logic",
+      "base_policy": "terminal"
+    },
+    "structural_validation_failed": {
+      "category": "business_logic",
+      "base_policy": "terminal"
+    },
+    "traceability_coverage_mismatch": {
+      "category": "business_logic",
+      "base_policy": "terminal"
+    },
+    "unsupported_claims_coverage_mismatch": {
+      "category": "business_logic",
+      "base_policy": "terminal"
+    },
+    "inspector_challenge_coverage_mismatch": {
+      "category": "business_logic",
+      "base_policy": "terminal"
+    },
+    "remediation_scaffold_coverage_mismatch": {
+      "category": "business_logic",
+      "base_policy": "terminal"
+    },
+    "stage11_structural_inputs_missing": {
+      "category": "business_logic",
+      "base_policy": "terminal"
+    },
+    "authentication_error": {
+      "category": "infrastructure",
+      "base_policy": "terminal"
+    }
+  },
+  "default": {
+    "category": "operational",
+    "base_policy": "conditional"
+  },
+  "policies": {
+    "operational": {
+      "retry": true,
+      "max_attempts": 6,
+      "backoff_base_ms": 1000,
+      "backoff_cap_ms": 60000,
+      "jitter_ratio": 0.2,
+      "honor_retry_after": true
+    },
+    "model_output": {
+      "retry": true,
+      "max_attempts": 2,
+      "backoff_base_ms": 1000,
+      "backoff_cap_ms": 15000,
+      "jitter_ratio": 0.2,
+      "honor_retry_after": false
+    },
+    "business_logic": {
+      "retry": false,
+      "max_attempts": 1,
+      "backoff_base_ms": 0,
+      "backoff_cap_ms": 0,
+      "jitter_ratio": 0,
+      "honor_retry_after": false
+    },
+    "contract": {
+      "retry": false,
+      "max_attempts": 1,
+      "backoff_base_ms": 0,
+      "backoff_cap_ms": 0,
+      "jitter_ratio": 0,
+      "honor_retry_after": false
+    },
+    "infrastructure": {
+      "retry": false,
+      "max_attempts": 1,
+      "backoff_base_ms": 0,
+      "backoff_cap_ms": 0,
+      "jitter_ratio": 0,
+      "honor_retry_after": false
+    }
+  },
+  "breaker": {
+    "enabled": false,
+    "window_seconds": 60,
+    "consecutive_failures_threshold": 5,
+    "cooldown_seconds": 30,
+    "keyed_by": "provider"
+  }
+}

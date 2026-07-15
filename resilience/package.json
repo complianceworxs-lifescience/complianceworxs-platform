@@ -1,0 +1,12 @@
+{
+  "name": "cw-resilience-compiler",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "compile": "node compile.js",
+    "verify": "node verify.js"
+  },
+  "dependencies": {
+    "js-yaml": "4.1.0"
+  }
+}

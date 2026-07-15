@@ -1,0 +1,59 @@
+# Canonical retry policy per error category (Milestone 7A, M7A-04/05/06/07/10).
+# SINGLE SOURCE OF TRUTH for category -> retry policy. Edit + rerun: node compile.js
+#
+# EVERY concrete number here is a PROVISIONAL BOOTSTRAP value with recorded provenance
+# (DR §10 M7A-04 / A-M1 / D-5) — it is derived from current production behavior, not an
+# arbitrary literal, and is tightened from telemetry (M7A-12) during rollout (DR §14.4).
+# Provenance is stated in the comment on each value.
+version: "1.0.0"
+
+policies:
+  operational:            # transient: timeout / network / rate-limit / provider 5xx
+    retry: true
+    max_attempts: 6       # provenance: bootstrap = current irr_stage_runs.max_attempts default (6)
+    backoff_base_ms: 1000 # provenance: bootstrap — conservative 1s base
+    backoff_cap_ms: 60000 # provenance: bootstrap — 60s ceiling
+    jitter_ratio: 0.2     # provenance: bootstrap — +/-20% bounded jitter
+    honor_retry_after: true
+
+  model_output:           # a re-generation may fix truncation/malformed JSON; bounded low
+    retry: true
+    max_attempts: 2       # provenance: bootstrap — mirrors runtime MAX_JSON_PARSE_RETRIES(1)+1 attempt
+    backoff_base_ms: 1000 # provenance: bootstrap
+    backoff_cap_ms: 15000 # provenance: bootstrap
+    jitter_ratio: 0.2     # provenance: bootstrap
+    honor_retry_after: false
+
+  business_logic:         # deterministic — retrying unchanged input cannot pass
+    retry: false
+    max_attempts: 1
+    backoff_base_ms: 0
+    backoff_cap_ms: 0
+    jitter_ratio: 0
+    honor_retry_after: false
+
+  contract:               # non-retryable without changed input/code
+    retry: false
+    max_attempts: 1
+    backoff_base_ms: 0
+    backoff_cap_ms: 0
+    jitter_ratio: 0
+    honor_retry_after: false
+
+  infrastructure:         # config change required (e.g. auth)
+    retry: false
+    max_attempts: 1
+    backoff_base_ms: 0
+    backoff_cap_ms: 0
+    jitter_ratio: 0
+    honor_retry_after: false
+
+# Circuit breaker (M7A-10). SHIPS OFF (enabled: false) until operational telemetry justifies
+# it — "circuit-breaker policy WHERE JUSTIFIED" (CW-GOV-001 §7.3; DR §10 M7A-10 / A-06 / D-3).
+# The shape is defined here so build step 6 can enable it from evidence without a schema change.
+breaker:
+  enabled: false                        # provenance: gated off — no operational-outage evidence yet
+  window_seconds: 60                    # provenance: bootstrap
+  consecutive_failures_threshold: 5     # provenance: bootstrap
+  cooldown_seconds: 30                  # provenance: bootstrap
+  keyed_by: provider                    # breaker state keyed per model provider/dependency
