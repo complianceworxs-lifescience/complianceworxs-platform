@@ -1,16 +1,17 @@
 # CW-MDR-007A — Milestone 7A Design Review
 
-**Status:** DRAFT v0.2 — implementation NOT authorized (CW-GOV-001 §4A gate not yet passed)
+**Status:** APPROVED v1.0 — implementation **AUTHORIZED** (CW-GOV-001 §4A gate passed).
 **Milestone:** 7A — Resilient Execution (CW-GOV-001 §7)
 **Author:** Claude Code (implementer)
 **Date drafted:** 2026-07-15
-**Approval authority:** CEO / Milestone Owner (per CW-GOV-001 §12). This document must be
-approved before any Milestone 7A implementation begins.
+**Approval authority:** CEO / Milestone Owner (per CW-GOV-001 §12).
+**Approved:** Jon Nugent — CEO / Milestone Owner, 2026-07-15. Implementation authorized.
 
-**v0.2 changes (owner review, 2026-07-15):** D-1 **resolved** — `irr-stage-engine` is
-production-authoritative (empirical evidence in §6.7 / D-1). D-2 **confirmed** to option (a):
-M7A records the retry decision (incl. `delayMs`); *honoring* the delay in the claim path is
-deferred to Milestone 8 (locked in §8, §10 M7A-05, D-2). Still DRAFT and unapproved.
+**Resolved at approval:** D-1 — `irr-stage-engine` is production-authoritative (empirical, §6.7).
+D-2 — option (a) confirmed: M7A records the retry decision (incl. `delayMs`) but the claim path
+does not wait on it; honoring the delay is deferred to Milestone 8 (locked in §8, §10 M7A-05,
+D-2). `irr-job-worker`'s align-or-retire fate is left as a build step-4 decision (§12 step 4),
+not a blocker to starting. Path: v0.1 (initial draft) → v0.2 (owner review) → v1.0 (approved).
 
 ---
 
