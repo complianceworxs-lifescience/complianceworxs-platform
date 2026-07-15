@@ -1,9 +1,10 @@
 # Milestone 7 Design Review — Developer Productivity and Verification
 
 **Document ID:** CW-MDR-007
-**Version:** 0.3.0 — **DRAFT (for review; NOT approved; implementation not authorized)**
+**Version:** 1.0.0 — **APPROVED (Milestone 7 implementation authorized)**
 **Milestone:** 7 — Developer Productivity and Verification (CW-GOV-001 §6)
-**Gate:** CW-GOV-001 §4A — implementation may not begin until this Design Review is approved.
+**Gate:** CW-GOV-001 §4A — **SATISFIED** (this Design Review is approved; see Approval, below).
+**Approved by:** Jon Nugent — Milestone Owner / CEO (CW-GOV-001 §12 Closure Authority), 2026-07-15.
 **Author:** Platform recovery/engineering
 **Governing docs:** CW-GOV-001 (authority for scope), CW-EXEC-001 (how workflows are specified), CW-ARCH-001 (permanent architecture).
 
@@ -24,6 +25,10 @@
 > stages justify <5 cases" open item). (2) Settled the regression-storage decision:
 > new isolated tables `m7_regression_runs` + `m7_regression_case_results` (§13), not an
 > extension of `irr_regression_runs` — D-1 resolved. No scope change; still DRAFT.
+>
+> **v1.0.0 (APPROVED):** approved by the Milestone Owner on 2026-07-15 under CW-GOV-001
+> §4A. Status DRAFT → APPROVED; Milestone 7 implementation authorized. No content change
+> from v0.3 — approval stamping only (author did not self-approve).
 
 ---
 
@@ -467,6 +472,14 @@ choices, not design questions.)
 
 ### Approval
 
-This Design Review must be approved (CW-GOV-001 §4A) before any Milestone 7 implementation
-begins. On approval, an Acceptance Report (§4A.2) is produced at closure, mapping evidence
-to §18/§20. **Status: DRAFT — awaiting review. Implementation NOT authorized.**
+Approved under CW-GOV-001 §4A by the Milestone Owner. Milestone 7 implementation is
+authorized, subject to the build sequence (§12) and gates (§7). An Acceptance Report
+(§4A.2) is produced at closure, mapping evidence to §18/§20.
+
+- **Status:** APPROVED — implementation authorized.
+- **Approved by:** Jon Nugent — Milestone Owner / CEO (CW-GOV-001 §12).
+- **Approval date:** 2026-07-15.
+- **Approved design:** v1.0.0. §22 D-3 (test-runner choice) and D-4 (`contract.yaml`
+  relocation) remain build-time implementation choices, not design changes.
+- **Recording note:** recorded on the owner's explicit approval; the document author did
+  not self-approve — author/approver separation preserved per §4A.
