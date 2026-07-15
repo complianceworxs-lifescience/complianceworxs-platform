@@ -7,6 +7,16 @@ function headers(): Record<string, string> {
 
 export interface ClaimedJob { job_id: string; input_payload: unknown; status: string; attempt_count: number; max_attempts: number; }
 
+// M7A-12: append-only retry/failure telemetry. Best-effort — never break job processing on a
+// telemetry write failure.
+export async function recordRetryEvent(ev: { job_id: string; stage: string; attempt: number; reason: string; category: string; action: 'retry' | 'terminal'; delay_ms: number }): Promise<void> {
+  try {
+    await fetch(`${SUPABASE_URL}/rest/v1/m7a_retry_events`, { method: 'POST', headers: headers(), body: JSON.stringify({ job_id: ev.job_id, stage_name: ev.stage, attempt: ev.attempt, reason: ev.reason, category: ev.category, action: ev.action, delay_ms: ev.delay_ms, source: 'irr-job-worker' }) });
+  } catch (e) {
+    console.error('m7a_retry_events insert failed (non-fatal):', (e as Error).message);
+  }
+}
+
 export async function claimNextJob(): Promise<ClaimedJob | null> {
   const res = await fetch(`${SUPABASE_URL}/rest/v1/rpc/claim_next_irr_job`, { method: 'POST', headers: headers(), body: JSON.stringify({}) });
   if (!res.ok) { const text = await res.text(); throw new Error(`claim_next_irr_job failed (status ${res.status}): ${text.slice(0, 500)}`); }

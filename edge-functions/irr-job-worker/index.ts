@@ -1,6 +1,6 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { runIrrPipeline } from './pipeline.ts';
-import { claimNextJob, updateJob, setDeadline, reclaimOverdueJobs, requeueJobForRetry } from './job-store.ts';
+import { claimNextJob, updateJob, setDeadline, reclaimOverdueJobs, requeueJobForRetry, recordRetryEvent } from './job-store.ts';
 import { decideFailure } from './resilience/decide-failure.ts';
 
 function jsonResponse(body: unknown, status = 200) {
@@ -36,6 +36,9 @@ async function processJob(jobId: string, inputPayload: unknown, attemptCount: nu
     // subclassified on this (dormant) path — see the retirement note in the step-4 commit.
     const decision = decideFailure(reason, attemptCount + 1, maxAttempts);
     const canRetry = decision.action === 'retry';
+
+    // M7A-12 telemetry: record the failure decision (append-only; measurable attempts + delays).
+    await recordRetryEvent({ job_id: jobId, stage, attempt: attemptCount + 1, reason: decision.reason_normalized, category: decision.category, action: decision.action, delay_ms: decision.delay_ms });
 
     if (canRetry) {
       await requeueJobForRetry(jobId, attemptCount, { stage, reason: decision.reason_normalized, category: decision.category, issues: (result as any).issues ?? null });

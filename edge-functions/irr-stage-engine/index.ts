@@ -35,6 +35,16 @@ async function sbRest(path: string, init: RequestInit = {}): Promise<any> {
   return text ? JSON.parse(text) : null;
 }
 
+// M7A-12: append-only retry/failure telemetry so attempts and delays are measurable. Best-effort
+// — a telemetry write must never break stage execution, so failures are swallowed with a log.
+async function recordRetryEvent(ev: { job_id: string; stage: number; stage_name: string; attempt: number; reason: string; category: string; action: 'retry' | 'terminal'; delay_ms: number }): Promise<void> {
+  try {
+    await sbRest('m7a_retry_events', { method: 'POST', body: JSON.stringify({ ...ev, source: 'irr-stage-engine' }) });
+  } catch (e) {
+    console.error('m7a_retry_events insert failed (non-fatal):', (e as Error).message);
+  }
+}
+
 // ---------- Anthropic call, shared by all AI stages ----------
 async function callClaude(systemPrompt: string, userPrompt: string, deadlineMs: number, maxTokens = 8000) {
   const controller = new AbortController();
@@ -852,16 +862,18 @@ async function runStage(jobId: string, def: typeof STAGES[number], inputPayload:
       prompt_tokens: ctx.telemetry?.promptTokens ?? null,
       completion_tokens: ctx.telemetry?.completionTokens ?? null,
     };
+    // M7A-12 telemetry: record this failure decision (append-only; measurable attempts + delays).
+    await recordRetryEvent({ job_id: jobId, stage: nextStage, stage_name: def.name, attempt, reason: errorReason, category: errorCategory, action: canRetry ? 'retry' : 'terminal', delay_ms: decision.delay_ms });
     if (canRetry) {
       await sbRest(`irr_stage_runs?job_id=eq.${jobId}&stage=eq.${nextStage}`, {
         method: 'PATCH',
-        body: JSON.stringify({ status: 'queued', classified_failure: errorReason, error_detail: { message: err.message, category: errorCategory, delay_ms: decision.delay_ms }, ...telemetryFields, updated_at: new Date().toISOString() }),
+        body: JSON.stringify({ status: 'queued', classified_failure: errorReason, error_category: errorCategory, error_detail: { message: err.message }, ...telemetryFields, updated_at: new Date().toISOString() }),
       });
       return;
     }
     await sbRest(`irr_stage_runs?job_id=eq.${jobId}&stage=eq.${nextStage}`, {
       method: 'PATCH',
-      body: JSON.stringify({ status: 'failed', completed_at: new Date().toISOString(), duration_ms: Date.now() - t0, classified_failure: errorReason, error_detail: { message: err.message, category: errorCategory, delay_ms: decision.delay_ms }, ...telemetryFields, updated_at: new Date().toISOString() }),
+      body: JSON.stringify({ status: 'failed', completed_at: new Date().toISOString(), duration_ms: Date.now() - t0, classified_failure: errorReason, error_category: errorCategory, error_detail: { message: err.message }, ...telemetryFields, updated_at: new Date().toISOString() }),
     });
     await sbRest(`irr_jobs?job_id=eq.${jobId}`, {
       method: 'PATCH',
