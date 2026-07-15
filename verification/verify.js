@@ -76,6 +76,15 @@ if (plan.gates.smoke) gates.push(run('verify:smoke', [join('verification', 'smok
 // full regression — shared-infra / release candidate
 if (plan.gates.regression) gates.push(run('verify:regression', [join('verification', 'regression', 'run-regression.js')], { flags: [STRIP] }));
 
+// M7A resilience gates — taxonomy integrity + classification/decide/breaker certification
+// (fires when resilience/ or the refactored engine/worker code changed, or on a release candidate).
+if (plan.gates.resilience) {
+  gates.push(run('verify:taxonomy', [join('resilience', 'verify.js')]));
+  gates.push(run('verify:classification', [join('tests', 'resilience-classification', 'verify-classification.mjs')], { flags: [STRIP] }));
+  gates.push(run('verify:decide', [join('tests', 'resilience-classification', 'verify-decide.mjs')], { flags: [STRIP] }));
+  gates.push(run('verify:breaker', [join('tests', 'resilience-classification', 'verify-breaker.mjs')], { flags: [STRIP] }));
+}
+
 const totalMs = Number((process.hrtime.bigint() - t0) / 1000000n);
 const report = buildReport({ runId, plan, gates, startedAt, totalMs });
 

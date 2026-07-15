@@ -3,14 +3,18 @@
   "version": "0.0.0",
   "private": true,
   "type": "module",
-  "description": "ComplianceWorxs platform — Milestone 7 verification toolchain (CW-MDR-007).",
+  "description": "ComplianceWorxs platform — Milestone 7 / 7A verification toolchain (CW-MDR-007 / 007A).",
   "scripts": {
-    "postinstall": "npm install --prefix compiler --no-audit --no-fund",
+    "postinstall": "npm install --prefix compiler --no-audit --no-fund && npm install --prefix resilience --no-audit --no-fund",
     "verify": "node --experimental-strip-types verification/verify.js",
     "verify:compiler": "node compiler/verify.js",
     "verify:stage": "node --experimental-strip-types tests/stage-certification/verify-stage.mjs",
     "verify:smoke": "node --experimental-strip-types verification/smoke/run-smoke.js",
     "verify:regression": "node --experimental-strip-types verification/regression/run-regression.js",
+    "verify:taxonomy": "node resilience/verify.js",
+    "verify:classification": "node --experimental-strip-types tests/resilience-classification/verify-classification.mjs",
+    "verify:decide": "node --experimental-strip-types tests/resilience-classification/verify-decide.mjs",
+    "verify:breaker": "node --experimental-strip-types tests/resilience-classification/verify-breaker.mjs",
     "test:generated": "node --experimental-strip-types --test tests/generated/*.mjs"
   }
 }

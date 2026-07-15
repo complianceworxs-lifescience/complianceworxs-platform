@@ -29,11 +29,15 @@ export function detectChanges(paths, opts = {}) {
   const changed = [...new Set(paths.filter(Boolean))].sort();
   const reasons = [];
   const stages = new Set();
-  let compiler = false, unit = false, regression = false;
+  let compiler = false, unit = false, regression = false, resilience = false;
   const releaseCandidate = !!opts.releaseCandidate;
 
+  // M7A resilience surface: the canonical taxonomy/evaluator/breaker, their certification, and
+  // the two functions that embed the resilience decision logic (irr-stage-engine, irr-job-worker).
+  const RESILIENCE_RE = /^(resilience\/|tests\/resilience-classification\/|edge-functions\/irr-stage-engine\/|edge-functions\/irr-job-worker\/)/;
+
   for (const p of changed) {
-    // shared-infra → full regression (broadest)
+    // --- primary gate (first match wins) ---
     if (/^edge-functions\/runtime\//.test(p)) { regression = true; reasons.push(`regression: runtime changed (${p})`); }
     else if (/^verification\//.test(p)) { regression = true; reasons.push(`regression: verification harness changed (${p})`); }
     else if (/^supabase\/migrations\//.test(p)) { regression = true; reasons.push(`regression: schema/migration changed (${p})`); }
@@ -45,12 +49,18 @@ export function detectChanges(paths, opts = {}) {
     else if (/^compiler\//.test(p)) { compiler = true; unit = true; reasons.push(`compiler: contract/compiler changed (${p})`); }
     // generated fixtures / tests
     else if (/^tests\/(generated|fixtures)\//.test(p)) { unit = true; reasons.push(`unit: generated fixtures/tests changed (${p})`); }
+    // dormant worker → resilience gate only (added below); no full regression
+    else if (/^edge-functions\/irr-job-worker\//.test(p)) { /* resilience gate handles it below */ }
     // other stage/pipeline edge functions → conservative full regression
     else if (/^edge-functions\//.test(p)) { regression = true; reasons.push(`regression: edge function changed (${p})`); }
-    // anything else (docs, README, scripts) → no gate
+    // anything else (docs, README, scripts) → no primary gate
+
+    // --- resilience gate (M7A-01/02/03/10; independent — a stage-engine/worker edit fires BOTH
+    //     its primary gate AND resilience, since those functions embed the resilience decision logic).
+    if (RESILIENCE_RE.test(p)) { resilience = true; reasons.push(`resilience: taxonomy+classification+decide+breaker (${p})`); }
   }
 
-  if (releaseCandidate) { regression = true; reasons.push('regression: release candidate (CW_RELEASE_CANDIDATE / --rc)'); }
+  if (releaseCandidate) { regression = true; resilience = true; reasons.push('regression + resilience: release candidate (CW_RELEASE_CANDIDATE / --rc)'); }
 
   const stageList = [...stages].sort((a, b) => ALL_STAGES.indexOf(a) - ALL_STAGES.indexOf(b));
   const smoke = stageList.length > 0 || regression; // a stage edit (or RC/regression) requires one complete execution
@@ -65,6 +75,7 @@ export function detectChanges(paths, opts = {}) {
       stages: stageList,
       smoke,
       regression,
+      resilience,
     },
     reasons: reasons.length ? reasons : ['no change-specific gate matched; running baseline (compiler + unit) only'],
   };
