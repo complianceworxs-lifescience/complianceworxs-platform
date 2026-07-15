@@ -1,11 +1,16 @@
 # CW-MDR-007A — Milestone 7A Design Review
 
-**Status:** DRAFT — implementation NOT authorized (CW-GOV-001 §4A gate not yet passed)
+**Status:** DRAFT v0.2 — implementation NOT authorized (CW-GOV-001 §4A gate not yet passed)
 **Milestone:** 7A — Resilient Execution (CW-GOV-001 §7)
 **Author:** Claude Code (implementer)
 **Date drafted:** 2026-07-15
 **Approval authority:** CEO / Milestone Owner (per CW-GOV-001 §12). This document must be
 approved before any Milestone 7A implementation begins.
+
+**v0.2 changes (owner review, 2026-07-15):** D-1 **resolved** — `irr-stage-engine` is
+production-authoritative (empirical evidence in §6.7 / D-1). D-2 **confirmed** to option (a):
+M7A records the retry decision (incl. `delayMs`); *honoring* the delay in the claim path is
+deferred to Milestone 8 (locked in §8, §10 M7A-05, D-2). Still DRAFT and unapproved.
 
 ---
 
@@ -152,6 +157,17 @@ The claim/re-queue/reclaim/deadline machinery — `claim_next_active_irr_job`,
 **classification and policy decision** these mechanisms consume; it does **not** redesign
 claiming, re-queueing, reclaim timing, cron, or worker ownership. See §8.
 
+### 6.7 D-1 resolved — `irr-stage-engine` is production-authoritative (empirical)
+
+Settled from live data (2026-07-15), not inference: `irr_stage_runs` is written one row
+per stage **only** by `irr-stage-engine` as it claims and advances work; `irr-job-worker`
+runs single-shot and never writes that table. In the last 24 h there are 31 stage-run rows,
+and the most recent (15:08:19) post-dates the most recent job's creation (14:57:16) — i.e. a
+job being actively worked stage-by-stage, right now, by `irr-stage-engine`. **Authoritative
+path: `irr-stage-engine`.** `irr-job-worker`'s status (fully retired vs idle) is not equally
+certain, but it is not producing current traffic. Consequences are folded into §9.2, §12
+step 4, R-02, and R-04.
+
 ## 7. (reserved)
 
 ## 8. Explicit Exclusions (CW-GOV-001 §7.7 + the Milestone 8 boundary)
@@ -164,10 +180,12 @@ Out of scope and must not be built under this milestone:
 - latency optimization unrelated to resilience;
 - **anything belonging to Milestone 8's worker/cron/scheduler work** — specifically: changing
   how jobs/stages are claimed, re-queued, reclaimed, or deadlined; `runtime-worker`
-  scheduling; cron cadence; worker-owned continuous execution. M7A may **compute** a retry
-  decision (including a backoff delay) and **record** it; whether the claim path *waits* on
-  that delay is a scope-sensitive open decision (D-2, §20) deliberately bounded to an additive
-  change, not a scheduler redesign.
+  scheduling; cron cadence; worker-owned continuous execution. **D-2 is confirmed to option
+  (a) (owner review 2026-07-15):** M7A **computes and records** the retry decision (including
+  `delayMs`); the claim path **does not wait** on that delay — *honoring* it is deferred to
+  Milestone 8. No `next_attempt_at` claim-filter change ships in M7A. This is the single most
+  load-bearing scope boundary in the milestone and is locked here; N-12 (§18) fails the
+  milestone if it is crossed.
 
 A dedicated non-acceptance condition (N-12, §18) fails the milestone if scheduler/worker
 redesign is introduced — mirroring M7's N-12 scope-creep guard.
@@ -201,8 +219,10 @@ concrete retry limits/backoff come from M7A-04 evidence, not from this table.
 **Note on §6.2 conflict:** `invalid_response_schema` is normalized to **business_logic /
 terminal** (a schema-invalid model output cannot pass on identical re-run). This deliberately
 supersedes the `irr-job-worker` `RETRYABLE_STAGES` treatment; resolving that contradiction is
-a goal of the milestone, not a regression (recorded in D-1, §20 — confirm which path is
-production-authoritative before flipping behavior).
+a goal of the milestone, not a regression. **D-1 is resolved (§6.7): the authoritative path
+`irr-stage-engine` already treats this as terminal (`structural_validation_failed`), so
+normalization matches production behavior on the live path** — the correction only changes
+`irr-job-worker`, which is not producing current traffic (align-or-retire, §12 step 4).
 
 ### 9.3 Mechanism (contract-first, per §6.5)
 
@@ -224,7 +244,10 @@ decision: `{ retry: boolean, delayMs: number, terminal: boolean, reason_normaliz
   bootstrap and its provenance are documented, satisfying "not arbitrary."
 - **M7A-05 exponential backoff / M7A-06 jitter:** `delayMs = base · 2^(attempt-1)` capped,
   plus bounded random jitter, for operational (transient) categories only. Terminal/
-  deterministic categories get `delayMs = 0, retry = false`.
+  deterministic categories get `delayMs = 0, retry = false`. **Per D-2 (a), `delayMs` is
+  computed and recorded (telemetry) but not enforced by the claim path in M7A** — the
+  existing immediate re-queue is unchanged; honoring the delay is Milestone 8. This keeps the
+  resilience *decision* in M7A and the scheduling *mechanism* in M8.
 - **M7A-07 rate-limit:** subclassify provider 429; honor `Retry-After` when present (use it as
   `delayMs`); category operational.
 - **M7A-08 timeout / M7A-09 network:** already emitted as `generation_timeout` / `network_error`
@@ -303,9 +326,12 @@ redefine a mapping (§9.3). No consumer keeps its own retry table after M7A.
 3. **Consumer refactor — stage engine (M7A-03/05/06/08/09/11).** Replace inline decisions with
    `evaluate()`; write `error_category`; apply `delayMs` per D-2. Gate: existing stage
    certification + smoke stay green; no behavior change for already-correct paths.
-4. **Consumer refactor — job worker (M7A-03).** Replace `RETRYABLE_STAGES` with `evaluate()`.
-   Gate: worker path classifies identically to the engine for the same reason (the §6.2
-   inconsistency is gone).
+4. **Consumer refactor — job worker (M7A-03).** With D-1 resolved (§6.7), `irr-stage-engine`
+   is authoritative and takes priority (step 3). For `irr-job-worker`: confirm it is truly
+   idle, then either **align** it to `evaluate()` (removing `RETRYABLE_STAGES`) or **retire**
+   it — but it must not remain a live path carrying the contradictory classifier. Gate: no
+   execution path retains its own retry decision; engine and any live worker return identical
+   decisions for identical reasons.
 5. **Rate-limit + telemetry (M7A-07/12).** 429/`Retry-After` subclassification; retry/failure
    telemetry (attempts + delays measurable). Gate: a simulated 429 is classified operational/
    retryable with the honored delay; telemetry rows show attempts and delays.
@@ -408,18 +434,20 @@ plus (D-4) an optional dedicated events table for aggregate queries.
 
 - **R-01 Scope creep into M8 (highest).** Retries are re-queue-driven and entangled with the
   claim/reclaim machinery (§6.2/§6.6); honoring backoff timing tempts a scheduler change.
-  *Mitigation:* M7A computes/records the decision; the claim path change (if any) is bounded to
-  an additive `next_attempt_at` and gated by D-2; N-12 blocks acceptance.
-- **R-02 Two execution paths, unknown authority.** If both `irr-stage-engine` and
-  `irr-job-worker` are live, centralization must land in both; if one is legacy, refactoring it
-  is wasted or risky. *Mitigation:* D-1 resolves which is production-authoritative before build
-  step 4.
+  *Mitigation:* **D-2 confirmed to record-only** — M7A computes/records the decision and makes
+  **no** claim-path change; N-12 blocks acceptance if crossed.
+- **R-02 Two execution paths.** *Resolved by D-1 (§6.7):* `irr-stage-engine` is authoritative
+  and is the primary centralization target; `irr-job-worker` is not current traffic and is
+  align-or-retire (§12 step 4), so the refactor is neither wasted on a live path nor risking a
+  contradictory classifier left running.
 - **R-03 Evidence-before-limits chicken/egg.** M7A-04 wants telemetry that doesn't exist yet.
   *Mitigation:* ship telemetry first (step 5 feeds a bootstrap), record provisional provenance,
   tighten in rollout §14.4 — A-M1 accepts documented bootstrap.
-- **R-04 Changing `invalid_response_schema` behavior (§6.2).** Making it terminal where the
-  worker currently retries could alter outcomes. *Mitigation:* D-1 + a regression corpus case;
-  it is the intended correction, verified not silent.
+- **R-04 Changing `invalid_response_schema` behavior (§6.2).** *De-risked by D-1 (§6.7):* the
+  authoritative path (`irr-stage-engine`) already treats it as terminal, so normalization does
+  not change live behavior; the change is confined to the non-authoritative `irr-job-worker`.
+  *Mitigation:* still add a regression corpus case; the correction is intended and verified,
+  not silent.
 - **R-05 Circuit-breaker state in stateless edge functions.** A breaker needs shared state.
   *Mitigation:* D-3 — persist in a dedicated table or defer the breaker; do not fake it in
   per-invocation memory.
@@ -430,15 +458,15 @@ plus (D-4) an optional dedicated events table for aggregate queries.
 
 ## 20. Open Decisions (must be settled before the affected build step)
 
-- **D-1 — Which IRR execution path is production-authoritative** (`irr-stage-engine` vs
-  `irr-job-worker`), and are both live? Determines where centralization lands and whether the
-  §6.2 `invalid_response_schema` correction changes real behavior. *Needed before build step 4.*
-  *(Owner/operational input required — not inferable from the code alone.)*
-- **D-2 — Does the claim path honor `delayMs` now, or only record it?** Honoring it needs an
-  additive `next_attempt_at` + claim-filter change (borderline M8). Options: (a) record-only in
-  M7A, honor in M8; (b) additive `next_attempt_at` honored by a minimal claim-filter change,
-  explicitly bounded. *Recommend (a) unless transient-storm recovery demands (b).* *Before build
-  step 3.*
+- **D-1 — RESOLVED (owner, 2026-07-15): `irr-stage-engine` is production-authoritative.**
+  Empirical basis in §6.7 (per-stage `irr_stage_runs` writes; 31 rows/24 h; active
+  stage-by-stage processing of a live job). Centralization lands in `irr-stage-engine` first;
+  `irr-job-worker` is align-or-retire (§12 step 4). The `invalid_response_schema` correction
+  matches the live path's existing terminal behavior (§9.2).
+- **D-2 — CONFIRMED (owner, 2026-07-15): option (a) — record-only.** M7A computes and records
+  `delayMs`; the claim path does not wait on it (immediate re-queue unchanged); honoring the
+  delay is Milestone 8. No `next_attempt_at` claim-filter change ships in M7A. Locked in §8 /
+  §10 (M7A-05). This is the boundary N-12 guards.
 - **D-3 — Circuit-breaker state store.** Dedicated `m7a_circuit_state` table vs defer the breaker
   entirely until evidence justifies it. *Before build step 6.*
 - **D-4 — Retry telemetry shape.** Columns on `irr_stage_runs` vs a dedicated `m7a_retry_events`
