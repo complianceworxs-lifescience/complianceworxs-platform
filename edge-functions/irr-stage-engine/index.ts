@@ -1,5 +1,13 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { PROMPT_CONSTRAINTS, constraintsFor, validateFieldItems, TYPE_CONTRACT_LINE } from './contract-generated.ts';
+import { evaluate } from './resilience/evaluate-policy.ts';
+
+// Parse a provider Retry-After header (delta-seconds) into ms; null if absent/unparseable.
+function parseRetryAfterMs(v: string | null): number | undefined {
+  if (!v) return undefined;
+  const secs = Number(v);
+  return Number.isFinite(secs) ? Math.max(0, Math.round(secs * 1000)) : undefined;
+}
 
 const SUPABASE_URL = Deno.env.get('SUPABASE_URL') ?? '';
 const SERVICE_ROLE_KEY = Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '';
@@ -41,7 +49,7 @@ async function callClaude(systemPrompt: string, userPrompt: string, deadlineMs: 
     });
     const data = await res.json();
     const latencyMs = Date.now() - start;
-    if (data.error) return { ok: false as const, reason: 'api_error', message: data.error.message ?? 'Claude API error', latencyMs, stopReason: null, tokens: { input: null, output: null } };
+    if (data.error) return { ok: false as const, reason: 'api_error', httpStatus: res.status, retryAfterMs: parseRetryAfterMs(res.headers.get('retry-after')), message: data.error.message ?? 'Claude API error', latencyMs, stopReason: null, tokens: { input: null, output: null } };
     return { ok: true as const, text: data?.content?.[0]?.text ?? '', latencyMs, stopReason: data?.stop_reason ?? null, tokens: { input: data?.usage?.input_tokens ?? null, output: data?.usage?.output_tokens ?? null } };
   } catch (err: any) {
     const isTimeout = err?.name === 'AbortError';
@@ -177,19 +185,19 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
   { stage: 1, name: 'validate_contract', kind: 'code', run: async (input) => {
       const contract = buildIrrContract(input);
       const res = await callJson(`${FN}/validate-editorial-contract`, contract, 8000);
-      if (res?.status !== 'valid') throw { retryable: false, reason: 'contract_invalid', message: JSON.stringify(res?.issues ?? res) };
+      if (res?.status !== 'valid') throw { reason: 'contract_invalid', message: JSON.stringify(res?.issues ?? res) };
       return { contract };
   }},
 
   { stage: 2, name: 'compile_execution_spec', kind: 'code', run: async (_input, prior) => {
       const res = await callJson(`${FN}/compile-editorial-contract`, prior[1].contract, 8000);
-      if (res?.status !== 'compiled') throw { retryable: false, reason: 'execution_compile_failed', message: JSON.stringify(res?.issues ?? res) };
+      if (res?.status !== 'compiled') throw { reason: 'execution_compile_failed', message: JSON.stringify(res?.issues ?? res) };
       return { executionSpecification: res.executionSpecification };
   }},
 
   { stage: 3, name: 'compile_prompt_spec', kind: 'code', run: async (_input, prior) => {
       const res = await callJson(`${FN}/compile-prompt-specification`, { executionSpecification: prior[2].executionSpecification, targetRuntime: 'claude' }, 8000);
-      if (res?.status !== 'compiled') throw { retryable: false, reason: 'prompt_package_invalid', message: JSON.stringify(res?.issues ?? res) };
+      if (res?.status !== 'compiled') throw { reason: 'prompt_package_invalid', message: JSON.stringify(res?.issues ?? res) };
       return { promptPackage: res.promptPackage };
   }},
 
@@ -208,9 +216,9 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
       const userPrompt = `${stageContextBlock(input)}\n\nOutput ONLY a JSON object with exactly these keys: ${STAGE4_FIELDS.join(', ')}. Do not include any other keys. No prose outside the JSON.`;
       const gen = await callClaude(systemPrompt, userPrompt, 110_000, 7000);
       ctx.recordCall(1, gen, 7000);
-      if (!gen.ok) throw { retryable: gen.reason === 'generation_timeout', reason: gen.reason, message: gen.message };
+      if (!gen.ok) throw { reason: gen.reason, httpStatus: (gen as any).httpStatus, retryAfterMs: (gen as any).retryAfterMs, message: gen.message };
       const { parsed, error } = parseJsonSubset(gen.text, STAGE4_FIELDS);
-      if (error) throw { retryable: true, reason: 'invalid_json_output', message: error };
+      if (error) throw { reason: 'invalid_json_output', message: error };
       validateFieldItems('evidenceReviewed_list', Array.isArray(parsed.evidenceReviewed_list) ? parsed.evidenceReviewed_list : [], 'Stage 4');
       return { fields: parsed, tokens: gen.tokens, promptChars: systemPrompt.length + userPrompt.length };
   }},
@@ -228,7 +236,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
       const userPrompt = `${stageContextBlock(input)}\n\nEstablished evidence and risk analysis from the prior stage (already finalized -- build on it, do not restate or contradict it):\n${JSON.stringify(prior[4].fields)}\n\nOutput ONLY a JSON object with exactly these keys: ${STAGE5A_FIELDS.join(', ')}. Do not include any other keys. No prose outside the JSON.`;
       const gen = await callClaude(systemPrompt, userPrompt, 90_000, AI_STAGE_BUDGET.maxCompletionTokens);
       ctx.recordCall(1, gen, AI_STAGE_BUDGET.maxCompletionTokens);
-      if (!gen.ok) throw { retryable: gen.reason === 'generation_timeout', reason: gen.reason, message: gen.message };
+      if (!gen.ok) throw { reason: gen.reason, httpStatus: (gen as any).httpStatus, retryAfterMs: (gen as any).retryAfterMs, message: gen.message };
       const { parsed, error } = parseJsonSubset(gen.text, STAGE5A_FIELDS);
 
       const rawFieldProgress: Record<string, any> = {};
@@ -250,7 +258,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
         rawFieldProgress,
       };
 
-      if (error) throw { retryable: true, reason: 'invalid_json_output', message: `${error} -- diagnostics: ${JSON.stringify(diagnostics)}` };
+      if (error) throw { reason: 'invalid_json_output', message: `${error} -- diagnostics: ${JSON.stringify(diagnostics)}` };
       return { fields: { ...parsed, diagnostics }, tokens: gen.tokens, promptChars: systemPrompt.length + userPrompt.length };
   }},
 
@@ -270,7 +278,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
       const userPrompt = `${stageContextBlock(input)}\n\nEstablished evidence and risk analysis:\n${JSON.stringify(prior[4].fields)}\n\nEstablished authorization reasoning from the prior stage (already finalized -- build on it, do not restate or contradict it):\n${JSON.stringify(prior[5].fields)}\n\nOutput ONLY a JSON object with exactly these keys: ${STAGE5B_FIELDS.join(', ')}. Do not include any other keys. No prose outside the JSON.`;
       const gen = await callClaude(systemPrompt, userPrompt, 90_000, AI_STAGE_BUDGET.maxCompletionTokens);
       ctx.recordCall(1, gen, AI_STAGE_BUDGET.maxCompletionTokens);
-      if (!gen.ok) throw { retryable: gen.reason === 'generation_timeout', reason: gen.reason, message: gen.message };
+      if (!gen.ok) throw { reason: gen.reason, httpStatus: (gen as any).httpStatus, retryAfterMs: (gen as any).retryAfterMs, message: gen.message };
       const { parsed, error } = parseJsonSubset(gen.text, STAGE5B_FIELDS);
 
       const rawFieldProgress: Record<string, any> = {};
@@ -292,7 +300,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
         rawFieldProgress,
       };
 
-      if (error) throw { retryable: true, reason: 'invalid_json_output', message: `${error} -- diagnostics: ${JSON.stringify(diagnostics)}` };
+      if (error) throw { reason: 'invalid_json_output', message: `${error} -- diagnostics: ${JSON.stringify(diagnostics)}` };
       validateFieldItems('gapFlags_list', Array.isArray(parsed.gapFlags_list) ? parsed.gapFlags_list : [], 'Stage 6');
       return { fields: { ...parsed, diagnostics }, tokens: gen.tokens, promptChars: systemPrompt.length + userPrompt.length };
   }},
@@ -317,7 +325,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
 
       for (let b = partials.length; b < batches.length; b++) {
         if (Date.now() - stageT0 + CALL_BUDGET_MS > HARD_CEILING_MS) {
-          throw { retryable: true, reason: 'generation_timeout', message: `Stage-level deadline reached after ${b}/${batches.length} batches -- bailing before the platform's hard kill so this can be retried cleanly (${b} batches already checkpointed).` };
+          throw { reason: 'generation_timeout', message: `Stage-level deadline reached after ${b}/${batches.length} batches -- bailing before the platform's hard kill so this can be retried cleanly (${b} batches already checkpointed).` };
         }
         const batchEvidence = batches[b];
         const systemPrompt = buildStageSystemPrompt({
@@ -335,12 +343,12 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
 
         const gen = await callClaude(systemPrompt, userPrompt, CALL_BUDGET_MS, AI_STAGE_BUDGET.maxCompletionTokens);
         ctx.recordCall(b + 1, gen, AI_STAGE_BUDGET.maxCompletionTokens);
-        if (!gen.ok) throw { retryable: gen.reason === 'generation_timeout', reason: gen.reason, message: `Batch ${b + 1}/${batches.length} failed: ${gen.message} (${partials.length} batches already checkpointed)` };
+        if (!gen.ok) throw { reason: gen.reason, httpStatus: (gen as any).httpStatus, retryAfterMs: (gen as any).retryAfterMs, message: `Batch ${b + 1}/${batches.length} failed: ${gen.message} (${partials.length} batches already checkpointed)` };
         totalInputTokens += gen.tokens.input ?? 0;
         maxBatchOutputTokens = Math.max(maxBatchOutputTokens, gen.tokens.output ?? 0);
         if ((gen.tokens.output ?? 0) > BUDGET_HEADROOM_TOKENS) headroomBreaches += 1;
         const { parsed, error } = parseJsonSubset(gen.text, ['claimStatus_list']);
-        if (error) throw { retryable: true, reason: 'invalid_json_output', message: `Batch ${b + 1}/${batches.length} failed: ${error} (${partials.length} batches already checkpointed)` };
+        if (error) throw { reason: 'invalid_json_output', message: `Batch ${b + 1}/${batches.length} failed: ${error} (${partials.length} batches already checkpointed)` };
 
         const idOffset = partials.reduce((acc, p) => acc + p.length, 0);
         const rawClaims: any[] = Array.isArray(parsed.claimStatus_list) ? parsed.claimStatus_list : [];
@@ -399,7 +407,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
 
       for (let b = partials.length; b < batches.length; b++) {
         if (Date.now() - stageT0 + CALL_BUDGET_MS > HARD_CEILING_MS) {
-          throw { retryable: true, reason: 'generation_timeout', message: `Stage-level deadline reached after ${b}/${batches.length} batches -- bailing before the platform's hard kill so this can be retried cleanly (${b} batches already checkpointed).` };
+          throw { reason: 'generation_timeout', message: `Stage-level deadline reached after ${b}/${batches.length} batches -- bailing before the platform's hard kill so this can be retried cleanly (${b} batches already checkpointed).` };
         }
         const batchEvidence = batches[b];
         const claimsForThisEvidence = allClaims.filter((c: any) => c.evidenceIndex === b);
@@ -420,12 +428,12 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
 
         const gen = await callClaude(systemPrompt, userPrompt, CALL_BUDGET_MS, AI_STAGE_BUDGET.maxCompletionTokens);
         ctx.recordCall(b + 1, gen, AI_STAGE_BUDGET.maxCompletionTokens);
-        if (!gen.ok) throw { retryable: gen.reason === 'generation_timeout', reason: gen.reason, message: `Batch ${b + 1}/${batches.length} failed: ${gen.message} (${partials.length} batches already checkpointed)` };
+        if (!gen.ok) throw { reason: gen.reason, httpStatus: (gen as any).httpStatus, retryAfterMs: (gen as any).retryAfterMs, message: `Batch ${b + 1}/${batches.length} failed: ${gen.message} (${partials.length} batches already checkpointed)` };
         totalInputTokens += gen.tokens.input ?? 0;
         maxBatchOutputTokens = Math.max(maxBatchOutputTokens, gen.tokens.output ?? 0);
         if ((gen.tokens.output ?? 0) > BUDGET_HEADROOM_TOKENS) headroomBreaches += 1;
         const { parsed, error } = parseJsonSubset(gen.text, ['evidenceMatrix_list', 'evidenceTraceability_list']);
-        if (error) throw { retryable: true, reason: 'invalid_json_output', message: `Batch ${b + 1}/${batches.length} failed: ${error} (${partials.length} batches already checkpointed)` };
+        if (error) throw { reason: 'invalid_json_output', message: `Batch ${b + 1}/${batches.length} failed: ${error} (${partials.length} batches already checkpointed)` };
 
         const traceEntries: any[] = Array.isArray(parsed.evidenceTraceability_list) ? parsed.evidenceTraceability_list : [];
         const matrixEntries: any[] = Array.isArray(parsed.evidenceMatrix_list) ? parsed.evidenceMatrix_list : [];
@@ -439,8 +447,8 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
         }
         for (const claim of claimsForThisEvidence) {
           const matches = traceByClaimId.get(claim.id) ?? [];
-          if (matches.length === 0) throw { retryable: true, reason: 'traceability_coverage_omitted', message: `Batch ${b + 1}/${batches.length}: claim ${claim.id} has no evidenceTraceability_list entry (${partials.length} batches already checkpointed).` };
-          if (matches.length > 1) throw { retryable: true, reason: 'traceability_coverage_duplicated', message: `Batch ${b + 1}/${batches.length}: claim ${claim.id} has ${matches.length} evidenceTraceability_list entries, expected exactly 1 (${partials.length} batches already checkpointed).` };
+          if (matches.length === 0) throw { reason: 'traceability_coverage_omitted', message: `Batch ${b + 1}/${batches.length}: claim ${claim.id} has no evidenceTraceability_list entry (${partials.length} batches already checkpointed).` };
+          if (matches.length > 1) throw { reason: 'traceability_coverage_duplicated', message: `Batch ${b + 1}/${batches.length}: claim ${claim.id} has ${matches.length} evidenceTraceability_list entries, expected exactly 1 (${partials.length} batches already checkpointed).` };
         }
 
         partials.push({ evidenceMatrix_list: matrixEntries, evidenceTraceability_list: traceEntries });
@@ -456,7 +464,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
       const omitted = allClaims.filter((c: any) => !traceCountByClaimId.has(c.id));
       const duplicated = allClaims.filter((c: any) => (traceCountByClaimId.get(c.id) ?? 0) > 1);
       if (omitted.length > 0 || duplicated.length > 0) {
-        throw { retryable: false, reason: 'traceability_coverage_mismatch', message: `Coverage mismatch between claimStatus_list (${allClaims.length} claims) and evidenceTraceability_list: ${omitted.length} omitted, ${duplicated.length} duplicated.` };
+        throw { reason: 'traceability_coverage_mismatch', message: `Coverage mismatch between claimStatus_list (${allClaims.length} claims) and evidenceTraceability_list: ${omitted.length} omitted, ${duplicated.length} duplicated.` };
       }
 
       const mapReduceMeta = {
@@ -496,7 +504,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
 
       for (let b = partials.length; b < batches.length; b++) {
         if (Date.now() - stageT0 + CALL_BUDGET_MS > HARD_CEILING_MS) {
-          throw { retryable: true, reason: 'generation_timeout', message: `Stage-level deadline reached after ${b}/${batches.length} claim batches -- bailing before the platform's hard kill so this can be retried cleanly (${b} batches already checkpointed).` };
+          throw { reason: 'generation_timeout', message: `Stage-level deadline reached after ${b}/${batches.length} claim batches -- bailing before the platform's hard kill so this can be retried cleanly (${b} batches already checkpointed).` };
         }
         const batchClaims = batches[b];
         const systemPrompt = buildStageSystemPrompt({
@@ -514,11 +522,11 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
 
         const gen = await callClaude(systemPrompt, userPrompt, CALL_BUDGET_MS, AI_STAGE_BUDGET.maxCompletionTokens);
         ctx.recordCall(b + 1, gen, AI_STAGE_BUDGET.maxCompletionTokens);
-        if (!gen.ok) throw { retryable: gen.reason === 'generation_timeout', reason: gen.reason, message: `Claim batch ${b + 1}/${batches.length} failed: ${gen.message} (${partials.length} batches already checkpointed)` };
+        if (!gen.ok) throw { reason: gen.reason, httpStatus: (gen as any).httpStatus, retryAfterMs: (gen as any).retryAfterMs, message: `Claim batch ${b + 1}/${batches.length} failed: ${gen.message} (${partials.length} batches already checkpointed)` };
         totalInputTokens += gen.tokens.input ?? 0;
         maxBatchOutputTokens = Math.max(maxBatchOutputTokens, gen.tokens.output ?? 0);
         const { parsed, error } = parseJsonSubset(gen.text, ['unsupportedClaims_list']);
-        if (error) throw { retryable: true, reason: 'invalid_json_output', message: `Claim batch ${b + 1}/${batches.length} failed: ${error} (${partials.length} batches already checkpointed)` };
+        if (error) throw { reason: 'invalid_json_output', message: `Claim batch ${b + 1}/${batches.length} failed: ${error} (${partials.length} batches already checkpointed)` };
         const items: any[] = Array.isArray(parsed.unsupportedClaims_list) ? parsed.unsupportedClaims_list : [];
         validateFieldItems('unsupportedClaims_list', items, `Claim batch ${b + 1}/${batches.length} (${partials.length} batches already checkpointed)`);
         partials.push(items);
@@ -544,7 +552,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
         omittedCount: unsupported.length - unsupportedClaims_list.length,
       };
       if (mapReduceMeta.omittedCount !== 0) {
-        throw { retryable: false, reason: 'unsupported_claims_coverage_mismatch', message: `Expected ${unsupported.length} unsupportedClaims_list entries (one per unsupported claim), got ${unsupportedClaims_list.length}.` };
+        throw { reason: 'unsupported_claims_coverage_mismatch', message: `Expected ${unsupported.length} unsupportedClaims_list entries (one per unsupported claim), got ${unsupportedClaims_list.length}.` };
       }
 
       return {
@@ -572,7 +580,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
 
       for (let b = partials.length; b < batches.length; b++) {
         if (Date.now() - stageT0 + CALL_BUDGET_MS > HARD_CEILING_MS) {
-          throw { retryable: true, reason: 'generation_timeout', message: `Stage-level deadline reached after ${b}/${batches.length} gap batches -- bailing before the platform's hard kill so this can be retried cleanly (${b} batches already checkpointed).` };
+          throw { reason: 'generation_timeout', message: `Stage-level deadline reached after ${b}/${batches.length} gap batches -- bailing before the platform's hard kill so this can be retried cleanly (${b} batches already checkpointed).` };
         }
         const batchGaps = batches[b];
         const systemPrompt = buildStageSystemPrompt({
@@ -591,11 +599,11 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
 
         const gen = await callClaude(systemPrompt, userPrompt, CALL_BUDGET_MS, AI_STAGE_BUDGET.maxCompletionTokens);
         ctx.recordCall(b + 1, gen, AI_STAGE_BUDGET.maxCompletionTokens);
-        if (!gen.ok) throw { retryable: gen.reason === 'generation_timeout', reason: gen.reason, message: `Gap batch ${b + 1}/${batches.length} failed: ${gen.message} (${partials.length} batches already checkpointed)` };
+        if (!gen.ok) throw { reason: gen.reason, httpStatus: (gen as any).httpStatus, retryAfterMs: (gen as any).retryAfterMs, message: `Gap batch ${b + 1}/${batches.length} failed: ${gen.message} (${partials.length} batches already checkpointed)` };
         totalInputTokens += gen.tokens.input ?? 0;
         maxBatchOutputTokens = Math.max(maxBatchOutputTokens, gen.tokens.output ?? 0);
         const { parsed, error } = parseJsonSubset(gen.text, ['inspectorChallenge_list']);
-        if (error) throw { retryable: true, reason: 'invalid_json_output', message: `Gap batch ${b + 1}/${batches.length} failed: ${error} (${partials.length} batches already checkpointed)` };
+        if (error) throw { reason: 'invalid_json_output', message: `Gap batch ${b + 1}/${batches.length} failed: ${error} (${partials.length} batches already checkpointed)` };
         const items: any[] = Array.isArray(parsed.inspectorChallenge_list) ? parsed.inspectorChallenge_list : [];
         validateFieldItems('inspectorChallenge_list', items, `Gap batch ${b + 1}/${batches.length} (${partials.length} batches already checkpointed)`);
         partials.push(items);
@@ -621,7 +629,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
         omittedCount: gaps.length - inspectorChallenge_list.length,
       };
       if (mapReduceMeta.omittedCount !== 0) {
-        throw { retryable: false, reason: 'inspector_challenge_coverage_mismatch', message: `Expected ${gaps.length} inspectorChallenge_list entries (one per gap), got ${inspectorChallenge_list.length}.` };
+        throw { reason: 'inspector_challenge_coverage_mismatch', message: `Expected ${gaps.length} inspectorChallenge_list entries (one per gap), got ${inspectorChallenge_list.length}.` };
       }
 
       return {
@@ -651,7 +659,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
 
       for (let b = partials.length; b < batches.length; b++) {
         if (Date.now() - stageT0 + CALL_BUDGET_MS > HARD_CEILING_MS) {
-          throw { retryable: true, reason: 'generation_timeout', message: `Stage-level deadline reached after ${b}/${batches.length} gap batches -- bailing before the platform's hard kill so this can be retried cleanly (${b} batches already checkpointed).` };
+          throw { reason: 'generation_timeout', message: `Stage-level deadline reached after ${b}/${batches.length} gap batches -- bailing before the platform's hard kill so this can be retried cleanly (${b} batches already checkpointed).` };
         }
         const batchGaps = batches[b];
         const systemPrompt = buildStageSystemPrompt({
@@ -669,11 +677,11 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
 
         const gen = await callClaude(systemPrompt, userPrompt, CALL_BUDGET_MS, AI_STAGE_BUDGET.maxCompletionTokens);
         ctx.recordCall(b + 1, gen, AI_STAGE_BUDGET.maxCompletionTokens);
-        if (!gen.ok) throw { retryable: gen.reason === 'generation_timeout', reason: gen.reason, message: `Gap batch ${b + 1}/${batches.length} failed: ${gen.message} (${partials.length} batches already checkpointed)` };
+        if (!gen.ok) throw { reason: gen.reason, httpStatus: (gen as any).httpStatus, retryAfterMs: (gen as any).retryAfterMs, message: `Gap batch ${b + 1}/${batches.length} failed: ${gen.message} (${partials.length} batches already checkpointed)` };
         totalInputTokens += gen.tokens.input ?? 0;
         maxBatchOutputTokens = Math.max(maxBatchOutputTokens, gen.tokens.output ?? 0);
         const { parsed, error } = parseJsonSubset(gen.text, ['remediationScaffold_list']);
-        if (error) throw { retryable: true, reason: 'invalid_json_output', message: `Gap batch ${b + 1}/${batches.length} failed: ${error} (${partials.length} batches already checkpointed)` };
+        if (error) throw { reason: 'invalid_json_output', message: `Gap batch ${b + 1}/${batches.length} failed: ${error} (${partials.length} batches already checkpointed)` };
         const items: any[] = Array.isArray(parsed.remediationScaffold_list) ? parsed.remediationScaffold_list : [];
         validateFieldItems('remediationScaffold_list', items, `Gap batch ${b + 1}/${batches.length} (${partials.length} batches already checkpointed)`);
         partials.push(items);
@@ -699,7 +707,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
         omittedCount: gaps.length - remediationScaffold_list.length,
       };
       if (mapReduceMeta.omittedCount !== 0) {
-        throw { retryable: false, reason: 'remediation_scaffold_coverage_mismatch', message: `Expected ${gaps.length} remediationScaffold_list entries (one per gap), got ${remediationScaffold_list.length}.` };
+        throw { reason: 'remediation_scaffold_coverage_mismatch', message: `Expected ${gaps.length} remediationScaffold_list entries (one per gap), got ${remediationScaffold_list.length}.` };
       }
 
       return {
@@ -712,7 +720,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
   { stage: 12, name: 'deterministic_assembly', kind: 'code', run: async (_input, prior) => {
       const s5a = { ...prior[5].fields, ...prior[6].fields };
       if (!Array.isArray(s5a.criticalGapsRanked_list) || typeof s5a.defensibilityRating !== 'string') {
-        throw { retryable: false, reason: 'stage11_structural_inputs_missing', message: 'criticalGapsRanked_list or defensibilityRating missing from Stage 5/6 output -- cannot perform structural regrouping.' };
+        throw { reason: 'stage11_structural_inputs_missing', message: 'criticalGapsRanked_list or defensibilityRating missing from Stage 5/6 output -- cannot perform structural regrouping.' };
       }
       const executiveBriefBreakdown_list = s5a.criticalGapsRanked_list.map((gap: any) => ({
         gap,
@@ -732,9 +740,9 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
       const userPrompt = `Completed IRR analysis:\n${JSON.stringify(context)}\n\nOutput ONLY {"executiveBrief": "..."}. No prose outside the JSON.`;
       const gen = await callClaude(systemPrompt, userPrompt, 30_000, 500);
       ctx.recordCall(1, gen, 500);
-      if (!gen.ok) throw { retryable: gen.reason === 'generation_timeout', reason: gen.reason, message: gen.message };
+      if (!gen.ok) throw { reason: gen.reason, httpStatus: (gen as any).httpStatus, retryAfterMs: (gen as any).retryAfterMs, message: gen.message };
       const { parsed, error } = parseJsonSubset(gen.text, ['executiveBrief']);
-      if (error) throw { retryable: true, reason: 'invalid_json_output', message: error };
+      if (error) throw { reason: 'invalid_json_output', message: error };
       return { fields: parsed, tokens: gen.tokens, promptChars: systemPrompt.length + userPrompt.length };
   }},
 
@@ -755,7 +763,7 @@ const STAGES: { stage: number; name: string; kind: 'code' | 'ai'; run: (input: a
         runtimeManifest,
         skipEditorialReview: true,
       }, 8000);
-      if (res?.terminalState !== 'PASS') throw { retryable: false, reason: 'structural_validation_failed', message: JSON.stringify(res?.blockingReasons ?? res) };
+      if (res?.terminalState !== 'PASS') throw { reason: 'structural_validation_failed', message: JSON.stringify(res?.blockingReasons ?? res) };
       return { fields: { structuredResponse, terminalState: res.terminalState } };
   }},
 
@@ -826,8 +834,17 @@ async function runStage(jobId: string, def: typeof STAGES[number], inputPayload:
       }),
     });
   } catch (err: any) {
-    const retryable = err?.retryable === true;
-    const canRetry = retryable && attempt < maxAttempts;
+    // Central classification (M7A-03): the resilience evaluator is now the single authority for
+    // WHICH reasons are retryable, replacing the old inline `err.retryable`. It also subclassifies
+    // provider errors by HTTP status (429 -> rate_limit, 401/403 -> authentication_error). The
+    // engine keeps its EXISTING max_attempts as the retry COUNT ceiling — per-category ceilings
+    // and delay-honoring are NOT adopted here (D-2(a): delayMs is recorded, not enforced), so
+    // retry counts are unchanged. "Retryable in principle" ignores the ceiling (evaluate at attempt 1).
+    const decision = evaluate(err?.reason ?? 'unknown', attempt, { httpStatus: err?.httpStatus, retryAfterMs: err?.retryAfterMs, jitterKey: `${jobId}:${nextStage}` });
+    const retryableInPrinciple = !evaluate(err?.reason ?? 'unknown', 1, { httpStatus: err?.httpStatus, retryAfterMs: err?.retryAfterMs }).terminal;
+    const canRetry = retryableInPrinciple && attempt < maxAttempts;
+    const errorReason = decision.reason_normalized;   // normalized: api_error+429 -> rate_limit, +401 -> authentication_error
+    const errorCategory = decision.category;
     const telemetryFields = {
       stop_reason: ctx.telemetry?.stopReason ?? null,
       batch_number: ctx.telemetry?.batchNumber ?? null,
@@ -839,17 +856,17 @@ async function runStage(jobId: string, def: typeof STAGES[number], inputPayload:
     if (canRetry) {
       await sbRest(`irr_stage_runs?job_id=eq.${jobId}&stage=eq.${nextStage}`, {
         method: 'PATCH',
-        body: JSON.stringify({ status: 'queued', classified_failure: err.reason ?? 'unknown', error_detail: { message: err.message }, ...telemetryFields, updated_at: new Date().toISOString() }),
+        body: JSON.stringify({ status: 'queued', classified_failure: errorReason, error_detail: { message: err.message, category: errorCategory, delay_ms: decision.delayMs }, ...telemetryFields, updated_at: new Date().toISOString() }),
       });
       return;
     }
     await sbRest(`irr_stage_runs?job_id=eq.${jobId}&stage=eq.${nextStage}`, {
       method: 'PATCH',
-      body: JSON.stringify({ status: 'failed', completed_at: new Date().toISOString(), duration_ms: Date.now() - t0, classified_failure: err.reason ?? 'unknown', error_detail: { message: err.message }, ...telemetryFields, updated_at: new Date().toISOString() }),
+      body: JSON.stringify({ status: 'failed', completed_at: new Date().toISOString(), duration_ms: Date.now() - t0, classified_failure: errorReason, error_detail: { message: err.message, category: errorCategory, delay_ms: decision.delayMs }, ...telemetryFields, updated_at: new Date().toISOString() }),
     });
     await sbRest(`irr_jobs?job_id=eq.${jobId}`, {
       method: 'PATCH',
-      body: JSON.stringify({ status: 'failed', error_json: { stage: def.name, reason: err.reason, message: err.message }, updated_at: new Date().toISOString() }),
+      body: JSON.stringify({ status: 'failed', error_json: { stage: def.name, reason: errorReason, category: errorCategory, message: err.message }, updated_at: new Date().toISOString() }),
     });
   }
 }

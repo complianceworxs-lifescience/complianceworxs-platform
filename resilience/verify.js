@@ -21,11 +21,16 @@ const COMMITTED = path.join(HERE, 'generated');
 const COMPILE = path.join(HERE, 'compile.js');
 const REPO = path.resolve(HERE, '..');
 
-// Consumer copies to verify once they exist (created in build step 3). Absent = fine for now.
-const CONSUMER_COPIES = [
-  path.join(REPO, 'edge-functions', 'irr-stage-engine', 'resilience-generated.ts'),
-  path.join(REPO, 'edge-functions', 'irr-job-worker', 'resilience-generated.ts'),
-];
+// Consumer copies to verify once they exist. Each edge function bundles a verbatim copy of the
+// resilience subtree (generated artifact + classify/evaluate); each copy must byte-match its
+// canonical source. Absent copies are fine (a path not yet built). { copy (repo-rel), src (resilience-rel) }.
+const SUBTREE = ['generated/resilience-generated.ts', 'classify.ts', 'evaluate-policy.ts'];
+const CONSUMER_COPIES = [];
+for (const fn of ['irr-stage-engine', 'irr-job-worker']) {  // stage-engine: step 3; job-worker: step 4
+  for (const rel of SUBTREE) {
+    CONSUMER_COPIES.push({ copy: path.join(REPO, 'edge-functions', fn, 'resilience', rel), src: path.join(HERE, rel) });
+  }
+}
 
 function sha(buf) { return crypto.createHash('sha256').update(buf).digest('hex'); }
 function fail(msg) { console.error('verify:taxonomy FAIL — ' + msg); process.exit(1); }
@@ -72,18 +77,16 @@ try {
   }
   if (!ok) fail('generated artifacts drift from committed resilience/generated/.');
 
-  // consumer copy verification (byte-identical to the committed artifact)
-  const genArtifact = fs.readFileSync(path.join(COMMITTED, 'resilience-generated.ts'));
-  const genSha = sha(genArtifact);
+  // consumer copy verification: each copy byte-identical to its canonical source
   let copies = 0;
-  for (const cp of CONSUMER_COPIES) {
-    if (!fs.existsSync(cp)) { console.log('  --   ' + path.relative(REPO, cp) + ' (no copy yet — pre-step-3)'); continue; }
+  for (const { copy, src } of CONSUMER_COPIES) {
+    if (!fs.existsSync(copy)) { console.log('  --   ' + path.relative(REPO, copy) + ' (no copy yet)'); continue; }
     copies++;
-    const match = sha(fs.readFileSync(cp)) === genSha;
+    const match = sha(fs.readFileSync(copy)) === sha(fs.readFileSync(src));
     if (!match) ok = false;
-    console.log('  ' + (match ? 'OK   ' : 'DIFF ') + path.relative(REPO, cp) + ' (consumer copy)');
+    console.log('  ' + (match ? 'OK   ' : 'DIFF ') + path.relative(REPO, copy) + ' (consumer copy vs ' + path.relative(REPO, src) + ')');
   }
-  if (!ok) fail('a consumer copy drifts from resilience/generated/resilience-generated.ts.');
+  if (!ok) fail('a consumer copy drifts from its canonical resilience/ source.');
 
   console.log(`verify:taxonomy PASS — ${allNames.length} generated artifacts byte-identical; ${copies} consumer cop(y|ies) verified.`);
   process.exit(0);
