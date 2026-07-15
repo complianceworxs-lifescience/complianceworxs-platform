@@ -1,0 +1,126 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "type": "object",
+  "properties": {
+    "investigatorQuestion": {
+      "type": "string"
+    },
+    "authorizationSummary": {
+      "type": "string"
+    },
+    "authorizationRationale": {
+      "type": "string"
+    },
+    "knownLimitations": {
+      "type": "string"
+    },
+    "defensibilityRating": {
+      "type": "string",
+      "enum": [
+        "Critical Exposure",
+        "At Risk",
+        "Defensible with Gaps",
+        "Inspection-Ready"
+      ]
+    },
+    "evidenceReviewed_list": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "riskEvaluation": {
+      "type": "string"
+    },
+    "alternativesConsidered": {
+      "type": "string"
+    },
+    "regulatoryAlignment": {
+      "type": "string"
+    },
+    "residualExposureStatement": {
+      "type": "string"
+    },
+    "gapFlags_list": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "criticalGapsRanked_list": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "claimStatus_list": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "claim": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "Claimed in rationale",
+              "Supported by attached evidence",
+              "Not traceable in record"
+            ]
+          }
+        }
+      }
+    },
+    "evidenceMatrix_list": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "evidenceTraceability_list": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "claimId": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "unsupportedClaims_list": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "inspectorChallenge_list": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "remediationScaffold_list": {
+      "type": "array",
+      "items": {
+        "type": "object"
+      }
+    },
+    "executiveBriefBreakdown_list": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "gap": {},
+          "defensibilityRating": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "executiveBrief": {
+      "type": "string"
+    }
+  }
+}

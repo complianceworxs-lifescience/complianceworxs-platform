@@ -1,0 +1,13 @@
+{
+  "name": "cw-contract-compiler",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ComplianceWorxs contract compiler + Milestone 7 compiler verification (M7-02).",
+  "scripts": {
+    "compile": "node compile.js",
+    "verify": "node verify.js"
+  },
+  "dependencies": {
+    "js-yaml": "4.1.0"
+  }
+}
