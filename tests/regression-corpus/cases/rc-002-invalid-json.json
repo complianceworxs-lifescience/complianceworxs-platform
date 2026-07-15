@@ -1,0 +1,24 @@
+{
+  "case_id": "rc-002-invalid-json",
+  "name": "Non-JSON model output fails as invalid_json_output after parse retry",
+  "scenario": "malformed-model-output",
+  "stage": "runtime",
+  "expected": { "status": "failed", "reason": "invalid_json_output" },
+  "payload": {
+    "userVariables": { "investigation": "RC-002" },
+    "injectResponse": "this is not valid JSON at all {{{",
+    "promptPackage": {
+      "manifest": { "promptCompilerVersion": "1.0.0", "timestamp": "2026-07-15T00:00:00.000Z" },
+      "promptSpecification": {
+        "systemPrompt": "You are the IRR stage engine (regression).",
+        "userPromptTemplate": "Investigation: {{investigation}}. Produce the brief.",
+        "contextRequirements": ["investigation"],
+        "targetRuntime": "smoke"
+      },
+      "outputSchema": {
+        "required": ["executiveBrief"],
+        "properties": { "executiveBrief": { "type": "string" } }
+      }
+    }
+  }
+}

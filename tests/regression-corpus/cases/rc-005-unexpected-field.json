@@ -1,0 +1,24 @@
+{
+  "case_id": "rc-005-unexpected-field",
+  "name": "Output carrying a field outside the contract schema is rejected (strict shape)",
+  "scenario": "schema-unexpected-field",
+  "stage": "runtime",
+  "expected": { "status": "failed", "reason": "invalid_response_schema" },
+  "payload": {
+    "userVariables": { "investigation": "RC-005" },
+    "injectResponse": "{\"executiveBrief\": \"ok\", \"executiveRiskStatement\": \"not in contract\"}",
+    "promptPackage": {
+      "manifest": { "promptCompilerVersion": "1.0.0", "timestamp": "2026-07-15T00:00:00.000Z" },
+      "promptSpecification": {
+        "systemPrompt": "You are the IRR stage engine (regression).",
+        "userPromptTemplate": "Investigation: {{investigation}}. Produce the brief.",
+        "contextRequirements": ["investigation"],
+        "targetRuntime": "smoke"
+      },
+      "outputSchema": {
+        "required": ["executiveBrief"],
+        "properties": { "executiveBrief": { "type": "string" } }
+      }
+    }
+  }
+}

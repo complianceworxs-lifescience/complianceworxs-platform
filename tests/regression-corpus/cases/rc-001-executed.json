@@ -1,0 +1,26 @@
+{
+  "case_id": "rc-001-executed",
+  "name": "Well-formed IRR package reaches a validated executed terminal state",
+  "scenario": "happy-path",
+  "stage": "runtime",
+  "expected": { "status": "executed" },
+  "payload": {
+    "userVariables": { "investigation": "RC-001" },
+    "promptPackage": {
+      "manifest": { "promptCompilerVersion": "1.0.0", "timestamp": "2026-07-15T00:00:00.000Z" },
+      "promptSpecification": {
+        "systemPrompt": "You are the IRR stage engine (regression).",
+        "userPromptTemplate": "Investigation: {{investigation}}. Produce the brief and ranked gaps.",
+        "contextRequirements": ["investigation"],
+        "targetRuntime": "smoke"
+      },
+      "outputSchema": {
+        "required": ["executiveBrief", "criticalGapsRanked_list"],
+        "properties": {
+          "executiveBrief": { "type": "string" },
+          "criticalGapsRanked_list": { "type": "array" }
+        }
+      }
+    }
+  }
+}
