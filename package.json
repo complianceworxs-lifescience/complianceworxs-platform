@@ -5,6 +5,7 @@
   "type": "module",
   "description": "ComplianceWorxs platform — Milestone 7 verification toolchain (CW-MDR-007).",
   "scripts": {
+    "postinstall": "npm install --prefix compiler --no-audit --no-fund",
     "verify": "node --experimental-strip-types verification/verify.js",
     "verify:compiler": "node compiler/verify.js",
     "verify:stage": "node --experimental-strip-types tests/stage-certification/verify-stage.mjs",
