@@ -104,7 +104,24 @@ None hold:
 CP-A1 (taxonomy, `fe4e28f`) · CP-A2 (classification, `cd986ea`) · CP-A3 (engine, `61e882f`) ·
 CP-A4 (worker, `f4126f8`) · CP-A5 (telemetry/migration, `79169a2`) · CP-A6 (breaker, `6348b3b`).
 
-Reproduce: `node resilience/verify.js` · `node --experimental-strip-types tests/resilience-classification/verify-classification.mjs` · `.../verify-decide.mjs` · `.../verify-breaker.mjs` · `node --experimental-strip-types tests/stage-certification/verify-stage.mjs all` · `node --experimental-strip-types verification/smoke/run-smoke.js`.
+**Reproduce (one command, from a clean clone):**
+
+```
+npm install          # postinstall bootstraps compiler + resilience deps (fix 0df456e)
+npm run verify -- --rc   # complete set: compiler, unit, smoke, regression + the 4 M7A gates
+```
+
+`npm run verify` auto-selects gates from the diff (M7A gates wired into the orchestrator, fix
+`0df456e`): a `resilience/` edit → verify:taxonomy + classification + decide + breaker; a
+refactored-engine edit (`irr-stage-engine`) → those + 15 stage certs + smoke; a release
+candidate (`--rc`) → the full set. Confirmed green from a genuinely fresh clone with a single
+`npm install`. The four M7A gates are also individually runnable: `npm run verify:taxonomy`,
+`verify:classification`, `verify:decide`, `verify:breaker`.
+
+**Pre-closure gap fixes (`0df456e`, additive):** the from-clean check found the M7A gates were
+not wired into `npm run verify` and the resilience deps were not bootstrapped by the root
+postinstall — both closed so the one-command, from-clean guarantee (M7 A-12/N-09) now extends to
+M7A.
 
 ## 8. Open items for the owner (not blockers to acceptance)
 
