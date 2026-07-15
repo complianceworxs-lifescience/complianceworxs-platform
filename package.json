@@ -1,0 +1,15 @@
+{
+  "name": "complianceworxs-platform",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "description": "ComplianceWorxs platform — Milestone 7 verification toolchain (CW-MDR-007).",
+  "scripts": {
+    "verify": "node --experimental-strip-types verification/verify.js",
+    "verify:compiler": "node compiler/verify.js",
+    "verify:stage": "node --experimental-strip-types tests/stage-certification/verify-stage.mjs",
+    "verify:smoke": "node --experimental-strip-types verification/smoke/run-smoke.js",
+    "verify:regression": "node --experimental-strip-types verification/regression/run-regression.js",
+    "test:generated": "node --experimental-strip-types --test tests/generated/*.mjs"
+  }
+}
