@@ -1,6 +1,14 @@
 # CW-MDR-007A — Milestone 7A Design Review
 
-**Status:** APPROVED v1.0 — implementation **AUTHORIZED** (CW-GOV-001 §4A gate passed).
+**Status:** APPROVED v1.0 (+ v1.1 factual correction) — implementation **AUTHORIZED** (CW-GOV-001 §4A gate passed).
+
+**v1.1 correction (2026-07-15, append-only, post-approval):** grounding fix, not a scope or
+decision change. §6.2 and the §9.2 note previously implied `irr-stage-engine` handled
+`invalid_response_schema` itself. The step-3 parity analysis disproved this: the engine emits
+`structural_validation_failed` (already terminal) for its schema-validation stage and **never**
+emits `invalid_response_schema`, which is a runtime-emitted, worker-only reason. Corrected in §6.2
+and §9.2 so the §6.2 correction is accurately attributed to `irr-job-worker` (step 4) before the
+worker refactor builds on it. No acceptance criterion, decision, or scope changed.
 **Milestone:** 7A — Resilient Execution (CW-GOV-001 §7)
 **Author:** Claude Code (implementer)
 **Date drafted:** 2026-07-15
@@ -109,9 +117,14 @@ The catch handler (index.ts ~L828–854) reads `err.retryable`, computes
   decides retryability from a **hardcoded set**:
   `const RETRYABLE_STAGES = new Set(['invalid_json_output', 'invalid_response_schema'])`.
 
-These disagree on the same failure: `invalid_response_schema` is **retryable** in the worker,
-but the stage engine's `schema_validation` throws `structural_validation_failed` as
-**non-retryable**. Centralization (M7A-01/02/03) exists to make one authority decide.
+These disagree on the same **logical** failure (a schema-invalid model output), which the two
+paths emit under **different reason codes**: `irr-job-worker` surfaces the runtime's
+`invalid_response_schema` and treats it **retryable**, while `irr-stage-engine` throws its own
+`structural_validation_failed` and treats it **non-retryable**. The engine does **not** emit
+`invalid_response_schema` at all — that reason originates in `runtime/runtime.ts` and reaches
+only the worker path (confirmed by the step-3 parity analysis, CW commit history). Centralization
+(M7A-01/02/03) exists to make one authority decide, and normalizes **both** reason codes to
+business_logic/terminal.
 
 ### 6.3 Observed reason codes (the taxonomy seed — real, not invented)
 
@@ -217,13 +230,16 @@ concrete retry limits/backoff come from M7A-04 evidence, not from this table.
 | `authentication_error` *(new; today masked as `api_error`)* | infrastructure | terminal (config change required) |
 | `platform_kill_exhausted_retries` | operational | terminal (already exhausted) |
 
-**Note on §6.2 conflict:** `invalid_response_schema` is normalized to **business_logic /
-terminal** (a schema-invalid model output cannot pass on identical re-run). This deliberately
-supersedes the `irr-job-worker` `RETRYABLE_STAGES` treatment; resolving that contradiction is
-a goal of the milestone, not a regression. **D-1 is resolved (§6.7): the authoritative path
-`irr-stage-engine` already treats this as terminal (`structural_validation_failed`), so
-normalization matches production behavior on the live path** — the correction only changes
-`irr-job-worker`, which is not producing current traffic (align-or-retire, §12 step 4).
+**Note on §6.2 conflict:** both reason codes for a schema-invalid model output are normalized to
+**business_logic / terminal** (such output cannot pass on identical re-run). `invalid_response_schema`
+is a **worker-only** reason (emitted by `runtime/runtime.ts`, surfaced by `irr-job-worker`); the
+`irr-stage-engine` schema-validation stage emits a **different** reason, `structural_validation_failed`,
+which it **already** treats as terminal. So on the authoritative path (`irr-stage-engine`, D-1/§6.7)
+this normalization changes **nothing** — the step-3 parity analysis confirmed the engine never emits
+`invalid_response_schema` and its `structural_validation_failed` behavior is unchanged. The actual
+§6.2 correction (making the retryable→terminal flip) therefore lands **only** in `irr-job-worker`
+(step 4), not in the engine (step 3). *(v1.1 correction — see header; the prior wording implied the
+engine handled `invalid_response_schema` itself, which the step-3 grounding disproved.)*
 
 ### 9.3 Mechanism (contract-first, per §6.5)
 
