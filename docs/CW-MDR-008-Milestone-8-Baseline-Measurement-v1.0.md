@@ -66,8 +66,11 @@ independently confirms the repo/prod drift flagged in CW-MDR-008 §6.6 — the d
 
 ## 6. Reliability / recovery baseline
 
-- **Completion rate:** 50 completed vs 46 failed = **52.1%** of terminal outcomes completed
-  (includes historical test failures; this is the floor M8 must be **≥**, §8.5 reliability).
+- **Completion rate:** 50 completed vs 46 failed = **52.1%** of terminal outcomes completed.
+  **⚠️ Not clean reliability data — do NOT cite this as "current production reliability."** The 46
+  failures mix real runs with historical test/development failures on a bursty 10-day window; the
+  figure is a conservative *floor* only. A clean reliability comparison must come from the
+  controlled, like-for-like post-change run (CP-8.6), not from this mixed history.
 - **Terminal stage failures:** 5 `irr_stage_runs` rows in `status='failed'`.
 - **Re-attempts:** every full-pipeline job had at least one stage with `attempt > 1` (a re-claim /
   retry / stall-reclaim). `attempt` increments per claim, so this is expected texture of the

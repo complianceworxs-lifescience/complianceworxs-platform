@@ -1,9 +1,19 @@
 # CW-MDR-008 — Milestone 8 Design Review
 
-**Status:** APPROVED v1.0 — implementation **AUTHORIZED** (CW-GOV-001 §4A gate passed).
+**Status:** APPROVED v1.0 (+ v1.1 factual correction) — implementation **AUTHORIZED** (CW-GOV-001
+§4A gate passed).
 **Milestone:** 8 — Execution Engine Optimization (CW-GOV-001 §8)
 **Author:** Claude Code (implementer)
 **Date drafted:** 2026-07-17
+
+**v1.1 correction (2026-07-17, append-only, post-approval — grounding fix, not a scope/decision
+change):** build step 2 (M8-11) declared and verified the stage dependency graph against the
+engine's actual `prior[N]` reads, disproving the DR's *inferred* "flat independent band 7–11"
+(§6.4/§10.2). The verified graph shows **8 ← {4,7}** and **9 ← {7}** (both read
+`prior[7]`) and **4 ← {}** (job input only). The genuinely concurrent sets are **{7,10,11}** then
+**{8,9}**. §6.4 and §10.2 are corrected; the authoritative source is now
+`execution-graph/stage-graph.json` (certified by `verify:graph`). No acceptance criterion,
+decision, or scope changed — this is exactly the error M8-11 was gated to catch.
 **Approval authority:** CEO / Milestone Owner (per CW-GOV-001 §12).
 **Approved:** Jon Nugent — CEO / Milestone Owner, 2026-07-17. Implementation authorized. The
 author did not self-authorize; approval was given by the Owner.
@@ -167,14 +177,24 @@ stage-spec of dependencies (confirmed absent). Dependencies exist only **implici
 
 - Serial chains: **1→2→3** (compile chain) and **12→13→14→15** (assembly/validation; broad
   fan-in at 13/14, `index.ts:743`, `:760-771`).
-- **Independent band: stages 7, 8, 9, 10, 11** — each reads only stage 4–6 outputs (principally
-  `prior[6].gapFlags_list`) and **none reads a sibling's output**; all fan into 12/13.
+- ~~**Independent band: stages 7, 8, 9, 10, 11** — each reads only stage 4–6 outputs and none reads
+  a sibling's output.~~ **[Superseded by the v1.1 correction — see the top-of-document note and
+  M8-11 below. The verified graph shows stages 8 and 9 READ `prior[7]`, so they depend on stage 7;
+  the band is NOT flat.]**
 
-This band is the natural parallelization target — but the dependencies are **inferred, not
-enforced**, so a change to one stage's `prior[...]` usage would silently invalidate the graph.
-**M8 must first make the graph explicit and verified (M8-11) before parallelizing on it
-(M8-06).** Confidence in the reads is medium-high; confidence in the *safety of reordering*
-without a declared, verified graph is low. This gap is the primary correctness risk (§21 R-03).
+> **v1.1 correction (build step 2, M8-11):** this inferred "flat band 7–11" was **wrong**. The
+> declared+verified graph (`execution-graph/stage-graph.json`, certified by `verify:graph` against
+> the engine's actual `prior[N]` reads) shows: **8 ← {4, 7}** and **9 ← {7}** (both read
+> `prior[7].fields.claimStatus_list`), and **4 ← {}** (reads job input only, not the compiled
+> specs). The genuinely concurrent sets among 7–11 are **{7, 10, 11}** (after stage 6), then
+> **{8, 9}** (after stage 7) — not a single flat band. §10.2 is corrected accordingly. This is a
+> grounding fix, not a scope or decision change; it is exactly the inference error M8-11 exists to
+> catch, and it caught it on first run.
+
+This gap is the primary correctness risk (§21 R-03): the dependencies were **inferred, not
+enforced**, so a change to one stage's `prior[...]` usage would silently invalidate them.
+**M8-11 (build step 2) makes the graph explicit and verified before any parallelization (M8-06)** —
+now the authoritative source is `execution-graph/stage-graph.json`, not inference.
 
 ### 6.5 M7A integration points already present (consume, don't redefine)
 
@@ -293,14 +313,22 @@ M7A taxonomy verify-gate pattern: canonical source → consumer → byte/behavio
 is parallelized until the graph is declared and its gate is green.** Parallelizing on inference
 alone is a non-acceptance condition (§20 N-04).
 
-### 10.2 The parallel band
+### 10.2 The parallel bands (corrected v1.1 by the verified graph)
 
-Given the declared graph, the initial safe parallel set is **stages 7–11** (§6.4): each depends
-only on stages 4–6 and none on a sibling; they join at stage 12/13. The worker runs the band
-concurrently (bounded concurrency), each stage still writing its own `irr_stage_runs` row and its
-own intra-stage `checkpoint`; the join waits for **all** band members to reach `completed` before
-starting stage 12. Serial chains (1→2→3, 12→13→14→15) are unchanged. Stages are run **concurrently,
-never merged** (§8.6 prohibition).
+The verified graph (`execution-graph/stage-graph.json`, §6.4 v1.1) yields **two** concurrent
+sub-bands, not one flat band:
+
+- **Band A: {7, 10, 11}** — runnable concurrently once stages 4–6 are done (7 ← {4,5,6}; 10 ← {6};
+  11 ← {6}).
+- **Band B: {8, 9}** — runnable concurrently **after stage 7** completes (8 ← {4,7}; 9 ← {7}).
+
+Each stage still writes its own `irr_stage_runs` row and its own intra-stage `checkpoint`. The join
+into stage 12/13 waits for **all** of 7–11 to reach `completed`. With concurrency cap 2 (D8-4), a
+band larger than 2 runs in bounded waves. Serial chains (1→2→3, 12→13→14→15) are unchanged. Stages
+are run **concurrently, never merged** (§8.6 prohibition). The full data-dependency wave structure
+(the parallelism ceiling) is emitted by `verify:graph`; the executor overlays control/gating
+constraints (e.g. the `validate_contract` gate) separately — those are **not** derivable from
+`prior[N]` reads and must not be inferred from the data graph alone.
 
 ### 10.3 Concurrency, provider limits, and the M7A breaker
 

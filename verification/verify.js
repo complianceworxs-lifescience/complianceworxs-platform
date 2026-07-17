@@ -85,6 +85,12 @@ if (plan.gates.resilience) {
   gates.push(run('verify:breaker', [join('tests', 'resilience-classification', 'verify-breaker.mjs')], { flags: [STRIP] }));
 }
 
+// M8-11 stage dependency graph — certify the declared graph matches the engine's prior[N] reads
+// (fires when execution-graph/ or the stage engine changed, or on a release candidate).
+if (plan.gates.graph) {
+  gates.push(run('verify:graph', [join('execution-graph', 'verify.js')]));
+}
+
 const totalMs = Number((process.hrtime.bigint() - t0) / 1000000n);
 const report = buildReport({ runId, plan, gates, startedAt, totalMs });
 

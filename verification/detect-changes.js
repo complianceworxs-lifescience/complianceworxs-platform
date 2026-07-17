@@ -29,12 +29,16 @@ export function detectChanges(paths, opts = {}) {
   const changed = [...new Set(paths.filter(Boolean))].sort();
   const reasons = [];
   const stages = new Set();
-  let compiler = false, unit = false, regression = false, resilience = false;
+  let compiler = false, unit = false, regression = false, resilience = false, graph = false;
   const releaseCandidate = !!opts.releaseCandidate;
 
   // M7A resilience surface: the canonical taxonomy/evaluator/breaker, their certification, and
   // the two functions that embed the resilience decision logic (irr-stage-engine, irr-job-worker).
   const RESILIENCE_RE = /^(resilience\/|tests\/resilience-classification\/|edge-functions\/irr-stage-engine\/|edge-functions\/irr-job-worker\/)/;
+
+  // M8-11 stage dependency graph: the declared graph and the engine whose prior[N] reads it
+  // certifies. A graph edit or a stage-engine edit must re-certify the graph (CP-8.2).
+  const GRAPH_RE = /^(execution-graph\/|edge-functions\/irr-stage-engine\/)/;
 
   for (const p of changed) {
     // --- primary gate (first match wins) ---
@@ -58,9 +62,13 @@ export function detectChanges(paths, opts = {}) {
     // --- resilience gate (M7A-01/02/03/10; independent — a stage-engine/worker edit fires BOTH
     //     its primary gate AND resilience, since those functions embed the resilience decision logic).
     if (RESILIENCE_RE.test(p)) { resilience = true; reasons.push(`resilience: taxonomy+classification+decide+breaker (${p})`); }
+
+    // --- M8-11 graph gate (independent; a stage-engine edit fires it too, since the engine's
+    //     prior[N] reads ARE the graph the declared manifest certifies).
+    if (GRAPH_RE.test(p)) { graph = true; reasons.push(`graph: stage dependency graph certification (${p})`); }
   }
 
-  if (releaseCandidate) { regression = true; resilience = true; reasons.push('regression + resilience: release candidate (CW_RELEASE_CANDIDATE / --rc)'); }
+  if (releaseCandidate) { regression = true; resilience = true; graph = true; reasons.push('regression + resilience + graph: release candidate (CW_RELEASE_CANDIDATE / --rc)'); }
 
   const stageList = [...stages].sort((a, b) => ALL_STAGES.indexOf(a) - ALL_STAGES.indexOf(b));
   const smoke = stageList.length > 0 || regression; // a stage edit (or RC/regression) requires one complete execution
@@ -76,6 +84,7 @@ export function detectChanges(paths, opts = {}) {
       smoke,
       regression,
       resilience,
+      graph,
     },
     reasons: reasons.length ? reasons : ['no change-specific gate matched; running baseline (compiler + unit) only'],
   };

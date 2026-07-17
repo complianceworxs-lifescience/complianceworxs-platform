@@ -1,0 +1,24 @@
+{
+  "artifact": "CW-MDR-008 M8-11 — declared IRR stage dependency graph",
+  "status": "canonical source of truth for stage data-dependencies",
+  "verified_against": "edge-functions/irr-stage-engine/index.ts (STAGES array; each stage's prior[N] reads)",
+  "semantics": "depends_on lists the stages whose output_json a stage READS (prior[N]). This is the DATA-dependency graph. Control/gating constraints (e.g. validate_contract must pass, schema_validation gates final_assembly) are SEPARATE and are NOT derivable from prior[N] reads; the parallel executor (build step 5) must overlay them. See notes.",
+  "note_on_parallelism": "data-dependency waves are the theoretical parallelism ceiling, not an execution order. The verified graph corrects the DR's inferred 'independent band 7-11': stages 8 and 9 READ prior[7], so they depend on stage 7. The genuinely concurrent sets are {7,10,11} (after 6) then {8,9} (after 7).",
+  "stages": [
+    { "stage": 1,  "name": "validate_contract",       "kind": "code", "depends_on": [],                               "note": "run signature takes no prior; reads job input only." },
+    { "stage": 2,  "name": "compile_execution_spec",   "kind": "code", "depends_on": [1] },
+    { "stage": 3,  "name": "compile_prompt_spec",      "kind": "code", "depends_on": [2] },
+    { "stage": 4,  "name": "evidence_risk_reasoning",  "kind": "ai",   "depends_on": [],                               "note": "reads job input only, NOT the compiled specs (corrects the earlier 4<-2,3 inference)." },
+    { "stage": 5,  "name": "authorization_reasoning",  "kind": "ai",   "depends_on": [4] },
+    { "stage": 6,  "name": "gap_analysis",             "kind": "ai",   "depends_on": [4, 5] },
+    { "stage": 7,  "name": "claim_status",             "kind": "ai",   "depends_on": [4, 5, 6] },
+    { "stage": 8,  "name": "evidence_traceability",    "kind": "ai",   "depends_on": [4, 7],                           "note": "reads prior[7].fields.claimStatus_list -> depends on stage 7 (NOT independent of it)." },
+    { "stage": 9,  "name": "unsupported_claims",       "kind": "ai",   "depends_on": [7],                              "note": "reads prior[7].fields.claimStatus_list -> depends on stage 7." },
+    { "stage": 10, "name": "inspector_challenge",      "kind": "ai",   "depends_on": [6] },
+    { "stage": 11, "name": "remediation_scaffold",     "kind": "ai",   "depends_on": [6] },
+    { "stage": 12, "name": "deterministic_assembly",   "kind": "code", "depends_on": [5, 6] },
+    { "stage": 13, "name": "executive_brief",          "kind": "ai",   "depends_on": [4, 5, 6, 7, 8, 9, 10, 11, 12] },
+    { "stage": 14, "name": "schema_validation",        "kind": "code", "depends_on": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13] },
+    { "stage": 15, "name": "final_assembly",           "kind": "code", "depends_on": [1, 14] }
+  ]
+}

@@ -11,6 +11,7 @@
     "verify:stage": "node --experimental-strip-types tests/stage-certification/verify-stage.mjs",
     "verify:smoke": "node --experimental-strip-types verification/smoke/run-smoke.js",
     "verify:regression": "node --experimental-strip-types verification/regression/run-regression.js",
+    "verify:graph": "node execution-graph/verify.js",
     "verify:taxonomy": "node resilience/verify.js",
     "verify:classification": "node --experimental-strip-types tests/resilience-classification/verify-classification.mjs",
     "verify:decide": "node --experimental-strip-types tests/resilience-classification/verify-decide.mjs",
