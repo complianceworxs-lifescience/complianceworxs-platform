@@ -12,6 +12,7 @@
     "verify:smoke": "node --experimental-strip-types verification/smoke/run-smoke.js",
     "verify:regression": "node --experimental-strip-types verification/regression/run-regression.js",
     "verify:graph": "node execution-graph/verify.js",
+    "verify:plan-next": "node --experimental-strip-types tests/execution-engine/verify-plan-next.mjs",
     "verify:taxonomy": "node resilience/verify.js",
     "verify:classification": "node --experimental-strip-types tests/resilience-classification/verify-classification.mjs",
     "verify:decide": "node --experimental-strip-types tests/resilience-classification/verify-decide.mjs",

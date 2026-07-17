@@ -85,10 +85,11 @@ if (plan.gates.resilience) {
   gates.push(run('verify:breaker', [join('tests', 'resilience-classification', 'verify-breaker.mjs')], { flags: [STRIP] }));
 }
 
-// M8-11 stage dependency graph — certify the declared graph matches the engine's prior[N] reads
-// (fires when execution-graph/ or the stage engine changed, or on a release candidate).
+// M8 execution-engine gates — stage dependency graph (M8-11) + continuous-loop decision (M8-02).
+// Fire when execution-graph/ or the stage engine changed, or on a release candidate.
 if (plan.gates.graph) {
   gates.push(run('verify:graph', [join('execution-graph', 'verify.js')]));
+  gates.push(run('verify:plan-next', [join('tests', 'execution-engine', 'verify-plan-next.mjs')], { flags: [STRIP] }));
 }
 
 const totalMs = Number((process.hrtime.bigint() - t0) / 1000000n);

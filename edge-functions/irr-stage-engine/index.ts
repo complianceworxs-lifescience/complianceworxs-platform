@@ -1,6 +1,7 @@
 import { serve } from 'https://deno.land/std@0.168.0/http/server.ts';
 import { PROMPT_CONSTRAINTS, constraintsFor, validateFieldItems, TYPE_CONTRACT_LINE } from './contract-generated.ts';
 import { decideFailure } from './resilience/decide-failure.ts';
+import { planNext } from './plan-next.ts';
 
 // Parse a provider Retry-After header (delta-seconds) into ms; null if absent/unparseable.
 function parseRetryAfterMs(v: string | null): number | undefined {
@@ -800,7 +801,9 @@ async function stallReclaim() {
   });
 }
 
-async function runStage(jobId: string, def: typeof STAGES[number], inputPayload: any, prior: Record<number, any>, nextStage: number, attempt: number, maxAttempts: number, existingCheckpoint: any) {
+type StageOutcome = { outcome: 'completed' | 'retry' | 'terminal'; output?: any };
+
+async function runStage(jobId: string, def: typeof STAGES[number], inputPayload: any, prior: Record<number, any>, nextStage: number, attempt: number, maxAttempts: number, existingCheckpoint: any): Promise<StageOutcome> {
   const t0 = Date.now();
   const ctx: StageCtx = {
     checkpoint: existingCheckpoint,
@@ -843,6 +846,7 @@ async function runStage(jobId: string, def: typeof STAGES[number], inputPayload:
         updated_at: new Date().toISOString(),
       }),
     });
+    return { outcome: 'completed', output };
   } catch (err: any) {
     // Central classification (M7A-03): the resilience evaluator is now the single authority for
     // WHICH reasons are retryable, replacing the old inline `err.retryable`. It also subclassifies
@@ -869,7 +873,7 @@ async function runStage(jobId: string, def: typeof STAGES[number], inputPayload:
         method: 'PATCH',
         body: JSON.stringify({ status: 'queued', classified_failure: errorReason, error_category: errorCategory, error_detail: { message: err.message }, ...telemetryFields, updated_at: new Date().toISOString() }),
       });
-      return;
+      return { outcome: 'retry' };
     }
     await sbRest(`irr_stage_runs?job_id=eq.${jobId}&stage=eq.${nextStage}`, {
       method: 'PATCH',
@@ -879,6 +883,69 @@ async function runStage(jobId: string, def: typeof STAGES[number], inputPayload:
       method: 'PATCH',
       body: JSON.stringify({ status: 'failed', error_json: { stage: def.name, reason: errorReason, category: errorCategory, message: err.message }, updated_at: new Date().toISOString() }),
     });
+    return { outcome: 'terminal' };
+  }
+}
+
+// ---------- M8: worker-owned continuous execution (CW-MDR-008 build step 3; M8-01/02/10) ----------
+// Replaces one-stage-per-cron-tick with a background loop that advances consecutive stages
+// immediately, eliminating the ~30s inter-stage poll gap. Preserves checkpoint/resume unchanged:
+// each stage still resumes at highestCompleted+1 with prior[] reloaded, and every stage row is
+// written by the same runStage(). When the invocation's soft time budget is hit — or a stage
+// requests retry — the worker self-reinvokes (D8-1) so execution continues without waiting for
+// cron. Serial only (no parallelism yet — that is build step 5, gated on the M8-11 graph).
+
+// Soft budget for a single background invocation. Below the platform wall-clock so we hand off
+// rather than get killed mid-stage; a stage killed anyway still resumes from its checkpoint.
+// Tunable from build-step-6 latency measurement.
+const SOFT_BUDGET_MS = 240_000;
+
+// D8-1: self-reinvoke — trigger a fresh invocation to continue the job with no cron dependency.
+// Fire-and-forget: the child is triggered on request receipt, so we abort waiting for its (long)
+// response. waitUntil keeps the runtime alive just long enough to deliver the request.
+function selfReinvoke(): void {
+  const ctrl = new AbortController();
+  const timer = setTimeout(() => ctrl.abort(), 2000);
+  const p = fetch(`${FN}/irr-stage-engine`, { method: 'POST', headers: sbHeaders(), body: '{}', signal: ctrl.signal })
+    .then(() => {}).catch(() => {}).finally(() => clearTimeout(timer));
+  // @ts-ignore -- EdgeRuntime is a Supabase/Deno Deploy global, not in std types.
+  EdgeRuntime.waitUntil(p);
+}
+
+async function completeJob(jobId: string, prior: Record<number, any>): Promise<void> {
+  await sbRest(`irr_jobs?job_id=eq.${jobId}`, { method: 'PATCH', body: JSON.stringify({ status: 'completed', result_json: prior[STAGES.length].fields, updated_at: new Date().toISOString() }) });
+}
+
+async function upsertStageRunning(jobId: string, stage: number, stageName: string, attempt: number, maxAttempts: number): Promise<void> {
+  await sbRest('irr_stage_runs?on_conflict=job_id,stage', {
+    method: 'POST',
+    headers: { Prefer: 'resolution=merge-duplicates,return=representation' },
+    body: JSON.stringify([{ job_id: jobId, stage, stage_name: stageName, status: 'running', started_at: new Date().toISOString(), attempt, max_attempts: maxAttempts, updated_at: new Date().toISOString() }]),
+  });
+}
+
+// Background continuous-execution loop. Runs the current stage, then advances through consecutive
+// stages until the job completes, a stage fails terminally, a retry is requested, or the soft
+// budget is hit (-> self-reinvoke). The first stage's row is already upserted-running by the
+// handler; subsequent stages are prepared here.
+async function driveJob(jobId: string, inputPayload: any, prior: Record<number, any>, startStage: number, startAttempt: number, startMax: number, startCheckpoint: any, invocationStart: number): Promise<void> {
+  let stage = startStage, attempt = startAttempt, maxAttempts = startMax, checkpoint = startCheckpoint;
+  let def = STAGES[stage - 1];
+  while (true) {
+    const result = await runStage(jobId, def, inputPayload, prior, stage, attempt, maxAttempts, checkpoint);
+    if (result.outcome === 'completed') prior[stage] = result.output;
+    const action = planNext(result.outcome, stage, STAGES.length, Date.now() - invocationStart, SOFT_BUDGET_MS);
+    if (action === 'complete_job') { await completeJob(jobId, prior); return; }
+    if (action === 'stop') return;                 // terminal — job already marked failed by runStage
+    if (action === 'retry' || action === 'handoff') { selfReinvoke(); return; }
+    // advance: prepare and run the next stage in this same invocation (no cron gap)
+    stage += 1;
+    def = STAGES[stage - 1];
+    const existing = (await sbRest(`irr_stage_runs?job_id=eq.${jobId}&stage=eq.${stage}`))?.[0];
+    attempt = (existing?.attempt ?? 0) + 1;
+    maxAttempts = existing?.max_attempts ?? 6;
+    checkpoint = existing?.checkpoint ?? null;
+    await upsertStageRunning(jobId, stage, def.name, attempt, maxAttempts);
   }
 }
 
@@ -926,15 +993,15 @@ serve(async (req) => {
   const attempt = (existingRun?.attempt ?? 0) + 1;
   const maxAttempts = existingRun?.max_attempts ?? 6;
 
-  await sbRest('irr_stage_runs?on_conflict=job_id,stage', {
-    method: 'POST',
-    headers: { Prefer: 'resolution=merge-duplicates,return=representation' },
-    body: JSON.stringify([{ job_id: job.job_id, stage: nextStage, stage_name: def.name, status: 'running', started_at: new Date().toISOString(), attempt, max_attempts: maxAttempts, updated_at: new Date().toISOString() }]),
-  });
+  await upsertStageRunning(job.job_id, nextStage, def.name, attempt, maxAttempts);
 
-  // Detached execution, same pattern as irr-job-worker/runtime-worker.
+  // M8 (build step 3): drive consecutive stages in ONE background invocation — no cron gap between
+  // stages. The handler responds 202 immediately; driveJob advances stage-by-stage, self-reinvoking
+  // when it hits the soft budget or a retry. Cron is still the recovery net (demoted to
+  // recovery-only in build step 4). The claim's FOR UPDATE SKIP LOCKED + 380s in-flight guard keep
+  // a concurrent cron tick or self-reinvoke from double-driving the same job.
   // @ts-ignore -- EdgeRuntime is a Supabase/Deno Deploy global, not in std types.
-  EdgeRuntime.waitUntil(runStage(job.job_id, def, job.input_payload, prior, nextStage, attempt, maxAttempts, existingRun?.checkpoint ?? null));
+  EdgeRuntime.waitUntil(driveJob(job.job_id, job.input_payload, prior, nextStage, attempt, maxAttempts, existingRun?.checkpoint ?? null, Date.now()));
 
-  return new Response(JSON.stringify({ status: 'stage_processing', job_id: job.job_id, stage: nextStage, stage_name: def.name, attempt }), { status: 202 });
+  return new Response(JSON.stringify({ status: 'stage_processing', job_id: job.job_id, stage: nextStage, stage_name: def.name, attempt, mode: 'continuous' }), { status: 202 });
 });
