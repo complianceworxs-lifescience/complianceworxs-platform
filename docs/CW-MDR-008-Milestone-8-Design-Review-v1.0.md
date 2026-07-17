@@ -1,12 +1,22 @@
 # CW-MDR-008 — Milestone 8 Design Review
 
-**Status:** DRAFT v0.1 — for Milestone Owner review. Implementation **NOT AUTHORIZED**
-(CW-GOV-001 §4A gate not yet passed).
+**Status:** APPROVED v1.0 — implementation **AUTHORIZED** (CW-GOV-001 §4A gate passed).
 **Milestone:** 8 — Execution Engine Optimization (CW-GOV-001 §8)
 **Author:** Claude Code (implementer)
 **Date drafted:** 2026-07-17
-**Approval authority:** CEO / Milestone Owner (per CW-GOV-001 §12). The author does **not**
-self-authorize; this Design Review precedes and gates implementation. It authorizes nothing.
+**Approval authority:** CEO / Milestone Owner (per CW-GOV-001 §12).
+**Approved:** Jon Nugent — CEO / Milestone Owner, 2026-07-17. Implementation authorized. The
+author did not self-authorize; approval was given by the Owner.
+
+**Resolved at approval (owner, 2026-07-17):** D8-1 — worker hand-off is **self-reinvoke** (matches
+the existing `pg_net`/edge-function trigger pattern; cron-driven hand-off would rebuild the poll
+delay M8 removes); cron stays recovery-only. D8-5 — latency/throughput/recovery are **derived by
+query from the existing `irr_stage_runs` columns** (timestamps + checkpoint state already per
+stage); **no new metrics table** unless the query approach proves insufficient after baseline.
+D8-4 — parallel **concurrency cap = 2** to start (raise once baseline shows headroom); the M7A
+circuit breaker **stays disabled exactly as M7A shipped it** — enablement is out of M8 scope and is
+revisited only if M8 surfaces failure data that justifies it. D8-2/D8-3/D8-6 remain open, to
+settle before their affected steps (§22).
 
 **Governing scope origin:** Milestone 6 closure split (2026-07-12) carved execution-engine
 optimization out of Milestone 6 into this milestone; CW-GOV-001 §8 is the authoritative spec.
@@ -22,7 +32,8 @@ current execution engine as it actually runs today (grounded in the repo and the
 configuration), proposes the worker-owned model, shows how checkpoint/resume is preserved
 byte-for-byte in behavior, scopes safe parallelization of independent stages, assesses the
 risk of the cron→recovery-only transition, and maps acceptance tests to the §8.5 success
-metrics. It authorizes nothing; it precedes implementation.
+metrics. Approved by the Milestone Owner on 2026-07-17 (§4A gate passed); the author did not
+self-authorize.
 
 The central problem, stated concretely from the current code (§6): a job advances **one stage
 per cron tick**, and stage N's completion does **not** trigger stage N+1 — only the next tick
@@ -340,9 +351,10 @@ metric §8.5 "cron no longer participates in normal stage progression" is verifi
   source under e.g. `execution-graph/` (mirroring `resilience/`), with a `verify:graph` gate that
   checks the manifest against each stage's actual `prior[N]` reads and plugs into the M7
   orchestrator (`verification/detect-changes.js` + `verify.js`), exactly as the four M7A gates do.
-- `supabase/migrations/` — (1) a migration that **reconciles the cron** to recovery-only cadence
-  and supersedes the drifted `…113839` schedule (§6.6); (2) any additive latency/throughput
-  telemetry columns/table (M8-07/08/09), all additive with explicit RLS per the M7/M7A precedent.
+- `supabase/migrations/` — one migration that **reconciles the cron** to recovery-only cadence and
+  supersedes the drifted `…113839` schedule (§6.6). **No telemetry migration** by default:
+  measurement is query-derived from existing `irr_stage_runs` columns (D8-5); a metrics table is
+  added later only if queries prove insufficient (then additive, explicit RLS, M7/M7A precedent).
 - `edge-functions/generate-irr/index.ts` — add the fire-and-forget first-touch kick (§9.3); fix
   its stale comment that references `irr-job-worker`.
 - `edge-functions/irr-job-worker/` — retire (D8-6): with worker-owned execution defined here, the
@@ -380,9 +392,11 @@ metric §8.5 "cron no longer participates in normal stage progression" is verifi
 - **Scheduler:** one migration that (a) supersedes the out-of-band-drifted engine tick (§6.6) and
   (b) sets the **recovery-only** cadence. The committed migration becomes the source of truth
   again; no further hand-edits to prod cron.
-- **Telemetry (additive only):** latency/throughput/recovery measurement — either additive columns
-  on `irr_jobs`/`irr_stage_runs` or a dedicated `m8_execution_metrics` table (D8-5), with explicit
-  RLS on any new table (M7/M7A precedent), no ALTER that drops/rewrites existing columns.
+- **Telemetry — no migration (D8-5 resolved).** Latency/throughput/recovery are **derived by query
+  from the existing `irr_stage_runs` columns** (per-stage timestamps + `duration_ms` + checkpoint
+  state), so measurement adds **no schema**. A dedicated table is added only if the query approach
+  proves insufficient after the baseline step — and would then be additive with explicit RLS
+  (M7/M7A precedent), never an ALTER that drops/rewrites existing columns.
 - **No change** to `irr_stage_runs` checkpoint columns or `irr_jobs` state columns used by
   resume/reclaim (§11).
 - **Data:** no backfill; new telemetry defaults null/empty for historical rows.
@@ -392,7 +406,8 @@ metric §8.5 "cron no longer participates in normal stage progression" is verifi
 1. Land build steps 1–6 behind their gates on a feature branch; open PR to `main`.
 2. `npm run verify` (M7) + the new `verify:graph` (and any M8 gates) run via gate selection.
 3. Deploy the evolved `irr-stage-engine` (byte-verified, as in the M7A deploy) and apply the
-   scheduler + telemetry migrations. Retire `irr-job-worker` (D8-6).
+   scheduler-reconciliation migration (no telemetry migration by default, D8-5). Retire
+   `irr-job-worker` (D8-6).
 4. Observe latency/throughput/recovery for a defined production window; confirm §8.5 metrics from
    real traffic (not synthetic alone).
 5. Record closure evidence (Acceptance Report per §4A.2) once §8.5 metrics are met. Closure is the
@@ -494,18 +509,25 @@ and provide the before/after comparison the milestone closes on.
 
 ## 22. Open Decisions (must be settled before the affected build step)
 
-- **D8-1 — Hand-off mechanism at the time budget.** Self-reinvoke (lowest latency) vs
-  return-and-rely-on-recovery-cron (simpler). *Recommend self-reinvoke with recovery fallback.*
-  *Before build step 3.*
+- **D8-1 — RESOLVED (owner, 2026-07-17): self-reinvoke.** The worker hands off across the time
+  budget by firing a non-blocking self-invocation (the existing `pg_net`/edge-function trigger
+  pattern already in use), **not** cron — a cron-driven hand-off would rebuild the poll delay M8
+  exists to remove. Cron stays recovery-only. Recovery remains the fallback if a self-reinvoke is
+  ever dropped.
 - **D8-2 — First-touch for freshly queued jobs.** `generate-irr` fire-and-forget kick vs
   recovery-cron pickup. *Recommend kick + recovery fallback.* *Before build step 4.*
 - **D8-3 — Recovery cron cadence.** e.g. 1 min vs 2–5 min. *Before build step 4.*
-- **D8-4 — Parallel concurrency cap + breaker enablement.** Cap value; and whether parallel load
-  justifies enabling the M7A breaker (which would add the deferred `m7a_circuit_state` store) or
-  keep it consult-only/off. *Recommend consult-only/off unless step-1 baseline shows correlated
-  provider outages.* *Before build step 5.*
-- **D8-5 — Measurement store shape.** Additive columns vs a dedicated `m8_execution_metrics`
-  table. *Before build step 1.*
+- **D8-4 — RESOLVED (owner, 2026-07-17): cap = 2, breaker stays disabled.** Parallel-band
+  concurrency cap starts at **2** (prove the band works with no resource/cost spike; raise once the
+  baseline shows headroom). The M7A circuit breaker **stays disabled exactly as M7A shipped it** —
+  enablement (and the deferred state store) is **out of M8 scope**, revisited only if M8 surfaces
+  failure data that justifies it. M8 still wires the consult path so an enabled breaker would be
+  respected. *Settled before build step 5.*
+- **D8-5 — RESOLVED (owner, 2026-07-17): derive by query from `irr_stage_runs`; no new table.**
+  Latency/throughput/recovery are computed from existing per-stage columns (timestamps +
+  checkpoint state) — a query, not a build. A dedicated metrics table is deferred as
+  "infrastructure for later" and added **only if** the query approach proves insufficient after
+  the baseline step.
 - **D8-6 — `irr-job-worker` retirement.** Retire as part of M8 (recommended) vs leave dormant.
   *Before rollout.*
 
@@ -521,6 +543,8 @@ are measured**. It does not change **what** the pipeline produces.
 
 ---
 
-**This Design Review is DRAFT and authorizes no implementation.** Per CW-GOV-001 §4A, work begins
-only after the Milestone Owner approves it. The author does not self-approve; open decisions
-§22 (at least D8-1/D8-5 before build step 1–3) should be settled at or before approval.
+**This Design Review is APPROVED (v1.0) — implementation authorized** by the Milestone Owner (Jon
+Nugent, 2026-07-17), satisfying the CW-GOV-001 §4A gate. The author did not self-authorize.
+Decisions D8-1/D8-4/D8-5 were settled at approval (§22); D8-2/D8-3/D8-6 remain open and must be
+settled before their affected build steps. Build step 1 (baseline measurement — no execution
+change) is authorized to begin.
