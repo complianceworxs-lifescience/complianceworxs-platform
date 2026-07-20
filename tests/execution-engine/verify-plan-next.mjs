@@ -1,49 +1,45 @@
-// CW-MDR-008 M8-02 — continuous-loop decision certification (build step 3; CP-8.3 unit portion).
-// Exercises planNext() against the full decision matrix so the worker loop's control flow is
-// proven deterministically, without a live edge runtime. (Integration behavior — zero-cron
-// completion and resume-after-kill — is verified at deploy time / via a live harness, owner-gated.)
+// CW-MDR-008 M8-02 — continuous-loop decision certification with look-ahead hand-off
+// (build step 3 + validation fix; CP-8.3 unit portion). Exercises planNext() against the full
+// decision matrix so the worker loop's control flow — including the "at most one AI stage per
+// invocation" look-ahead — is proven deterministically, without a live edge runtime. (Integration
+// behavior — clean 15-stage completion and resume-after-kill — is verified at deploy time.)
 //
 // Run: node --experimental-strip-types tests/execution-engine/verify-plan-next.mjs
 import { planNext } from '../../edge-functions/irr-stage-engine/plan-next.ts';
 
-const N = 15;                 // stage count
-const B = 240_000;            // soft budget ms
+const N = 15;
 const problems = [];
 const check = (got, want, label) => { if (got !== want) problems.push(`${label}: expected "${want}", got "${got}"`); };
 
-// terminal always stops, regardless of stage/time
-check(planNext('terminal', 5, N, 0, B), 'stop', 'terminal mid-pipeline');
-check(planNext('terminal', 15, N, 0, B), 'stop', 'terminal at last stage');
+// terminal / retry dominate regardless of look-ahead args
+check(planNext('terminal', 5, N, true, true), 'stop', 'terminal');
+check(planNext('terminal', 5, N, false, false), 'stop', 'terminal (code next, no ai)');
+check(planNext('retry', 5, N, true, false), 'retry', 'retry');
+check(planNext('retry', 5, N, false, true), 'retry', 'retry (ai already ran)');
 
-// retry always self-reinvokes, regardless of budget
-check(planNext('retry', 5, N, 0, B), 'retry', 'retry under budget');
-check(planNext('retry', 5, N, B + 1, B), 'retry', 'retry over budget');
+// last stage completed -> complete the job (beats any hand-off)
+check(planNext('completed', 15, N, false, true), 'complete_job', 'last stage');
+check(planNext('completed', 16, N, true, true), 'complete_job', 'beyond last stage');
 
-// completed, more stages remain, under budget -> advance in-invocation (no cron gap)
-check(planNext('completed', 1, N, 0, B), 'advance', 'completed stage 1, fresh');
-check(planNext('completed', 14, N, B - 1, B), 'advance', 'completed stage 14, just under budget');
-
-// completed, more stages remain, at/over budget -> hand off (self-reinvoke)
-check(planNext('completed', 5, N, B, B), 'handoff', 'budget exactly hit (>= boundary)');
-check(planNext('completed', 5, N, B + 5000, B), 'handoff', 'budget exceeded');
-
-// completed the LAST stage -> complete the job (takes priority over budget/handoff)
-check(planNext('completed', 15, N, 0, B), 'complete_job', 'last stage under budget');
-check(planNext('completed', 15, N, B + 1, B), 'complete_job', 'last stage over budget still completes');
-
-// defensive: a completedStage beyond the count still completes (never advances past the end)
-check(planNext('completed', 16, N, 0, B), 'complete_job', 'beyond last stage');
+// LOOK-AHEAD: next stage is AI and this invocation already ran an AI stage -> hand off
+check(planNext('completed', 6, N, true, true), 'handoff', 'ai-next + ai-already-ran -> handoff');
+// next stage is AI but NO ai stage ran yet this invocation -> advance (run it fresh)
+check(planNext('completed', 3, N, true, false), 'advance', 'ai-next + fresh invocation -> advance');
+// next stage is a CODE stage -> always advance (chain), regardless of whether an ai stage ran
+check(planNext('completed', 11, N, false, true), 'advance', 'code-next after an ai stage -> chain');
+check(planNext('completed', 1, N, false, false), 'advance', 'code-next, fresh -> chain');
 
 const rows = [
-  ['terminal -> stop', planNext('terminal', 5, N, 0, B) === 'stop'],
-  ['retry -> retry (self-reinvoke)', planNext('retry', 5, N, 0, B) === 'retry'],
-  ['completed + under budget -> advance', planNext('completed', 3, N, 1000, B) === 'advance'],
-  ['completed + budget hit -> handoff', planNext('completed', 3, N, B, B) === 'handoff'],
-  ['last stage -> complete_job', planNext('completed', N, N, 0, B) === 'complete_job'],
+  ['terminal -> stop', planNext('terminal', 5, N, true, true) === 'stop'],
+  ['retry -> retry', planNext('retry', 5, N, true, true) === 'retry'],
+  ['last stage -> complete_job', planNext('completed', N, N, false, true) === 'complete_job'],
+  ['2nd AI stage in an invocation -> handoff', planNext('completed', 6, N, true, true) === 'handoff'],
+  ['1st AI stage (fresh) -> advance', planNext('completed', 3, N, true, false) === 'advance'],
+  ['code stage -> advance (chain)', planNext('completed', 11, N, false, true) === 'advance'],
 ];
 
-console.log('verify:plan-next — continuous-loop decision matrix (M8-02 / CP-8.3)');
+console.log('verify:plan-next — continuous-loop decision matrix w/ look-ahead hand-off (M8-02 / CP-8.3)');
 for (const [label, ok] of rows) console.log(`  ${ok ? 'OK  ' : 'FAIL'} ${label}`);
 if (problems.length) { for (const p of problems) console.error('  ! ' + p); console.error('verify:plan-next FAIL'); process.exit(1); }
-console.log('verify:plan-next PASS — all decision-matrix cases match; completion beats handoff; terminal/retry honored.');
+console.log('verify:plan-next PASS — one AI stage per invocation enforced; code stages chain; terminal/retry/complete honored.');
 process.exit(0);

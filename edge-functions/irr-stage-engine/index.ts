@@ -891,14 +891,16 @@ async function runStage(jobId: string, def: typeof STAGES[number], inputPayload:
 // Replaces one-stage-per-cron-tick with a background loop that advances consecutive stages
 // immediately, eliminating the ~30s inter-stage poll gap. Preserves checkpoint/resume unchanged:
 // each stage still resumes at highestCompleted+1 with prior[] reloaded, and every stage row is
-// written by the same runStage(). When the invocation's soft time budget is hit — or a stage
-// requests retry — the worker self-reinvokes (D8-1) so execution continues without waiting for
-// cron. Serial only (no parallelism yet — that is build step 5, gated on the M8-11 graph).
-
-// Soft budget for a single background invocation. Below the platform wall-clock so we hand off
-// rather than get killed mid-stage; a stage killed anyway still resumes from its checkpoint.
-// Tunable from build-step-6 latency measurement.
-const SOFT_BUDGET_MS = 240_000;
+// written by the same runStage(). Between stages the worker self-reinvokes (D8-1) rather than
+// waiting for cron. Serial only (no parallelism yet — that is build step 5, gated on the M8-11 graph).
+//
+// LOOK-AHEAD HAND-OFF (orchestration fix from build-step-3 validation): the loop runs at most ONE
+// AI stage per invocation. AI stages — especially the batched 7–11, which self-checkpoint up to
+// ~380s internally — need a full, fresh platform budget; chaining a second AI stage after one has
+// run risks the invocation being killed mid-stage and eating a ~380s recovery cycle. So before
+// advancing to an AI stage when this invocation already ran one, the loop hands off (the completed
+// stage is persisted) and the next AI stage starts fresh. Fast code stages chain freely. See
+// plan-next.ts. This replaces the earlier blind elapsed-time budget.
 
 // D8-1: self-reinvoke — trigger a fresh invocation to continue the job with no cron dependency.
 // Fire-and-forget: the child is triggered on request receipt, so we abort waiting for its (long)
@@ -925,16 +927,19 @@ async function upsertStageRunning(jobId: string, stage: number, stageName: strin
 }
 
 // Background continuous-execution loop. Runs the current stage, then advances through consecutive
-// stages until the job completes, a stage fails terminally, a retry is requested, or the soft
-// budget is hit (-> self-reinvoke). The first stage's row is already upserted-running by the
-// handler; subsequent stages are prepared here.
-async function driveJob(jobId: string, inputPayload: any, prior: Record<number, any>, startStage: number, startAttempt: number, startMax: number, startCheckpoint: any, invocationStart: number): Promise<void> {
+// stages until the job completes, a stage fails terminally, a retry is requested, or the look-ahead
+// rule hands off before a second AI stage (-> self-reinvoke). The first stage's row is already
+// upserted-running by the handler; subsequent stages are prepared here.
+async function driveJob(jobId: string, inputPayload: any, prior: Record<number, any>, startStage: number, startAttempt: number, startMax: number, startCheckpoint: any): Promise<void> {
   let stage = startStage, attempt = startAttempt, maxAttempts = startMax, checkpoint = startCheckpoint;
   let def = STAGES[stage - 1];
+  let aiRanThisInvocation = false;
   while (true) {
     const result = await runStage(jobId, def, inputPayload, prior, stage, attempt, maxAttempts, checkpoint);
+    if (def.kind === 'ai') aiRanThisInvocation = true;   // this invocation has now spent a full AI stage
     if (result.outcome === 'completed') prior[stage] = result.output;
-    const action = planNext(result.outcome, stage, STAGES.length, Date.now() - invocationStart, SOFT_BUDGET_MS);
+    const nextStageIsAi = stage < STAGES.length ? STAGES[stage].kind === 'ai' : false;
+    const action = planNext(result.outcome, stage, STAGES.length, nextStageIsAi, aiRanThisInvocation);
     if (action === 'complete_job') { await completeJob(jobId, prior); return; }
     if (action === 'stop') return;                 // terminal — job already marked failed by runStage
     if (action === 'retry' || action === 'handoff') { selfReinvoke(); return; }
@@ -1001,7 +1006,7 @@ serve(async (req) => {
   // recovery-only in build step 4). The claim's FOR UPDATE SKIP LOCKED + 380s in-flight guard keep
   // a concurrent cron tick or self-reinvoke from double-driving the same job.
   // @ts-ignore -- EdgeRuntime is a Supabase/Deno Deploy global, not in std types.
-  EdgeRuntime.waitUntil(driveJob(job.job_id, job.input_payload, prior, nextStage, attempt, maxAttempts, existingRun?.checkpoint ?? null, Date.now()));
+  EdgeRuntime.waitUntil(driveJob(job.job_id, job.input_payload, prior, nextStage, attempt, maxAttempts, existingRun?.checkpoint ?? null));
 
   return new Response(JSON.stringify({ status: 'stage_processing', job_id: job.job_id, stage: nextStage, stage_name: def.name, attempt, mode: 'continuous' }), { status: 202 });
 });
