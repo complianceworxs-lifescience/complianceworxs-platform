@@ -100,7 +100,8 @@ export function attributePosts(posts: PostRef[], landing: LandingRow[], events: 
   }
   return posts.map((p): PostResult => {
     const tagged = !!(p.utm_campaign && p.utm_content);
-    const notYetPublished = p.governed_state === 'scheduled' && new Date(p.published_at) > opts.now;
+    // Any post whose published time is still ahead is not yet published, whatever its governed state: counting it now would write a zero before it has gone out.
+    const notYetPublished = new Date(p.published_at) > opts.now;
     const empty: Exclusions = { test_marker: 0, scanner: 0, internal_journey: 0 };
     if (!tagged || !queryOk || notYetPublished) {
       const c = classifyConfidence({ tagged, queryOk, notYetPublished, landingSessions: 0 });
