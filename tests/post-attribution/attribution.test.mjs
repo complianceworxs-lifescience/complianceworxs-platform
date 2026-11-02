@@ -55,6 +55,7 @@ test('untagged, unpublished or failed-query rows get null numbers and no join me
   const cases = [
     [post({ utm_campaign: null, utm_content: null }), {}],
     [post({ governed_state: 'scheduled', published_at: '2026-12-01T00:00:00Z' }), {}],
+    [post({ governed_state: 'legacy_unreviewed', published_at: '2026-12-01T00:00:00Z' }), {}],
     [post(), { queryOk: false }],
   ];
   for (const [p, o] of cases) {
