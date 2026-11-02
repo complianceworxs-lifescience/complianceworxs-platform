@@ -17,6 +17,7 @@
     "verify:classification": "node --experimental-strip-types tests/resilience-classification/verify-classification.mjs",
     "verify:decide": "node --experimental-strip-types tests/resilience-classification/verify-decide.mjs",
     "verify:breaker": "node --experimental-strip-types tests/resilience-classification/verify-breaker.mjs",
+    "test:attribution": "node --experimental-strip-types --test tests/post-attribution/*.test.mjs",
     "test:generated": "node --experimental-strip-types --test tests/generated/*.mjs"
   }
 }
