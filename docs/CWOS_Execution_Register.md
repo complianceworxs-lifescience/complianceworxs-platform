@@ -12,14 +12,14 @@ Generated 2026-11-05. Read-only audit. Baseline `docs/CWOS_Execution_Register.do
 | GitHub `cw-authorization-record` | **Not reachable.** Not in the org repo list available to this session. A Vercel project of that name exists. Issues/PRs not inventoried. |
 | Vercel | astro: last production deploy 2026-11-04 16:38 UTC, READY, commit `5cafcf1` (D-202). case-files: 2026-10-08 15:41 UTC, READY, commit `e28a0aa` (#31). cw-authorization-record: 2026-09-03 12:37 UTC, READY, commit `80b6620`. A same-day deploy of `57e0c14` (#2335) was CANCELED, superseded by `5777af5`/`5cafcf1`. |
 | Supabase `complianceworxs` | `cwos_work_register` 63 rows (30 active, 1 blocked, 32 complete). `cw_outcome_status` 49 rows (11 blocked, 1 executing, 1 no_execution_path, 5 verification pending, 19 verification not_due, 12 queued). `cwos_agent_work_candidates` (12 blocked, 24 verification_pending, 13 eligible, 249 completed, 205 superseded). `cw_capability_verification_queue` 7 rows (1 BLOCKED, 1 FAILED, 5 DEFERRED). `cw_durable_outcomes` 1 row. |
-| Stripe | Not queried. Connector state is `needs_reconnect` and not enabled in this session. |
+| Stripe | Queried 2026-11-05, live mode, account ComplianceWorxs (`GetCharges`, 3 charges, no more pages). `ch_3TFRWP…` $149 succeeded 2026-03-26 (external buyer, Apple Pay). `py_3TJ1II…` $27 succeeded 2026-04-05 (external buyer, Link). `ch_3UMucw…` $75 FAILED (live-mode test card, founder test email). No $497 charge, no refunds, no disputes. |
 | PostHog | Queried 2026-11-05 (HogQL, last 90 days). `irr_sample_page_viewed` 301, `irr_checkout_started` 33, `irr_purchase_intake_submitted` 25, `irr_purchase_completed` 13. All six $497 completions (2026-08-25, 2026-09-04) carry `cs_test_` Stripe sessions and `test=1`; the other seven are `cw_verify` on 127.0.0.1:4400 or post-purchase intake (one from a Vercel preview host). No live-mode completion found. |
 
 Mapping: every in-window item is assigned to a workstream row in `CWOS_Execution_Register_item_map.csv` (repo, number, kind, state, dates, workstream). Item-to-workstream assignment is by title rules, not by reading each item; WS-16 is a broad, low-confidence grouping; 45 items remain in WS-99, reviewed by title and treated as noise. The map carries owner (by workstream), assignee (GitHub; mostly empty) and `#NNN` references found in the title as linked_refs; linked PRs from item bodies were not extracted.
 
 ## Business verification
 
-No row is Business-verified. Source: `cw_order` has 12 rows, all `is_test=true`; zero non-test orders. PostHog agrees: no `irr_purchase_completed` event comes from a live-mode Stripe session. Governing objective (first attributable external paid $497 IRR order) is unmet.
+No row is Business-verified. Source: `cw_order` has 12 rows, all `is_test=true`; zero non-test orders. Stripe live mode confirms: no $497 charge has ever been made (two external payments, $149 and $27, both before 2026-04-06). PostHog agrees: no `irr_purchase_completed` event comes from a live-mode Stripe session. Governing objective (first attributable external paid $497 IRR order) is unmet.
 
 ## Register
 
